@@ -3,135 +3,69 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BASHIRI - Colorful</title>
+<title>BASHIRI - Weka 20 Shinda</title>
 <style>
 *{box-sizing:border-box;font-family:system-ui;margin:0;padding:0}
-body{background:linear-gradient(135deg,#0f8a4a 0%,#d4b800 40%,#7c3aed 100%);min-height:100vh;color:#fff;padding-bottom:100px}
-.header{display:flex;justify-content:space-between;padding:14px 16px;background:rgba(0,0,0,0.15);backdrop-filter:blur(12px);position:sticky;top:0;z-index:20}
-.logo{font-weight:900;font-size:22px}
-.banner{margin:12px;background:linear-gradient(90deg,#ff4d4d,#ff8a00,#8a2be2);padding:14px 16px;border-radius:18px;display:flex;justify-content:space-between;box-shadow:0 10px 30px rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.3)}
-.wallet{background:rgba(255,255,255,0.22);backdrop-filter:blur(20px);margin:12px;padding:18px;border-radius:22px;border:1px solid rgba(255,255,255,0.35)}
-.balance{font-size:38px;font-weight:900;margin:6px 0}
-.dep-row{display:flex;gap:8px;margin-top:12px}
-.dep{flex:1;padding:14px 10px;border-radius:14px;border:0;font-weight:800;cursor:pointer;font-size:14px}
-.dep.g{background:linear-gradient(135deg,#00ff88,#00cc66);color:#000}
-.dep.y{background:linear-gradient(135deg,#ffeb3b,#ffcc00);color:#000}
-.dep.r{background:linear-gradient(135deg,#ff6b6b,#ff2e2e);color:#fff}
-.send{background:rgba(255,255,255,0.20);backdrop-filter:blur(20px);margin:12px;padding:16px;border-radius:22px;border:1px solid rgba(255,255,255,0.3)}
-.input{width:100%;padding:14px;border-radius:12px;border:0;margin:8px 0;background:rgba(255,255,255,0.95);color:#000;font-weight:600}
-.btn{padding:14px;width:100%;border-radius:14px;border:0;font-weight:900;font-size:15px;cursor:pointer;margin-top:8px}
+body{background:linear-gradient(135deg,#0f8a4a 0%,#d4b800 45%,#7c3aed 100%);min-height:100vh;color:#fff;padding-bottom:110px}
+.header{display:flex;justify-content:space-between;padding:12px 14px;background:rgba(0,0,0,0.18);backdrop-filter:blur(12px);position:sticky;top:0;z-index:30}
+.wallet{background:rgba(255,255,255,.22);backdrop-filter:blur(20px);margin:10px;padding:16px;border-radius:20px;border:1px solid rgba(255,255,255,.35)}
+.balance{font-size:34px;font-weight:900}
+.dep-row{display:flex;gap:6px;margin-top:10px}
+.dep{flex:1;padding:12px 6px;border-radius:12px;border:0;font-weight:800;cursor:pointer}
+.g{background:linear-gradient(135deg,#00ff88,#00cc66);color:#000}
+.y{background:linear-gradient(135deg,#ffeb3b,#ffcc00);color:#000}
+.r{background:linear-gradient(135deg,#ff6b6b,#ff2e2e);color:#fff}
+.send{background:rgba(255,255,255,.20);backdrop-filter:blur(20px);margin:10px;padding:14px;border-radius:20px}
+.input{width:100%;padding:12px;border-radius:10px;border:0;margin:6px 0;background:#fff;color:#000;font-weight:600}
+.btn{padding:12px;width:100%;border-radius:12px;border:0;font-weight:800;cursor:pointer;margin-top:6px}
 .btn-purple{background:linear-gradient(90deg,#6a5af9,#8a2be2);color:#fff}
-.btn-green{background:#00ff88;color:#000}
-.btn-red{background:#ff4d4d;color:#fff}
-.tabs{position:fixed;bottom:12px;left:12px;right:12px;background:rgba(255,255,255,0.92);display:flex;border-radius:20px;padding:6px}
-.tab{flex:1;text-align:center;color:#666;font-size:10px;cursor:pointer;padding:10px 4px;border-radius:14px;font-weight:700}
+.card{background:rgba(0,0,0,.18);backdrop-filter:blur(12px);margin:10px;padding:12px;border-radius:18px;border:1px solid rgba(255,255,255,.15)}
+.bar{height:8px;background:rgba(0,0,0,.35);border-radius:10px;display:flex;overflow:hidden;margin:6px 0}
+.by{background:#00ff88}.bn{background:#ff6b6b}
+.small{font-size:11px;opacity:.9}
+.badge{background:#fff;color:#000;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:800}
+.tabs{position:fixed;bottom:10px;left:10px;right:10px;background:rgba(255,255,255,.92);display:flex;border-radius:20px;padding:5px;z-index:40}
+.tab{flex:1;text-align:center;color:#666;font-size:10px;padding:8px 2px;border-radius:14px;font-weight:700;cursor:pointer}
 .tab.active{background:linear-gradient(135deg,#00ff88,#00cc66);color:#000}
-.card{background:rgba(0,0,0,0.18);backdrop-filter:blur(12px);margin:12px;padding:14px;border-radius:18px;border:1px solid rgba(255,255,255,0.15)}
-.bar{height:10px;background:rgba(0,0,0,0.3);border-radius:10px;display:flex;overflow:hidden;margin:8px 0}
-.bar-yes{background:linear-gradient(90deg,#00ff88,#00cc66)}
-.bar-no{background:linear-gradient(90deg,#ff4d4d,#ff8a8a)}
-.small{font-size:11px;opacity:0.85}
-.badge{background:rgba(255,255,255,0.9);color:#000;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:800;display:inline-block}
-.toast{position:fixed;top:60px;left:12px;right:12px;background:#fff;color:#000;padding:12px;border-radius:12px;text-align:center;font-weight:800;display:none;z-index:99}
+.view{display:none}.view.active{display:block}
+.forex-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+.toast{position:fixed;top:55px;left:10px;right:10px;background:#fff;color:#000;padding:10px;border-radius:12px;text-align:center;font-weight:800;display:none;z-index:99}
 </style>
 </head>
 <body>
 <div class="toast" id="toast"></div>
-<div class="header">
-<div><div class="logo">⭐ BASHIRI</div><div class="small">Weka 20 Shinda • 0116982197</div></div>
-<div style="text-align:right"><span class="badge" id="topBal">KES 0</span><br><span class="small">Min 20 | Wd 100</span></div>
+<div class="header"><div><b>⭐ BASHIRI</b><div class="small">Weka 20 Shinda • 0116982197</div></div><div style="text-align:right"><span class="badge" id="topBal">KES 0</span><br><span class="small">Min 20 | Wd 100</span></div></div>
+
+<div id="v-home" class="view active">
+<div class="card"><h3>🔥 Trending Pool <span id="pool">KES 0</span></h3><h4 id="qText">Will it rain in Embu tomorrow?</h4><div class="bar"><div class="by" id="yBar" style="width:52%"></div><div class="bn" id="nBar" style="width:48%"></div></div><div style="display:flex;justify-content:space-between"><span class="small" id="yPct">YES 52%</span><span class="small" id="nPct">NO 48%</span></div><div class="small" id="capInfo"></div><div class="dep-row"><button class="dep g" onclick="bet('YES')">YES - 20</button><button class="dep r" onclick="bet('NO')">NO - 20</button></div><div id="resInfo" class="small"></div></div>
+<div id="homeMarkets"></div>
 </div>
-<div class="banner">
-<div><h2 style="font-size:20px">WEKA 20 • SHINDA 20!</h2><div class="small">Deposit 20 win 20,000 today</div></div>
-<div style="font-size:28px">🏆</div>
-</div>
-<div class="wallet">
-<div class="small">Wallet Balance • Send Money First</div>
-<div class="balance">KES <span id="bal">0</span></div>
-<div class="small">+KES 0 this week • Ready to bet</div>
-<div class="dep-row">
-<button class="dep g" onclick="deposit(20)">KES 20</button>
-<button class="dep y" onclick="deposit(50)">KES 50</button>
-<button class="dep g" onclick="deposit(100)">KES 100</button>
-<button class="dep y" onclick="deposit(500)">KES 500</button>
-</div>
-</div>
-<div class="send">
-<h3>Send Money Confirm</h3>
-<div style="background:rgba(255,255,255,0.95);color:#000;padding:12px;border-radius:12px;margin:8px 0;font-weight:900;font-size:20px">0116982197</div>
-<div class="small">Min Deposit 20 • Min Withdraw 100 full</div>
-<input id="mpesaCode" class="input" placeholder="Paste M-Pesa Code e.g QGH7XYZ123">
-<button class="btn btn-purple" onclick="confirmDep()">Send Now -> Confirm Deposit</button>
-</div>
-<div class="card">
-<div class="small">TRENDING • Pool <span id="pool">KES 0</span> • <span class="badge">Cap 60%</span></div>
-<h3 id="qText" style="margin:8px 0">Will it rain in Embu tomorrow?</h3>
-<div class="bar"><div class="bar-yes" id="yBar" style="width:52%"></div><div class="bar-no" id="nBar" style="width:48%"></div></div>
-<div style="display:flex;justify-content:space-between"><span style="color:#00ff88;font-weight:800" id="yPct">YES 52%</span><span style="color:#ffb3b3;font-weight:800" id="nPct">NO 48%</span></div>
-<div class="small" id="capInfo">YES 0/6 • NO 0/4 • Cap 60%</div>
-<div class="dep-row">
-<button class="dep g" onclick="bet('YES')">YES - 20</button>
-<button class="dep r" onclick="bet('NO')">NO - 20</button>
-</div>
-<div id="resInfo" style="margin-top:8px"></div>
-</div>
-<div class="card">
-<div class="small">Admin • 0116982197 • Profit 10%</div>
-<input id="newQ" class="input" placeholder="New question">
-<button class="btn btn-green" onclick="createQ()">+ Publish Market</button>
-<div style="display:flex;gap:8px;margin-top:6px">
-<button class="btn btn-green" style="flex:1" onclick="settle('YES')">Settle YES</button>
-<button class="btn btn-red" style="flex:1" onclick="settle('NO')">Settle NO</button>
-</div>
-<div id="pending" style="margin-top:8px;font-size:12px"></div>
-</div>
+
+<div id="v-local" class="view"><div class="card"><h3>🌧️ Local Markets</h3></div><div id="localList"></div></div>
+<div id="v-forex" class="view"><div class="card"><h3>📈 Forex • Live Prices</h3><div class="small">UP/DOWN bet 20 bob</div></div><div class="card"><div id="forexList"></div></div></div>
+
+<div id="v-wallet" class="view"><div class="send"><h3>✈️ Wallet • Send Money 0116982197</h3><div style="background:#fff;color:#000;padding:10px;border-radius:10px;font-weight:900;font-size:18px;margin:6px 0">📞 0116982197 - Send Money</div><div class="small">Min Deposit 20 • Withdraw 100 full</div><div class="dep-row"><button class="dep g" onclick="dep(20)">20</button><button class="dep y" onclick="dep(50)">50</button><button class="dep g" onclick="dep(100)">100</button><button class="dep y" onclick="dep(500)">500</button></div><input id="mpesaCode" class="input" placeholder="Paste M-Pesa Code e.g QGH7XYZ123"><button class="btn btn-purple" onclick="confirmDep()">Confirm Deposit</button><div style="margin-top:14px"><h4>Withdraw 100+</h4><input id="wdAmt" class="input" type="number" placeholder="Amount min 100"><input id="wdPhone" class="input" placeholder="Your M-Pesa 07..."><button class="btn" style="background:#fff;color:#000" onclick="withdraw()">Request Withdraw</button></div><div id="txList" class="small" style="margin-top:10px"></div></div></div>
+
 <div class="tabs">
-<div class="tab active">Home</div><div class="tab">Local</div><div class="tab">Forex</div><div class="tab">Wallet</div>
+<div class="tab active" id="t-home" onclick="sw('home')">🏠<br>Home</div>
+<div class="tab" id="t-local" onclick="sw('local')">🌧️<br>Local</div>
+<div class="tab" id="t-forex" onclick="sw('forex')">📈<br>Forex</div>
+<div class="tab" id="t-wallet" onclick="sw('wallet')">👛<br>Wallet</div>
 </div>
+
 <script>
-let S=JSON.parse(localStorage.getItem('bashiri_color_final')||'{"bal":0,"yes":0,"no":0,"pool":0,"bets":[],"tx":[],"profit":0,"q":"Will it rain in Embu tomorrow?","settled":false}');
+let S=JSON.parse(localStorage.getItem('bashiri_v4')||'{"bal":0,"yes":0,"no":0,"pool":0,"bets":[],"tx":[],"profit":0,"q":"Will it rain in Embu tomorrow?","settled":false}');
 let selDep=null;
-function save(){localStorage.setItem('bashiri_color_final',JSON.stringify(S));render();}
-function toast(m){let t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',2500);}
-function deposit(a){selDep=a;toast('Send KES '+a+' to 0116982197 via Send Money, then paste code');}
-function confirmDep(){
- let code=document.getElementById('mpesaCode').value.trim();
- if(!selDep)return toast('First tap deposit 20/50/100/500');
- if(!code)return toast('Paste M-Pesa code');
- S.bal+=selDep; S.tx.push({t:'Deposit',a:selDep,c:code}); document.getElementById('mpesaCode').value=''; toast('Confirmed! Wallet +'+selDep); selDep=null; save();
-}
-function bet(side){
- if(S.bal<20)return toast('Low balance! Deposit min 20 to 0116982197');
- if(S.settled)return toast('Market settled');
- if(side==='YES'&&S.yes>=6)return toast('YES FULL 60% cap! Bet NO');
- if(side==='NO'&&S.no>=4)return toast('NO FULL! Bet YES');
- S.bal-=20; S.pool+=20; if(side==='YES')S.yes++; else S.no++; S.bets.push({side,a:20}); S.tx.push({t:'Bet '+side,a:20}); toast(side+' bet 20 placed!'); save();
-}
-function createQ(){
- let q=document.getElementById('newQ').value; if(!q)return;
- S.q=q; S.yes=0; S.no=0; S.pool=0; S.bets=[]; S.settled=false; document.getElementById('newQ').value=''; toast('New market: '+q); save();
-}
-function settle(res){
- S.settled=true; let profit=Math.floor(S.pool*0.1); S.profit+=profit;
- let total=S.pool; let winners=S.bets.filter(b=>b.side===res).length;
- if(winners===0||winners===S.bets.length){
-   document.getElementById('resInfo').innerHTML='<span class="badge" style="background:#ffcc00">Jackpot rollover KES '+total+' to Sunday!</span>'; toast('All same side - rolls to Sunday Jackpot');
- } else {
-   let share=Math.floor((total-profit)/winners); S.bal+=share*winners;
-   document.getElementById('resInfo').innerHTML='YES won! Each gets KES '+share+' • You keep profit '+profit;
-   toast(res+' wins! Share '+share);
- }
- save();
-}
-function render(){
- document.getElementById('bal').innerText=S.bal; document.getElementById('topBal').innerText='KES '+S.bal;
- document.getElementById('pool').innerText='KES '+S.pool; document.getElementById('qText').innerText=S.q+(S.settled?' - SETTLED':'');
- let tot=S.yes+S.no||10; let yp=Math.round(S.yes/tot*100); if(isNaN(yp))yp=52;
- document.getElementById('yBar').style.width=yp+'%'; document.getElementById('nBar').style.width=(100-yp)+'%';
- document.getElementById('yPct').innerText='YES '+yp+'%'; document.getElementById('nPct').innerText='NO '+(100-yp)+'%';
- document.getElementById('capInfo').innerText='YES '+S.yes+'/6 • NO '+S.no+'/4 • Cap 60% • Pool '+S.pool;
- document.getElementById('pending').innerHTML='Tx: '+S.tx.slice(-5).map(t=>t.t+' '+t.a+(t.c?' '+t.c:'')).join('<br>')+'<br>Profit yours: '+S.profit;
-}
+let localMarkets=[{q:"Will it rain in Mombasa tomorrow?",pool:2400,bets:32,yes:58},{q:"Milk price Nakuru UP this week?",pool:1800,bets:18,yes:42},{q:"Matatu fare Eldoret-Kitale increase?",pool:3200,bets:40,yes:65},{q:"Kenya vs TZ Kenya win?",pool:5600,bets:78,yes:55}];
+let forexMarkets=[{pair:"EUR/USD",price:"1.08255",change:"+0.12%",up:true,yes:62},{pair:"XAU/USD Gold",price:"2035.42",change:"-0.45%",up:false,yes:48},{pair:"GBP/USD",price:"1.26430",change:"+0.21%",up:true,yes:55},{pair:"USD/KES",price:"129.50",change:"+0.05%",up:true,yes:70},{pair:"BTC/USD",price:"64,230",change:"+2.3%",up:true,yes:68}];
+function save(){localStorage.setItem('bashiri_v4',JSON.stringify(S));render();}
+function toast(m){let t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',2600);}
+function sw(v){document.querySelectorAll('.view').forEach(e=>e.classList.remove('active'));document.getElementById('v-'+v).classList.add('active');document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));document.getElementById('t-'+v).classList.add('active');}
+function dep(a){selDep=a;sw('wallet');toast('Send '+a+' to 0116982197, paste code');}
+function confirmDep(){let c=document.getElementById('mpesaCode').value.trim();if(!selDep)return toast('Tap 20/50/100/500');if(!c)return toast('Paste code');S.bal+=selDep;S.tx.push({t:'Deposit',a:selDep,c:c,time:new Date().toLocaleTimeString()});document.getElementById('mpesaCode').value='';selDep=null;toast('Wallet +'+S.tx[S.tx.length-1].a);save();}
+function withdraw(){let a=parseInt(document.getElementById('wdAmt').value);let p=document.getElementById('wdPhone').value;if(a<100)return toast('Min withdraw 100');if(a>S.bal)return toast('Low balance');S.bal-=a;S.tx.push({t:'Withdraw to '+p,a:a,time:new Date().toLocaleTimeString()});toast('Withdraw '+a+' requested');save();}
+function bet(side,q){if(S.bal<20){sw('wallet');return toast('Deposit min 20 first');}if(S.settled)return toast('Settled');if(side==='YES'&&S.yes>=6)return toast('YES FULL 60% cap');if(side==='NO'&&S.no>=4)return toast('NO FULL');S.bal-=20;S.pool+=20;if(side==='YES')S.yes++;else S.no++;S.bets.push({side,a:20,q:q||S.q});S.tx.push({t:'Bet '+side,a:20});toast(side+' 20 placed');save();}
+function render(){document.getElementById('bal').innerText=S.bal;document.getElementById('topBal').innerText='KES '+S.bal;document.getElementById('qText').innerText=S.q+(S.settled?' - SETTLED':'');let tot=S.yes+S.no||10;let yp=Math.round(S.yes/tot*100)||52;document.getElementById('yBar').style.width=yp+'%';document.getElementById('nBar').style.width=(100-yp)+'%';document.getElementById('yPct').innerText='YES '+yp+'%';document.getElementById('nPct').innerText='NO '+(100-yp)+'%';document.getElementById('capInfo').innerText='YES '+S.yes+'/6 • NO '+S.no+'/4 • Pool KES '+S.pool;document.getElementById('txList').innerHTML=S.tx.slice(-8).reverse().map(t=>t.t+' '+t.a+' '+(t.c||'')).join('<br>')||'No tx';document.getElementById('localList').innerHTML=localMarkets.map(m=>`<div class="card"><b>${m.q}</b><div class="small">Pool ${m.pool} • ${m.bets} bets</div><div class="bar"><div class="by" style="width:${m.yes}%"></div><div class="bn" style="width:${100-m.yes}%"></div></div><div class="dep-row"><button class="dep g" onclick="bet('YES','${m.q}')">YES 20</button><button class="dep r" onclick="bet('NO','${m.q}')">NO 20</button></div></div>`).join('');document.getElementById('forexList').innerHTML=forexMarkets.map(f=>`<div class="forex-row"><div><b>${f.pair}</b><br><span class="small">YES ${f.yes}% UP</span></div><div style="text-align:right"><div style="color:${f.up?'#00ff88':'#ff8a8a'};font-weight:800">${f.price} ${f.up?'↗':'↘'} ${f.change}</div><div class="bar" style="width:80px"><div class="by" style="width:${f.yes}%"></div><div class="bn" style="width:${100-f.yes}%"></div></div></div></div>`).join('');}
 render();
 </script>
 </body>
