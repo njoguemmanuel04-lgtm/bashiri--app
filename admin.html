@@ -1,0 +1,16 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>BASHIRI ADMIN SECRET</title>
+<style>body{background:#0a1410;color:#fff;font-family:system-ui;padding:14px}input{width:100%;padding:12px;border-radius:10px;border:0;margin:6px 0}.btn{padding:12px;width:100%;border-radius:10px;border:0;font-weight:800;margin-top:6px}.g{background:#00ff88}.r{background:#ff4d4d;color:#fff}</style>
+</head><body>
+<h2>🛡️ BASHIRI ADMIN - 0116982197</h2><p>Secret link: /admin.html - Don't share!</p>
+<input id="newQ" placeholder="New question e.g Will it rain Embu?">
+<button class="btn g" onclick="createQ()">+ Publish Market</button>
+<div style="display:flex;gap:6px"><button class="btn g" style="flex:1" onclick="settle('YES')">Settle YES</button><button class="btn r" style="flex:1" onclick="settle('NO')">Settle NO</button></div>
+<div id="info" style="margin-top:12px;background:#152f21;padding:12px;border-radius:12px"></div>
+<script>
+let S=JSON.parse(localStorage.getItem('bashiri_v4')||'{"bal":0,"yes":0,"no":0,"pool":0,"bets":[],"tx":[],"profit":0,"q":"Will it rain in Embu tomorrow?","settled":false}');
+function save(){localStorage.setItem('bashiri_v4',JSON.stringify(S));render();}
+function createQ(){let q=document.getElementById('newQ').value;if(!q)return;S.q=q;S.yes=0;S.no=0;S.pool=0;S.bets=[];S.settled=false;document.getElementById('newQ').value='';alert('Published');save();}
+function settle(r){S.settled=true;let p=Math.floor(S.pool*0.1);S.profit+=p;let tot=S.pool;let w=S.bets.filter(b=>b.side===r).length;if(w===0||w===S.bets.length){alert('Rollover Jackpot '+tot);}else{let share=Math.floor((tot-p)/w);S.bal+=share*w;alert(r+' wins share '+share+' you keep '+p);}save();}
+function render(){document.getElementById('info').innerHTML=`Q: ${S.q}<br>YES ${S.yes}/6 NO ${S.no}/4 Pool ${S.pool}<br>Bets: ${JSON.stringify(S.bets).slice(0,200)}<br>Tx: ${JSON.stringify(S.tx.slice(-5))}<br>Profit yours: ${S.profit}<br><br>Withdraw requests:<br>${S.tx.filter(t=>t.t.includes('Withdraw')).map(t=>t.t+' '+t.a).join('<br>')}`;}
+render();
+</script></body></html>
