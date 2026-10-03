@@ -1,20 +1,23 @@
 <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>BASHIRI ADMIN CLOUD</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>body{background:#0a1410;color:#fff;font-family:system-ui;padding:14px}input,select{width:100%;padding:12px;border-radius:10px;border:0;margin:6px 0}.btn{padding:12px;width:100%;border-radius:10px;border:0;font-weight:800;margin-top:6px;cursor:pointer}.g{background:#00ff88;color:#000}.r{background:#ff4d4d;color:#fff}.card{background:#152f21;padding:12px;border-radius:12px;margin-top:10px}</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>body{background:#0a1410;color:#fff;font-family:system-ui;padding:14px}input,select{width:100%;padding:12px;border-radius:10px;border:0;margin:6px 0;font-weight:600}.btn{padding:12px;width:100%;border-radius:10px;border:0;font-weight:800;margin-top:6px;cursor:pointer}.g{background:#00ff88;color:#000}.r{background:#ff4d4d;color:#fff}.card{background:#152f21;padding:12px;border-radius:12px;margin-top:10px;border:1px solid rgba(255,255,255,.1)}.small{font-size:11px;opacity:.7}</style>
 </head><body>
 <h2>🛡️ BASHIRI ADMIN CLOUD - 0116982197</h2>
-<p>Publish → all users see instantly!</p>
+<p class="small">Publish → all users see instantly! Supabase Connected</p>
 <select id="type"><option value="home">Home Trending</option><option value="local">Local Markets</option><option value="forex">Forex</option></select>
 <input id="newQ" placeholder="Question e.g Will it rain Embu tomorrow?">
 <button class="btn g" onclick="publish()">+ Publish to Cloud</button>
+<div id="status" class="small"></div>
 <div id="list"></div>
-<div id="txs" class="card"></div>
+<div id="txs" class="card"><b>Transactions</b><div id="txList" class="small"></div></div>
 <script>
 const SUPABASE_URL = "https://hkhqbtyyqgvaktamilxs.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg";
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-async function publish(){let q=document.getElementById('newQ').value.trim();let t=document.getElementById('type').value;if(!q)return alert('Enter question');let {error}=await supabase.from('markets').insert({question:q,type:t});if(error)alert(error.message);else{alert('Published to '+t+' - All users see now!');document.getElementById('newQ').value='';load();}}
-async function settle(id,res){await supabase.from('markets').update({settled:true,result:res}).eq('id',id);alert('Settled '+res);load();}
-async function load(){let {data:m}=await supabase.from('markets').select('*').order('created_at',{ascending:false}).limit(20);document.getElementById('list').innerHTML=m.map(x=>`<div class="card">${x.question} [${x.type}] YES ${x.yes_count} NO ${x.no_count} Pool ${x.pool} ${x.settled?'SETTLED '+x.result:''}<br><div style="display:flex;gap:6px"><button class="btn g" onclick="settle('${x.id}','YES')">Settle YES</button><button class="btn r" onclick="settle('${x.id}','NO')">Settle NO</button></div></div>`).join('');let {data:tx}=await supabase.from('transactions').select('*').order('created_at',{ascending:false}).limit(20);document.getElementById('txs').innerHTML='<b>Deposits/Withdraws:</b><br>'+(tx||[]).map(t=>`${t.type} ${t.amount} ${t.mpesa_code||''} ${t.phone||''} ${t.status}`).join('<br>');}
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+function setStatus(m){document.getElementById('status').innerText=m;}
+async function publish(){let q=document.getElementById('newQ').value.trim();let t=document.getElementById('type').value;if(!q)return alert('Enter question');setStatus('Publishing...');let {error}=await sb.from('markets').insert({question:q,type:t});if(error){alert(error.message);setStatus('Error: '+error.message);}else{alert('✅ Published to '+t);document.getElementById('newQ').value='';setStatus('Published!');load();}}
+async function settle(id,res){if(!confirm('Settle as '+res+'?'))return;let {error}=await sb.from('markets').update({settled:true,result:res}).eq('id',id);if(error)alert(error.message);else{alert('Settled '+res);load();}}
+async function delMarket(id){if(!confirm('Delete market?'))return;await sb.from('markets').delete().eq('id',id);load();}
+async function load(){try{let {data:m,error}=await sb.from('markets').select('*').order('created_at',{ascending:false}).limit(30);if(error){document.getElementById('list').innerHTML='Error: '+error.message;return;}document.getElementById('list').innerHTML=(m||[]).map(x=>`<div class="card"><b>${x.question}</b><br><span class="small">[${x.type}] YES ${x.yes_count||0} NO ${x.no_count||0} Pool ${x.pool||0} ${x.settled?'SETTLED '+x.result:''}</span><br><div style="display:flex;gap:6px;margin-top:6px"><button class="btn g" onclick="settle('${x.id}','YES')">Settle YES</button><button class="btn r" onclick="settle('${x.id}','NO')">Settle NO</button><button class="btn" style="background:#333;color:#fff" onclick="delMarket('${x.id}')">Del</button></div></div>`).join('')||'No markets';let {data:tx}=await sb.from('transactions').select('*').order('created_at',{ascending:false}).limit(30);document.getElementById('txList').innerHTML=(tx||[]).map(t=>`${new Date(t.created_at).toLocaleTimeString()} - ${t.type} ${t.amount} ${t.mpesa_code||''} ${t.phone||''} ${t.status}`).join('<br>')||'No tx yet';setStatus('Connected ✅ '+(m||[]).length+' markets');}catch(e){setStatus('Error '+e.message);}}
 load();setInterval(load,4000);
 </script></body></html>
