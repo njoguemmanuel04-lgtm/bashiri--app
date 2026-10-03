@@ -1,16 +1,20 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>BASHIRI ADMIN SECRET</title>
-<style>body{background:#0a1410;color:#fff;font-family:system-ui;padding:14px}input{width:100%;padding:12px;border-radius:10px;border:0;margin:6px 0}.btn{padding:12px;width:100%;border-radius:10px;border:0;font-weight:800;margin-top:6px}.g{background:#00ff88}.r{background:#ff4d4d;color:#fff}</style>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>BASHIRI ADMIN CLOUD</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>body{background:#0a1410;color:#fff;font-family:system-ui;padding:14px}input,select{width:100%;padding:12px;border-radius:10px;border:0;margin:6px 0}.btn{padding:12px;width:100%;border-radius:10px;border:0;font-weight:800;margin-top:6px;cursor:pointer}.g{background:#00ff88;color:#000}.r{background:#ff4d4d;color:#fff}.card{background:#152f21;padding:12px;border-radius:12px;margin-top:10px}</style>
 </head><body>
-<h2>🛡️ BASHIRI ADMIN - 0116982197</h2><p>Secret link: /admin.html - Don't share!</p>
-<input id="newQ" placeholder="New question e.g Will it rain Embu?">
-<button class="btn g" onclick="createQ()">+ Publish Market</button>
-<div style="display:flex;gap:6px"><button class="btn g" style="flex:1" onclick="settle('YES')">Settle YES</button><button class="btn r" style="flex:1" onclick="settle('NO')">Settle NO</button></div>
-<div id="info" style="margin-top:12px;background:#152f21;padding:12px;border-radius:12px"></div>
+<h2>🛡️ BASHIRI ADMIN CLOUD - 0116982197</h2>
+<p>Publish → all users see instantly!</p>
+<select id="type"><option value="home">Home Trending</option><option value="local">Local Markets</option><option value="forex">Forex</option></select>
+<input id="newQ" placeholder="Question e.g Will it rain Embu tomorrow?">
+<button class="btn g" onclick="publish()">+ Publish to Cloud</button>
+<div id="list"></div>
+<div id="txs" class="card"></div>
 <script>
-let S=JSON.parse(localStorage.getItem('bashiri_v4')||'{"bal":0,"yes":0,"no":0,"pool":0,"bets":[],"tx":[],"profit":0,"q":"Will it rain in Embu tomorrow?","settled":false}');
-function save(){localStorage.setItem('bashiri_v4',JSON.stringify(S));render();}
-function createQ(){let q=document.getElementById('newQ').value;if(!q)return;S.q=q;S.yes=0;S.no=0;S.pool=0;S.bets=[];S.settled=false;document.getElementById('newQ').value='';alert('Published');save();}
-function settle(r){S.settled=true;let p=Math.floor(S.pool*0.1);S.profit+=p;let tot=S.pool;let w=S.bets.filter(b=>b.side===r).length;if(w===0||w===S.bets.length){alert('Rollover Jackpot '+tot);}else{let share=Math.floor((tot-p)/w);S.bal+=share*w;alert(r+' wins share '+share+' you keep '+p);}save();}
-function render(){document.getElementById('info').innerHTML=`Q: ${S.q}<br>YES ${S.yes}/6 NO ${S.no}/4 Pool ${S.pool}<br>Bets: ${JSON.stringify(S.bets).slice(0,200)}<br>Tx: ${JSON.stringify(S.tx.slice(-5))}<br>Profit yours: ${S.profit}<br><br>Withdraw requests:<br>${S.tx.filter(t=>t.t.includes('Withdraw')).map(t=>t.t+' '+t.a).join('<br>')}`;}
-render();
+const SUPABASE_URL = "https://hkhqbtyyqgvaktamilxs.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+async function publish(){let q=document.getElementById('newQ').value.trim();let t=document.getElementById('type').value;if(!q)return alert('Enter question');let {error}=await supabase.from('markets').insert({question:q,type:t});if(error)alert(error.message);else{alert('Published to '+t+' - All users see now!');document.getElementById('newQ').value='';load();}}
+async function settle(id,res){await supabase.from('markets').update({settled:true,result:res}).eq('id',id);alert('Settled '+res);load();}
+async function load(){let {data:m}=await supabase.from('markets').select('*').order('created_at',{ascending:false}).limit(20);document.getElementById('list').innerHTML=m.map(x=>`<div class="card">${x.question} [${x.type}] YES ${x.yes_count} NO ${x.no_count} Pool ${x.pool} ${x.settled?'SETTLED '+x.result:''}<br><div style="display:flex;gap:6px"><button class="btn g" onclick="settle('${x.id}','YES')">Settle YES</button><button class="btn r" onclick="settle('${x.id}','NO')">Settle NO</button></div></div>`).join('');let {data:tx}=await supabase.from('transactions').select('*').order('created_at',{ascending:false}).limit(20);document.getElementById('txs').innerHTML='<b>Deposits/Withdraws:</b><br>'+(tx||[]).map(t=>`${t.type} ${t.amount} ${t.mpesa_code||''} ${t.phone||''} ${t.status}`).join('<br>');}
+load();setInterval(load,4000);
 </script></body></html>
