@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Bashiri Admin 011698 - Till 0116982197</title>
+<title>Bashiri Admin - Till 0116982197</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/dist/umd/supabase.min.js"></script>
 <style>
 body{background:#0f1115;color:#fff;font-family:system-ui;padding:15px;margin:0}
@@ -38,7 +38,7 @@ small{color:#8a8f98}
 
 <div id="depDiv"><h3>💰 Pending M-Pesa</h3><div id="depList">Loading...</div></div>
 <div id="betDiv" style="display:none"><h3>🎲 Open Bets - 20 → Profit 12 → Return 32</h3><div id="betList">Loading...</div></div>
-<div id="markDiv" style="display:none"><h3>⚽ Create Market</h3><input id="mTitle" placeholder="e.g. Will it rain in mwea tomorrow?"><select id="mStatus"><option value="open">OPEN</option><option value="closed">CLOSED</option></select><button onclick="createMarket()">Create +</button><div id="markList" style="margin-top:15px">Loading...</div></div>
+<div id="markDiv" style="display:none"><h3>⚽ Create Market</h3><input id="mTitle" placeholder="e.g. Will it rain in mwea tomorrow?" style="width:60%"><select id="mStatus"><option value="open">OPEN</option><option value="closed">CLOSED</option></select><button onclick="createMarket()">Create +</button><div id="markList" style="margin-top:15px">Loading...</div></div>
 <div id="usersDiv" style="display:none"><h3>👥 Users</h3><div id="usersList">Loading...</div></div>
 </div>
 
@@ -52,8 +52,9 @@ function login(){
   document.getElementById('loginDiv').style.display='none';
   document.getElementById('adminDiv').style.display='block';
   loadAll();
- }else alert('Wrong PIN 011698');
+ }else alert('Wrong PIN use 011698');
 }
+
 function showTab(t){
  document.getElementById('depDiv').style.display=t==='dep'?'block':'none';
  document.getElementById('betDiv').style.display=t==='bet'?'block':'none';
@@ -61,20 +62,34 @@ function showTab(t){
  document.getElementById('usersDiv').style.display=t==='users'?'block':'none';
  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
  document.getElementById('tab'+(t==='dep'?'Dep':t==='bet'?'Bet':t==='mark'?'Mark':'Users')).classList.add('active');
- if(t==='dep')loadDeposits();if(t==='bet')loadBets();if(t==='mark')loadMarkets();if(t==='users')loadUsers();
+ if(t==='dep')loadDeposits();
+ if(t==='bet')loadBets();
+ if(t==='mark')loadMarkets();
+ if(t==='users')loadUsers();
 }
+
 function loadAll(){loadDeposits();loadBets();loadMarkets();loadUsers();}
 
 async function loadDeposits(){
  try{
-  let{data,error}=await sb.from('deposits').select('*').eq('status','pending').order('created_at',{ascending:false});
-  if(error)throw error;
+  let{data}=await sb.from('deposits').select('*').eq('status','pending').order('created_at',{ascending:false});
   document.getElementById('depCount').innerText=data?data.length:0;
-  if(!data||!data.length){document.getElementById('depList').innerHTML='✅ No pending deposits - Till 0116982197';return;}
-  document.getElementById('depList').innerHTML=data.map(d=>`<div class="card"><b>${d.phone||d.user_id.slice(0,8)}</b> - KES ${d.amount}<br><small>${new Date(d.created_at).toLocaleString()}</small><br><button onclick="approveDep('${d.id}','${d.user_id}',${d.amount})">✅ Approve +${d.amount}</button> <button style="background:#ff1744" onclick="rejectDep('${d.id}')">❌ Reject</button></div>`).join('');
+  if(!data||!data.length){document.getElementById('depList').innerHTML='✅ No pending - Till 0116982197';return;}
+  document.getElementById('depList').innerHTML=data.map(d=>{
+   let uid=(d.user_id||'').slice(0,8);
+   return `<div class="card"><b>${d.phone||uid}</b> - KES ${d.amount}<br><small>${new Date(d.created_at).toLocaleString()}</small><br><button onclick="approveDep('${d.id}','${d.user_id}',${d.amount})">✅ Approve</button> <button style="background:#ff1744" onclick="rejectDep('${d.id}')">❌ Reject</button></div>`;
+  }).join('');
  }catch(e){document.getElementById('depList').innerHTML='Error: '+e.message;}
 }
-async function approveDep(id,uid,amt){let{data:u}=await sb.from('profiles').select('balance').eq('id',uid).single();let nb=(u?.balance||0)+amt;await sb.from('profiles').update({balance:nb}).eq('id',uid);await sb.from('deposits').update({status:'approved'}).eq('id',id);alert('Approved KES '+amt);loadDeposits();}
+
+async function approveDep(id,uid,amt){
+ if(!uid)return alert('Missing user_id');
+ let{data:u}=await sb.from('profiles').select('balance').eq('id',uid).single();
+ let nb=(u?.balance||0)+Number(amt);
+ await sb.from('profiles').update({balance:nb}).eq('id',uid);
+ await sb.from('deposits').update({status:'approved'}).eq('id',id);
+ alert('Approved KES '+amt);loadDeposits();
+}
 async function rejectDep(id){await sb.from('deposits').update({status:'rejected'}).eq('id',id);loadDeposits();}
 
 async function loadBets(){
@@ -84,40 +99,43 @@ async function loadBets(){
   document.getElementById('betCount').innerText=data?data.length:0;
   if(!data||!data.length){document.getElementById('betList').innerHTML='✅ No open bets';return;}
   document.getElementById('betList').innerHTML=data.map(b=>{
-   let amt=b.amount||0;
-   let profit=b.profit||Math.floor(amt*0.6);
-   let title=b.market_title||b.selection||b.market_id||'Custom Market';
-   return `<div class="card"><b>${title}</b><br>Stake KES ${amt} → Profit KES ${profit} → Return KES ${amt+profit}<br><small>User ${b.user_id.slice(0,8)}.. • ${new Date(b.created_at).toLocaleString()}</small><br><button onclick="settleBet('${b.id}','${b.user_id}',${amt},${profit},'won')">✅ WIN +${amt+profit}</button> <button style="background:#ff1744" onclick="settleBet('${b.id}','${b.user_id}',0,0,'lost')">❌ LOSE</button></div>`;
+   let amt=Number(b.amount||0);
+   let profit=Number(b.profit||Math.floor(amt*0.6));
+   let title=b.market_title||b.selection||b.market_id||'Custom Bet';
+   let uidShort=(b.user_id||'').slice(0,8)||'no-user';
+   let time=b.created_at?new Date(b.created_at).toLocaleString():'';
+   return `<div class="card"><b>${title}</b><br>Stake KES ${amt} → Profit KES ${profit} → Return KES ${amt+profit}<br><small>User ${uidShort} • ${time}</small><br><button onclick="settleBet('${b.id}','${b.user_id||''}',${amt},${profit},'won')">✅ WIN +${amt+profit}</button> <button style="background:#ff1744" onclick="settleBet('${b.id}','${b.user_id||''}',0,0,'lost')">❌ LOSE</button></div>`;
   }).join('');
- }catch(e){
-  document.getElementById('betList').innerHTML='Error: '+e.message+'<br><small>Run in Supabase SQL: alter table bets disable row level security;</small>';
- }
+ }catch(e){document.getElementById('betList').innerHTML='Error: '+e.message;}
 }
+
 async function settleBet(bid,uid,amt,pr,st){
- if(st==='won'){
+ if(st==='won' && uid){
   let{data:u}=await sb.from('profiles').select('balance').eq('id',uid).single();
   await sb.from('profiles').update({balance:(u?.balance||0)+amt+pr}).eq('id',uid);
  }
  await sb.from('bets').update({status:st}).eq('id',bid);
- alert('Bet '+st.toUpperCase()+' '+(st==='won'?'+'+(amt+pr):''));loadBets();
+ alert('Bet '+st.toUpperCase());loadBets();
 }
 
 async function loadMarkets(){
  let{data}=await sb.from('markets').select('*').order('created_at',{ascending:false}).limit(50);
  if(!data||!data.length){document.getElementById('markList').innerHTML='No markets';return;}
- document.getElementById('markList').innerHTML=data.map(m=>`<div class="card">${m.title||m.question} - <b style="color:${m.status==='open'?'#00c853':'#ff1744'}">${m.status.toUpperCase()}</b> <small>${m.type||'custom'} • ${new Date(m.created_at).toLocaleDateString()}</small></div>`).join('');
+ document.getElementById('markList').innerHTML=data.map(m=>`<div class="card">${m.title||m.question} - <b style="color:${m.status==='open'?'#00c853':'#ff1744'}">${(m.status||'open').toUpperCase()}</b> <small>${m.type||'custom'} • ${new Date(m.created_at).toLocaleDateString()}</small></div>`).join('');
 }
+
 async function createMarket(){
  let t=document.getElementById('mTitle').value.trim();
  if(!t)return alert('Enter title');
  let s=document.getElementById('mStatus').value;
  let{error}=await sb.from('markets').insert([{title:t,question:t,type:'custom',status:s}]);
- if(error)return alert('Error: '+error.message);
- document.getElementById('mTitle').value='';loadMarkets();alert('✅ Market Created: '+t);
+ if(error)return alert(error.message);
+ document.getElementById('mTitle').value='';loadMarkets();alert('✅ Created: '+t);
 }
+
 async function loadUsers(){
  let{data}=await sb.from('profiles').select('*').order('balance',{ascending:false}).limit(100);
- document.getElementById('usersList').innerHTML=!data||!data.length?'No users':data.map(u=>`<div class="card">ID ${u.id.slice(0,8)}.. - Balance <b>KES ${u.balance||0}</b></div>`).join('');
+ document.getElementById('usersList').innerHTML=!data||!data.length?'No users':data.map(u=>`<div class="card">ID ${(u.id||'').slice(0,8)}.. - <b>KES ${u.balance||0}</b></div>`).join('');
 }
 </script>
 </body>
