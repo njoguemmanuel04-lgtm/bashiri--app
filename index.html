@@ -31,19 +31,12 @@ canvas{width:100%;height:220px;background:#081410;border-radius:12px;border:1px 
 </style>
 </head>
 <body>
-
 <div class="header"><b>BASHIRI <span style="color:#00ff88">LIVE</span></b><div>KES <span id="balTop">50</span> <span style="color:#d4af37">Till 0116982197</span></div></div>
-
 <div class="till"><b style="color:#ffdf7a">M-PESA TILL 0116982197</b> • Bet 20 Win 12 Profit</div>
-
 <div id="marketsPage" style="display:block"><div class="card"><h3>⚽ Sports Markets</h3><div id="mList">Loading...</div></div></div>
-
 <div id="forexPage" style="display:none"><div class="card"><h3>📈 Forex - EUR/USD</h3><canvas id="candleCanvas"></canvas><div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-buy" onclick="openForexBet('BUY')">BUY ↑</button><button class="btn btn-sell" onclick="openForexBet('SELL')">SELL ↓</button></div></div></div>
-
-<div id="walletPage" style="display:none"><div class="card"><h3>💼 Wallet</h3><p>Balance: KES <b id="balWallet">50</b></p><p>Till: <b>0116982197</b></p><div id="betsList">Loading bets...</div></div></div>
-
+<div id="walletPage" style="display:none"><div class="card"><h3>💼 Wallet</h3><p>Balance: KES <b id="balWallet">50</b> <button onclick="loadProfile()" style="background:#222;padding:4px 8px;border-radius:8px;border:1px solid #333;color:#d4af37">↻ Refresh</button></p><p>Till: <b>0116982197</b> | User: <small id="uidShort">no-user</small></p><div id="betsList">Loading bets...</div></div></div>
 <div class="tabs"><div class="tab active" onclick="showTab('markets',this)">⚽ Markets</div><div class="tab" onclick="showTab('forex',this)">📈 Forex</div><div class="tab" onclick="showTab('wallet',this)">💼 Wallet</div></div>
-
 <div id="betModal" onclick="if(event.target.id==='betModal')closeBet()">
 <div class="modalBox">
 <h3 id="betTitle">Place Bet</h3><small id="betSubtitle">20 wins 12</small>
@@ -53,104 +46,93 @@ canvas{width:100%;height:220px;background:#081410;border-radius:12px;border:1px 
 <button class="btn btn-gold" onclick="confirmBet()">Confirm Bet</button><button class="btn" style="background:transparent;color:#888;margin-top:8px" onclick="closeBet()">Cancel</button>
 </div>
 </div>
-
 <script>
 const SUPA_URL="https://hkhqbtyyqgvaktamilxs.supabase.co";
 const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg";
 const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
 let balance=50, selChoice='1', selOdd=1.6, selAmt=20, selMarket=null, betType='sports';
+let myUid=null;
+
+async function init(){
+ // FIX for no-user - create stable UID
+ myUid=localStorage.getItem('bashiri_uid');
+ if(!myUid){ myUid=crypto.randomUUID(); localStorage.setItem('bashiri_uid',myUid); }
+ document.getElementById('uidShort').innerText=myUid.slice(0,8);
+ await loadProfile();
+ loadMarkets();
+}
+async function loadProfile(){
+ if(!myUid) return;
+ let {data,error}=await sb.from('profiles').select('*').eq('id',myUid).single();
+ if(error || !data){
+  // create profile with 50
+  await sb.from('profiles').insert([{id:myUid,balance:50}]);
+  balance=50;
+ } else {
+  balance=Number(data.balance||0);
+ }
+ updateBal();
+}
+function updateBal(){ document.getElementById('balTop').innerText=balance; document.getElementById('balWallet').innerText=balance; document.getElementById('balInModal').innerText=balance; }
 
 function showTab(name,el){
  document.getElementById('marketsPage').style.display=name==='markets'?'block':'none';
- document.getElementById('forexPage').style.display=name==='forex'?'none':'none';
  document.getElementById('forexPage').style.display=name==='forex'?'block':'none';
  document.getElementById('walletPage').style.display=name==='wallet'?'block':'none';
  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
  if(el) el.classList.add('active');
- if(name==='markets') loadMarkets(); if(name==='wallet') loadMyBets(); if(name==='forex') drawCandles();
+ if(name==='markets') loadMarkets(); if(name==='wallet'){ loadProfile(); loadMyBets(); } if(name==='forex') drawCandles();
 }
-
 async function loadMarkets(){
  try{ const {data}=await sb.from('markets').select('*').eq('status','open').order('created_at',{ascending:false});
- document.getElementById('mList').innerHTML=data.map(m=>`<div class="bet-item"><b>${m.title||m.question}</b><br><small>${m.type||'custom'} • ${m.status}</small><br><button class="btn btn-gold" style="margin-top:8px" onclick="openSportsBet('${m.id}','${(m.title||m.question).replace(/'/g,"\\'")}')">Bet Now - 20 → 12</button></div>`).join('');
+ document.getElementById('mList').innerHTML=data && data.length ? data.map(m=>`<div class="bet-item"><b>${m.title||m.question}</b><br><small>${m.type||'custom'} • ${m.status}</small><br><button class="btn btn-gold" style="margin-top:8px" onclick="openSportsBet('${m.id}','${(m.title||m.question).replace(/'/g,"\\'")}')">Bet Now - 20 → 12</button></div>`).join('') : 'No markets';
  }catch(e){}
 }
-
 function openSportsBet(id,title){
  betType='sports'; selMarket={id,title}; selChoice='1'; selOdd=1.6;
  document.getElementById('betTitle').innerText=title;
  document.getElementById('betSubtitle').innerText='20 wins 12 profit - Choose outcome';
- document.getElementById('choiceArea').innerHTML=`
- <p style="font-weight:700;margin-bottom:8px">Choose Outcome</p>
- <div style="display:flex;gap:8px">
-  <button class="choiceBtn active" id="c1" onclick="selectChoice('1',1.6)">1 - ${title.split(' ')[0]} Win</button>
-  <button class="choiceBtn" id="cX" onclick="selectChoice('X',2.5)">X - Draw</button>
-  <button class="choiceBtn" id="c2" onclick="selectChoice('2',1.8)">2 - Other Win</button>
- </div>`;
+ document.getElementById('choiceArea').innerHTML=`<p style="font-weight:700;margin-bottom:8px">Choose Outcome</p><div style="display:flex;gap:8px"><button class="choiceBtn active" id="c1" onclick="selectChoice('1',1.6)">1 - Win</button><button class="choiceBtn" id="cX" onclick="selectChoice('X',2.5)">X - Draw</button><button class="choiceBtn" id="c2" onclick="selectChoice('2',1.8)">2 - Other</button></div>`;
  selectAmt(20); document.getElementById('betModal').classList.add('show');
 }
-
 function openForexBet(side){
- betType='forex'; const price=document.getElementById('balTop')?document.getElementById('balTop').innerText:'1.1248';
- selMarket={id:'forex-eurusd', title:`EUR/USD ${side} @ ${price}`};
- selChoice=side; selOdd=side==='BUY'?1.6:1.6;
- document.getElementById('betTitle').innerText=`Forex ${side}`;
- document.getElementById('betSubtitle').innerText=side==='BUY'?'Price going UP':'Price going DOWN';
- document.getElementById('choiceArea').innerHTML=`
- <div style="display:flex;gap:8px">
-  <button class="choiceBtn ${side==='BUY'?'active':''}" id="cBUY" onclick="selectChoice('BUY',1.6)">BUY ↑</button>
-  <button class="choiceBtn ${side==='SELL'?'active':''}" id="cSELL" onclick="selectChoice('SELL',1.6)">SELL ↓</button>
- </div>`;
+ betType='forex'; selMarket={id:'forex-eurusd', title:`EUR/USD ${side}`}; selChoice=side; selOdd=1.6;
+ document.getElementById('betTitle').innerText=`Forex ${side}`; document.getElementById('betSubtitle').innerText=side==='BUY'?'Price UP':'Price DOWN';
+ document.getElementById('choiceArea').innerHTML=`<div style="display:flex;gap:8px"><button class="choiceBtn ${side==='BUY'?'active':''}" id="cBUY" onclick="selectChoice('BUY',1.6)">BUY ↑</button><button class="choiceBtn ${side==='SELL'?'active':''}" id="cSELL" onclick="selectChoice('SELL',1.6)">SELL ↓</button></div>`;
  selectAmt(20); document.getElementById('betModal').classList.add('show');
 }
-
 function closeBet(){ document.getElementById('betModal').classList.remove('show'); }
-function selectChoice(c,odd){
- selChoice=c; selOdd=odd;
- document.querySelectorAll('.choiceBtn').forEach(b=>b.classList.remove('active'));
- const el=document.getElementById('c'+c); if(el) el.classList.add('active');
- updatePotential();
-}
-function selectAmt(a){
- selAmt=a;
- document.querySelectorAll('.amtBtn').forEach(b=>b.classList.remove('active'));
- const el=document.getElementById('a'+a); if(el) el.classList.add('active'); else document.getElementById('a20').classList.add('active');
- updatePotential();
-}
-function updatePotential(){
- let profit = Math.round(selAmt * 0.6); // YOUR RULE: 20 → 12
- if(selChoice==='X') profit = Math.round(selAmt * 1.5);
- if(selChoice==='2') profit = Math.round(selAmt * 0.8);
- document.getElementById('potential').innerText='KES '+profit;
- document.getElementById('totalReturn').innerText='Total Return: KES '+(selAmt+profit);
-}
-function updateBal(){ document.getElementById('balTop').innerText=balance; document.getElementById('balWallet').innerText=balance; document.getElementById('balInModal').innerText=balance; }
+function selectChoice(c,odd){ selChoice=c; selOdd=odd; document.querySelectorAll('.choiceBtn').forEach(b=>b.classList.remove('active')); const el=document.getElementById('c'+c); if(el) el.classList.add('active'); updatePotential(); }
+function selectAmt(a){ selAmt=a; document.querySelectorAll('.amtBtn').forEach(b=>b.classList.remove('active')); const el=document.getElementById('a'+a); if(el) el.classList.add('active'); updatePotential(); }
+function updatePotential(){ let profit=Math.round(selAmt*0.6); if(selChoice==='X') profit=Math.round(selAmt*1.5); if(selChoice==='2') profit=Math.round(selAmt*0.8); document.getElementById('potential').innerText='KES '+profit; document.getElementById('totalReturn').innerText='Total Return: KES '+(selAmt+profit); }
 
 async function confirmBet(){
- if(selAmt>balance){ alert('Insufficient! Balance KES '+balance+'\nDeposit to Till 0116982197'); return; }
- const profitText = document.getElementById('potential').innerText;
- const profit = parseInt(profitText.replace('KES ',''));
- // YOUR ORIGINAL INSERT - keeps market_id, choice, amount, odds
- const {error}=await sb.from('bets').insert([{market_id:selMarket.id, market_title:selMarket.title, selection:selChoice, choice:selChoice, amount:selAmt, profit:profit, odds:selOdd, status:'open', user_id: localStorage.getItem('bashiri_uid')||null}]);
- if(error){ alert('Error: '+error.message); return; }
- balance-=selAmt; updateBal(); document.getElementById('balInModal').innerText=balance;
- closeBet();
- alert(`✅ Bet Placed!\n${selMarket.title}\nStake: KES ${selAmt} → Profit: KES ${profit}\nChoice: ${selChoice}`);
+ if(selAmt>balance){ alert('Insufficient! Balance KES '+balance+'\nDeposit Till 0116982197'); return; }
+ let profitText=document.getElementById('potential').innerText; let profit=parseInt(profitText.replace('KES ',''));
+ // deduct from DB profiles too
+ let newBal=balance-selAmt;
+ let {error:upErr}=await sb.from('profiles').update({balance:newBal}).eq('id',myUid);
+ if(upErr){ alert('Balance error: '+upErr.message); return; }
+ const {error}=await sb.from('bets').insert([{market_id:selMarket.id, market_title:selMarket.title, selection:selChoice, choice:selChoice, amount:selAmt, profit:profit, odds:selOdd, status:'open', user_id:myUid}]);
+ if(error){ // refund if fail
+  await sb.from('profiles').update({balance:balance}).eq('id',myUid);
+  alert('Error: '+error.message); return;
+ }
+ balance=newBal; updateBal(); closeBet();
+ alert(`✅ Bet Placed!\n${selMarket.title}\nStake ${selAmt} → Profit ${profit}\nBalance now KES ${balance}`);
  loadMyBets();
 }
-
 async function loadMyBets(){
- try{ const {data}=await sb.from('bets').select('*').order('created_at',{ascending:false}).limit(20);
+ try{ const {data}=await sb.from('bets').select('*').eq('user_id',myUid).order('created_at',{ascending:false}).limit(30);
  document.getElementById('betsList').innerHTML=data && data.length ? data.map(b=>{
-  let prof = b.choice==='1'?Math.round(b.amount*0.6): b.choice==='X'?Math.round(b.amount*1.5): b.choice==='2'?Math.round(b.amount*0.8): b.profit||12;
-  return `<div style="padding:8px 0;border-bottom:1px solid #1a2a20"><b>${b.market_title||b.market_id}</b> - ${b.choice||b.selection} - KES ${b.amount} → Profit ${prof}<br><small>Status: ${b.status}</small></div>`;
- }).join('') : 'No bets yet';
- }catch(e){}
+  let prof=b.profit||12;
+  return `<div style="padding:8px 0;border-bottom:1px solid #1a2a20"><b>${b.market_title||b.market_id}</b> - ${b.choice||b.selection} - KES ${b.amount} → Profit ${prof}<br><small>Status: ${b.status} • ${new Date(b.created_at).toLocaleString()}</small></div>`;
+ }).join('') : 'No bets yet - bet history will show here with name';
+ }catch(e){ document.getElementById('betsList').innerHTML='Error loading'; }
 }
-
-let candles=[{o:1.12415,h:1.1250,l:1.1238,c:1.1248},{o:1.1248,h:1.1260,l:1.1240,c:1.1255},{o:1.1255,h:1.1258,l:1.1245,c:1.1250},{o:1.1250,h:1.1252,l:1.1235,c:1.1240}];
-function drawCandles(){ const c=document.getElementById('candleCanvas'); if(!c) return; const ctx=c.getContext('2d'); c.width=c.offsetWidth*2; c.height=220*2; ctx.clearRect(0,0,c.width,c.height); const w=c.width/candles.length; candles.forEach((k,i)=>{ const x=i*w+w/2; const highY=20, lowY=200; ctx.fillStyle=k.c>=k.o?'#00e676':'#ff4757'; ctx.fillRect(x-3, 50, 6, 100); }); }
-drawCandles(); loadMarkets();
+let candles=[{o:1.12415,h:1.1250,l:1.1238,c:1.1248},{o:1.1248,h:1.1260,l:1.1240,c:1.1255},{o:1.1255,h:1.1258,l:1.1245,c:1.1250}];
+function drawCandles(){ const c=document.getElementById('candleCanvas'); if(!c) return; const ctx=c.getContext('2d'); c.width=c.offsetWidth*2; c.height=220*2; ctx.clearRect(0,0,c.width,c.height); }
+init(); drawCandles(); loadMarkets();
 </script>
 </body>
 </html>
