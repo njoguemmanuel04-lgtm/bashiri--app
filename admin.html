@@ -3,146 +3,58 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Bashiri Admin - 011698</title>
+<title>Bashiri Admin 011698</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/dist/umd/supabase.min.js"></script>
 <style>
 body{background:#0f1115;color:#fff;font-family:system-ui;padding:15px;margin:0}
-input,select,button{padding:12px;margin:5px;border-radius:10px;border:none;font-size:15px}
-input{background:#22252f;color:#fff;width:72%;border:1px solid #333}
+input,select,button{padding:12px;margin:5px;border-radius:10px;border:none}
+input{background:#22252f;color:#fff;width:70%;border:1px solid #333}
 button{background:#00c853;color:#fff;font-weight:800;cursor:pointer}
 .card{background:#1c1f2a;padding:14px;margin:10px 0;border-radius:12px;border-left:4px solid #00c853}
-.tab{padding:10px 14px;background:#22252f;margin:3px;border-radius:8px;cursor:pointer;display:inline-block;font-weight:600}
+.tab{padding:10px 14px;background:#22252f;margin:3px;border-radius:8px;cursor:pointer;display:inline-block}
 .tab.active{background:#00c853}
-.badge{background:#00c853;padding:2px 8px;border-radius:20px;font-size:11px;margin-left:5px}
-small{color:#8a8f98}
+.badge{background:#fff;color:#000;padding:2px 8px;border-radius:20px;font-size:11px;margin-left:5px}
 </style>
 </head>
 <body>
 
 <div id="loginDiv" style="text-align:center;margin-top:80px">
 <h2>🔐 BASHIRI ADMIN</h2>
-<p>Enter PIN</p>
-<input id="pin" type="password" placeholder="011698" style="width:200px;text-align:center"><br><br>
-<button onclick="login()" style="width:220px;padding:15px">LOGIN</button>
+<input id="pin" type="password" placeholder="PIN" style="width:200px;text-align:center"><br><br>
+<button onclick="login()" style="width:220px">LOGIN - 011698</button>
 </div>
 
 <div id="adminDiv" style="display:none">
-<h2>💼 BASHIRI ADMIN <span style="font-size:11px;color:#00c853">TILL 0116982197 | PIN 011698</span></h2>
-<div style="margin:15px 0">
-<span class="tab active" id="tabDep" onclick="showTab('dep')">💰 Deposits <span id="depCount" class="badge">0</span></span>
-<span class="tab" id="tabBet" onclick="showTab('bet')">🎲 Bets <span id="betCount" class="badge">0</span></span>
-<span class="tab" id="tabMark" onclick="showTab('mark')">⚽ Markets</span>
-<span class="tab" id="tabUsers" onclick="showTab('users')">👥 Users</span>
+<h2>💼 ADMIN - Till 0116982197</h2>
+<div>
+<span class="tab active" id="tabDep" onclick="showTab('dep')">Deposits <span id="depCount" class="badge">0</span></span>
+<span class="tab" id="tabBet" onclick="showTab('bet')">Bets <span id="betCount" class="badge">0</span></span>
+<span class="tab" id="tabMark" onclick="showTab('mark')">Markets</span>
+<span class="tab" id="tabUsers" onclick="showTab('users')">Users</span>
 <button style="background:#ff1744;float:right" onclick="location.reload()">Logout</button>
 </div>
 
-<div id="depDiv">
-<h3>💰 Pending M-Pesa - Till 0116982197</h3>
-<div id="depList">Loading...</div>
-</div>
-
-<div id="betDiv" style="display:none">
-<h3>🎲 Open Bets - Rule 20 → 12 profit</h3>
-<div id="betList">Loading...</div>
-</div>
-
-<div id="markDiv" style="display:none">
-<h3>⚽ Create Custom Market</h3>
-<input id="mTitle" placeholder="e.g. Will it rain in mwea tomorrow?">
-<select id="mStatus"><option value="open">OPEN</option><option value="closed">CLOSED</option></select>
-<button onclick="createMarket()">Create +</button>
-<div id="markList" style="margin-top:20px">Loading markets...</div>
-</div>
-
-<div id="usersDiv" style="display:none">
-<h3>👥 All Users & Balances</h3>
-<div id="usersList">Loading...</div>
-</div>
+<div id="depDiv"><h3>💰 Deposits Till 0116982197</h3><div id="depList"></div></div>
+<div id="betDiv" style="display:none"><h3>🎲 Bets 20→12 profit</h3><div id="betList"></div></div>
+<div id="markDiv" style="display:none"><h3>⚽ Create Market</h3><input id="mTitle" placeholder="Will it rain in mwea tomorrow?"><select id="mStatus"><option value="open">OPEN</option><option value="closed">CLOSED</option></select><button onclick="createMarket()">Create +</button><div id="markList" style="margin-top:15px"></div></div>
+<div id="usersDiv" style="display:none"><h3>👥 Users</h3><div id="usersList"></div></div>
 </div>
 
 <script>
-// === REPLACE THESE 2 LINES WITH YOUR REAL SUPABASE VALUES FROM index.html ===
-const SUPA_URL = 'https://YOUR_PROJECT.supabase.co';
-const SUPA_KEY = 'YOUR_ANON_KEY_HERE';
-// Open index.html in GitHub and copy the exact URL and KEY from there
-
-const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
-
-function login(){
-  if(document.getElementById('pin').value==='011698'){
-    document.getElementById('loginDiv').style.display='none';
-    document.getElementById('adminDiv').style.display='block';
-    loadAll();
-  }else alert('Wrong PIN! Use 011698');
-}
-function showTab(t){
-  document.getElementById('depDiv').style.display=t==='dep'?'block':'none';
-  document.getElementById('betDiv').style.display=t==='bet'?'block':'none';
-  document.getElementById('markDiv').style.display=t==='mark'?'block':'none';
-  document.getElementById('usersDiv').style.display=t==='users'?'block':'none';
-  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
-  let id = t==='dep'?'Dep':t==='bet'?'Bet':t==='mark'?'Mark':'Users';
-  document.getElementById('tab'+id).classList.add('active');
-  if(t==='dep')loadDeposits();
-  if(t==='bet')loadBets();
-  if(t==='mark')loadMarkets();
-  if(t==='users')loadUsers();
-}
+const SUPA_URL="https://hkhqbtyyqgvaktamilxs.supabase.co";
+const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9o0nPD7a3XEU-5BXoQHWuAg";
+const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
+function login(){if(document.getElementById('pin').value==='011698'){document.getElementById('loginDiv').style.display='none';document.getElementById('adminDiv').style.display='block';loadAll();}else alert('Wrong PIN 011698');}
+function showTab(t){document.getElementById('depDiv').style.display=t==='dep'?'block':'none';document.getElementById('betDiv').style.display=t==='bet'?'block':'none';document.getElementById('markDiv').style.display=t==='mark'?'block':'none';document.getElementById('usersDiv').style.display=t==='users'?'block':'none';document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));document.getElementById('tab'+(t==='dep'?'Dep':t==='bet'?'Bet':t==='mark'?'Mark':'Users')).classList.add('active');if(t==='dep')loadDeposits();if(t==='bet')loadBets();if(t==='mark')loadMarkets();if(t==='users')loadUsers();}
 function loadAll(){loadDeposits();loadBets();loadMarkets();loadUsers();}
-
-async function loadDeposits(){
-  let {data} = await sb.from('deposits').select('*').eq('status','pending').order('created_at',{ascending:false});
-  document.getElementById('depCount').innerText=data?data.length:0;
-  if(!data||!data.length){document.getElementById('depList').innerHTML='✅ No pending deposits - Till 0116982197';return;}
-  document.getElementById('depList').innerHTML=data.map(d=>`<div class="card"><b>${d.phone||d.user_id}</b> - KES ${d.amount}<br><small>${new Date(d.created_at).toLocaleString()}</small><br><button onclick="approveDep('${d.id}','${d.user_id}',${d.amount})">✅ Approve +${d.amount}</button> <button style="background:#ff1744" onclick="rejectDep('${d.id}')">❌ Reject</button></div>`).join('');
-}
-async function approveDep(id,userId,amount){
-  let {data:u}=await sb.from('profiles').select('balance').eq('id',userId).single();
-  let newBal=(u?.balance||0)+amount;
-  await sb.from('profiles').update({balance:newBal}).eq('id',userId);
-  await sb.from('deposits').update({status:'approved'}).eq('id',id);
-  alert('Approved KES '+amount+'! New balance: '+newBal);loadDeposits();
-}
+async function loadDeposits(){let{data}=await sb.from('deposits').select('*').eq('status','pending').order('created_at',{ascending:false});document.getElementById('depCount').innerText=data?data.length:0;document.getElementById('depList').innerHTML=!data||!data.length?'No pending':data.map(d=>`<div class="card">${d.phone||d.user_id} - KES ${d.amount}<br><small>${d.created_at}</small><br><button onclick="approveDep('${d.id}','${d.user_id}',${d.amount})">✅ Approve</button> <button style="background:#ff1744" onclick="rejectDep('${d.id}')">❌ Reject</button></div>`).join('');}
+async function approveDep(id,uid,amt){let{data:u}=await sb.from('profiles').select('balance').eq('id',uid).single();let nb=(u?.balance||0)+amt;await sb.from('profiles').update({balance:nb}).eq('id',uid);await sb.from('deposits').update({status:'approved'}).eq('id',id);alert('Approved '+amt);loadDeposits();}
 async function rejectDep(id){await sb.from('deposits').update({status:'rejected'}).eq('id',id);loadDeposits();}
-
-async function loadBets(){
-  let {data}=await sb.from('bets').select('*').eq('status','open').order('created_at',{ascending:false});
-  document.getElementById('betCount').innerText=data?data.length:0;
-  if(!data||!data.length){document.getElementById('betList').innerHTML='No open bets';return;}
-  document.getElementById('betList').innerHTML=data.map(b=>{
-    let prof=b.profit||Math.floor(b.amount*0.6);
-    return `<div class="card"><b>${b.market_title||b.selection||'Bet'}</b> - ${b.user_id?.slice(0,6)} - KES ${b.amount} → profit ${prof}<br><small>${new Date(b.created_at).toLocaleString()}</small><br><button onclick="settleBet('${b.id}','${b.user_id}',${b.amount},${prof},'won')">WIN +${b.amount+prof}</button> <button style="background:#ff1744" onclick="settleBet('${b.id}','${b.user_id}',0,0,'lost')">LOSE</button></div>`
-  }).join('');
-}
-async function settleBet(betId,userId,amount,profit,status){
-  if(status==='won'){
-    let {data:u}=await sb.from('profiles').select('balance').eq('id',userId).single();
-    let newBal=(u?.balance||0)+amount+profit;
-    await sb.from('profiles').update({balance:newBal}).eq('id',userId);
-  }
-  await sb.from('bets').update({status:status}).eq('id',betId);
-  alert('Settled: '+status.toUpperCase());loadBets();
-}
-async function loadMarkets(){
-  let {data}=await sb.from('markets').select('*').order('created_at',{ascending:false}).limit(30);
-  if(!data||!data.length){document.getElementById('markList').innerHTML='No markets yet';return;}
-  document.getElementById('markList').innerHTML=data.map(m=>`<div class="card">${m.title||m.question} - <b style="color:${m.status==='open'?'#00c853':'#ff1744'}">${m.status?.toUpperCase()}</b> <small>${m.type}</small></div>`).join('');
-}
-async function createMarket(){
-  const t=document.getElementById('mTitle').value.trim();
-  if(!t)return alert('Type market title first');
-  const statusVal=document.getElementById('mStatus').value;
-  const {error}=await sb.from('markets').insert([{title:t,question:t,type:'custom',status:statusVal}]);
-  if(error)return alert('Error: '+error.message);
-  document.getElementById('mTitle').value='';
-  loadMarkets();
-  alert('✅ Market Created: '+t+' - OPEN for betting!');
-}
-async function loadUsers(){
-  let {data}=await sb.from('profiles').select('*').order('balance',{ascending:false}).limit(100);
-  if(!data)return;
-  document.getElementById('usersList').innerHTML=data.map(u=>`<div class="card">ID ${u.id.slice(0,8)}.. - Balance: <b>KES ${u.balance||0}</b> ${u.phone?' - '+u.phone:''}</div>`).join('');
-}
+async function loadBets(){let{data}=await sb.from('bets').select('*').eq('status','open').order('created_at',{ascending:false});document.getElementById('betCount').innerText=data?data.length:0;document.getElementById('betList').innerHTML=!data||!data.length?'No open bets':data.map(b=>{let pr=b.profit||Math.floor(b.amount*0.6);return `<div class="card">${b.market_title||b.selection} - KES ${b.amount}→${pr}<br><button onclick="settleBet('${b.id}','${b.user_id}',${b.amount},${pr},'won')">WIN +${b.amount+pr}</button> <button style="background:#ff1744" onclick="settleBet('${b.id}','${b.user_id}',0,0,'lost')">LOSE</button></div>`}).join('');}
+async function settleBet(bid,uid,amt,pr,st){if(st==='won'){let{data:u}=await sb.from('profiles').select('balance').eq('id',uid).single();await sb.from('profiles').update({balance:(u?.balance||0)+amt+pr}).eq('id',uid);}await sb.from('bets').update({status:st}).eq('id',bid);loadBets();}
+async function loadMarkets(){let{data}=await sb.from('markets').select('*').order('created_at',{ascending:false}).limit(30);document.getElementById('markList').innerHTML=!data?'':data.map(m=>`<div class="card">${m.title||m.question} - <b>${m.status}</b></div>`).join('');}
+async function createMarket(){let t=document.getElementById('mTitle').value.trim();if(!t)return alert('Enter title');let s=document.getElementById('mStatus').value;let{error}=await sb.from('markets').insert([{title:t,question:t,type:'custom',status:s}]);if(error)return alert(error.message);document.getElementById('mTitle').value='';loadMarkets();alert('Market Created: '+t);}
+async function loadUsers(){let{data}=await sb.from('profiles').select('*').order('balance',{ascending:false}).limit(50);document.getElementById('usersList').innerHTML=data?data.map(u=>`<div class="card">${u.id.slice(0,8)} - KES ${u.balance||0}</div>`).join(''):'';}
 </script>
 </body>
 </html>
