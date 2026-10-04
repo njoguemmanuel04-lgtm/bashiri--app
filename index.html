@@ -2,25 +2,24 @@
 <html>
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Bashiri - Till 0116982197</title>
+<title>BASHIRI - Till 0116982197</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 body{background:#0a0a0a;color:#fff;font-family:system-ui;margin:0;padding:12px}
 .card{background:#111;border:1px solid #222;border-radius:14px;padding:14px;margin-bottom:12px}
-.btn{padding:10px 14px;border-radius:10px;border:none;font-weight:800;cursor:pointer}
-.btn-gold{background:#d4af37;color:#000}
 .badge{background:#222;padding:4px 8px;border-radius:8px;border:1px solid #333;color:#d4af37}
 .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .nav{display:flex;gap:8px;margin-bottom:12px}
 .nav button{background:#1a1a1a;color:#fff;border:1px solid #333;padding:10px 16px;border-radius:10px}
-.nav button.active{background:#d4af37;color:#000;border-color:#d4af37}
+.nav button.active{background:#d4af37;color:#000}
 .small{font-size:12px;color:#888}
+.btn{padding:10px 14px;border-radius:10px;border:none;font-weight:800;cursor:pointer}
 </style>
 </head>
 <body>
 <div class="top">
 <div><b style="color:#d4af37">BASHIRI</b> <span class="badge">Till 0116982197</span></div>
-<div>Bal: KES <b id="balTop">50</b></div>
+<div>Bal: KES <b id="balTop">20</b></div>
 </div>
 <div class="nav">
 <button id="btnMarkets" class="active" onclick="showPage('markets')">Markets</button>
@@ -28,40 +27,31 @@ body{background:#0a0a0a;color:#fff;font-family:system-ui;margin:0;padding:12px}
 <button onclick="location.href='admin.html'">Admin</button>
 </div>
 
-<div id="marketsPage"><div id="marketsList" class="card">Loading markets...</div></div>
+<div id="marketsPage"><div id="list" class="card">Loading markets...</div></div>
 
 <div id="walletPage" style="display:none">
 <div class="card">
-<h3 style="margin:0 0 8px 0">💼 Wallet</h3>
-<p>Balance: KES <b id="balWallet">50</b> <button onclick="loadProfile()" style="background:#222;padding:4px 8px;border-radius:8px;border:1px solid #333;color:#d4af37">↻ Refresh</button></p>
-<p class="small">Till: <b style="color:#fff">0116982197</b> | User: <small id="uidShort">...</small> | Deposited: KES <b id="depText">20</b></p>
-
-<div id="wagerBox" style="background:#1a1a1a;border:1px dashed #555;padding:10px;border-radius:10px;margin:12px 0">
-<div style="display:flex;justify-content:space-between;font-size:13px"><span>Wager Progress</span><span id="wagerText">0 / 40</span></div>
-<div style="background:#333;height:8px;border-radius:10px;margin-top:6px"><div id="wagerBar" style="height:8px;width:0%;background:#555;border-radius:10px;transition:0.5s"></div></div>
-<small id="wagerMsg" style="color:#888">Grow to unlock withdrawal</small>
+<h3>💼 Wallet</h3>
+<p>Balance: KES <b id="balWallet">20</b> | Deposited: <b id="depText">20</b> | <small id="uidShort"></small></p>
+<div style="background:#1a1a1a;border:1px dashed #555;padding:10px;border-radius:10px;margin:12px 0">
+<div style="display:flex;justify-content:space-between"><span>Wager</span><span id="wagerText">0 / 40</span></div>
+<div style="background:#333;height:8px;border-radius:10px;margin-top:6px"><div id="wagerBar" style="height:8px;width:0%;background:#555;border-radius:10px"></div></div>
+<small id="wagerMsg" style="color:#888"></small>
 </div>
-
-<div style="display:flex;gap:10px;margin-bottom:10px">
-<button onclick="requestDeposit()" style="flex:1;padding:14px;border-radius:12px;border:none;font-weight:800;background:#d4af37;color:#000;cursor:pointer">💰 Deposit via Till 0116982197</button>
-</div>
-<button id="withdrawBtn" onclick="requestWithdraw()" style="width:100%;padding:14px;border-radius:12px;border:none;font-weight:800;background:#333;color:#777;cursor:not-allowed" disabled>🔒 Withdraw Locked</button>
-
-<div id="betsList" style="margin-top:14px">Loading bets...</div>
+<button onclick="requestDeposit()" style="width:100%;padding:14px;background:#d4af37;color:#000;border-radius:12px;font-weight:800;border:none;margin-bottom:8px">💰 Deposit via Till 0116982197</button>
+<button id="withdrawBtn" onclick="requestWithdraw()" style="width:100%;padding:14px;border-radius:12px;font-weight:800;border:none;background:#333;color:#777" disabled>🔒 Locked</button>
+<div id="betsList" style="margin-top:12px"></div>
 </div>
 </div>
 
 <script>
-const SUPABASE_URL='https://khhqbt yyqgvaktamilhx.supabase.co'.replace(/ /g,'');
+const SUPABASE_URL='https://hkhqbtyyqgvaktamilxs.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg';
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-let myUid=localStorage.getItem('bashiri_uid');
-if(!myUid){ myUid=crypto.randomUUID(); localStorage.setItem('bashiri_uid',myUid); }
+let myUid=localStorage.getItem('bashiri_uid'); if(!myUid){ myUid=crypto.randomUUID(); localStorage.setItem('bashiri_uid',myUid); }
 document.getElementById('uidShort').innerText=myUid.slice(0,8);
-
-let balance=50;
-let totalDeposited=parseInt(localStorage.getItem('bashiri_start')||'20');
+let balance=20; let totalDeposited=parseInt(localStorage.getItem('bashiri_start')||'20');
 
 function showPage(p){
  document.getElementById('marketsPage').style.display=p=='markets'?'block':'none';
@@ -74,96 +64,65 @@ function updateBal(){
  document.getElementById('balTop').innerText=balance;
  document.getElementById('balWallet').innerText=balance;
  document.getElementById('depText').innerText=totalDeposited;
- checkWager();
-}
-function checkWager(){
-  const bar=document.getElementById('wagerBar'), txt=document.getElementById('wagerText'), msg=document.getElementById('wagerMsg'), btn=document.getElementById('withdrawBtn');
-  if(!bar) return;
-  let target = totalDeposited * 2;
-  let progress=Math.min(100, Math.round((balance/target)*100));
-  bar.style.width=progress+'%';
+ let target=totalDeposited*2;
+ let bar=document.getElementById('wagerBar'), txt=document.getElementById('wagerText'), msg=document.getElementById('wagerMsg'), btn=document.getElementById('withdrawBtn');
+ if(bar){
+  bar.style.width=Math.min(100,Math.round(balance/target*100))+'%';
   txt.innerText=`${balance} / ${target} (Deposited ${totalDeposited} → Need ${target})`;
-  const hasWon = document.getElementById('betsList').innerHTML.includes('won');
-  if(balance>=target && hasWon){
-    bar.style.background='#00ff88'; msg.innerText=`✅ Unlocked! Grew ${totalDeposited} → ${target}`;
-    msg.style.color='#00ff88'; btn.disabled=false; btn.style.background='linear-gradient(90deg,#00ff88,#00d9ff)'; btn.style.color='#000'; btn.style.cursor='pointer'; btn.innerText='✅ Withdraw to M-PESA';
-  } else {
-    bar.style.background='#ff4757'; msg.innerText=`🔒 Locked: Must turn ${totalDeposited} → ${target} (now ${balance})`;
-    msg.style.color='#ff4757'; btn.disabled=true; btn.style.background='#333'; btn.style.color='#777'; btn.style.cursor='not-allowed'; btn.innerText=`🔒 Need KES ${target} to Withdraw`;
-  }
+  let hasWon=document.getElementById('betsList').innerHTML.includes('won');
+  if(balance>=target && hasWon){ btn.disabled=false; btn.style.background='linear-gradient(90deg,#00ff88,#00d9ff)'; btn.style.color='#000'; btn.innerText='✅ Withdraw to M-PESA'; msg.innerText=`✅ Unlocked! ${totalDeposited} → ${target}`; msg.style.color='#00ff88'; bar.style.background='#00ff88'; }
+  else { btn.disabled=true; btn.style.background='#333'; btn.style.color='#777'; btn.innerText=`🔒 Need KES ${target}`; msg.innerText=`🔒 Locked: Must turn ${totalDeposited} → ${target} (now ${balance})`; msg.style.color='#ff4757'; bar.style.background='#ff4757'; }
+ }
 }
 async function loadProfile(){
- if(!myUid) return;
  let {data}=await sb.from('profiles').select('*').eq('id',myUid).single();
- if(!data){
-  let dep=totalDeposited||20;
-  await sb.from('profiles').insert([{id:myUid,balance:dep,starting_balance:dep,total_deposited:dep}]);
-  balance=dep;
- } else {
-  balance=Number(data.balance||0);
-  totalDeposited=Number(data.total_deposited||data.starting_balance||20);
-  localStorage.setItem('bashiri_start',totalDeposited);
- }
+ if(!data){ await sb.from('profiles').insert([{id:myUid,balance:totalDeposited,starting_balance:totalDeposited,total_deposited:totalDeposited}]); balance=totalDeposited; }
+ else { balance=Number(data.balance||20); totalDeposited=Number(data.total_deposited||data.starting_balance||20); localStorage.setItem('bashiri_start',totalDeposited); }
  updateBal();
 }
 async function loadMarkets(){
- let {data}=await sb.from('markets').select('*').order('created_at',{ascending:false});
- if(!data||data.length==0){ document.getElementById('marketsList').innerHTML='No markets yet. Add in Admin.'; return; }
- document.getElementById('marketsList').innerHTML=data.map(m=>`
- <div style="border-bottom:1px solid #222;padding:10px 0">
- <b>${m.title||m.question}</b><br><small class="small">Ends: ${m.end_time?new Date(m.end_time).toLocaleString():''}</small>
+ let {data,error}=await sb.from('markets').select('*').order('created_at',{ascending:false});
+ console.log(data,error);
+ if(error){ document.getElementById('list').innerHTML='Error: '+error.message+'<br>Run SQL: DISABLE RLS'; return; }
+ if(!data||data.length==0){ document.getElementById('list').innerHTML='No markets yet. Add in Admin.'; return; }
+ document.getElementById('list').innerHTML=data.map(m=>`
+ <div style="border-bottom:1px solid #222;padding:12px 0">
+ <b>${m.title||m.question}</b> - <b style="color:#00ff88">${m.status||'OPEN'}</b> <small class="small">${m.category||''} • ${new Date(m.created_at).toLocaleDateString()}</small><br>
  <div style="display:flex;gap:8px;margin-top:8px">
- <button class="btn btn-gold" onclick="placeBet('${m.id}','yes',20)">YES 20 → Win 12</button>
+ <button class="btn" style="background:#d4af37;color:#000" onclick="placeBet('${m.id}','yes',20)">YES 20 → Win 12</button>
  <button class="btn" style="background:#222;color:#fff;border:1px solid #333" onclick="placeBet('${m.id}','no',20)">NO 20 → Win 12</button>
  </div>
  </div>`).join('');
 }
-async function placeBet(marketId,choice,stake){
+async function placeBet(mid,choice,stake){
  if(balance<stake){ alert('Low balance'); return; }
- let newBal=balance-stake;
- let {error:err1}=await sb.from('profiles').update({balance:newBal}).eq('id',myUid);
- if(err1){ alert(err1.message); return; }
- let {error:err2}=await sb.from('bets').insert([{market_id:marketId,user_id:myUid,choice:choice,stake:stake,status:'pending'}]);
- if(err2){ await sb.from('profiles').update({balance:balance}).eq('id',myUid); alert(err2.message); return; }
- balance=newBal; updateBal();
- alert(`✅ Bet Placed! Stake ${stake} → Profit 12\nBalance now KES ${newBal}`);
+ let nb=balance-stake;
+ await sb.from('profiles').update({balance:nb}).eq('id',myUid);
+ await sb.from('bets').insert([{market_id:mid,user_id:myUid,choice,stake,status:'pending'}]);
+ balance=nb; updateBal(); alert('Bet placed! KES '+stake);
 }
 async function loadMyBets(){
  let {data}=await sb.from('bets').select('*, markets(title)').eq('user_id',myUid).order('created_at',{ascending:false});
- if(!data){ document.getElementById('betsList').innerHTML='No bets'; checkWager(); return; }
- document.getElementById('betsList').innerHTML=data.map(b=>`<div style="background:#1a1a1a;border:1px solid #222;padding:8px;border-radius:8px;margin-bottom:6px;display:flex;justify-content:space-between"><span>${b.markets?.title||'Market'} - ${b.stake} - ${b.choice}</span><span style="color:${b.status=='won'?'#00ff88':b.status=='lost'?'#ff4757':'#888'}">${b.status}</span></div>`).join('')||'No bets';
- setTimeout(checkWager,200);
-}
-async function requestDeposit(){
-  let amt=parseInt(prompt('Enter amount to deposit via Till 0116982197 (20,30,50,100):','30'));
-  if(!amt || amt<10){ alert('Invalid'); return; }
-  alert(`LIPA NA M-PESA\nTill: 0116982197\nAmount: KES ${amt}\n\n1. M-PESA > Lipa > Buy Goods\n2. Till: 0116982197\n3. Amount: ${amt}\nThen OK`);
-  let ok=confirm(`Did you pay KES ${amt} to Till 0116982197? OK to credit`);
-  if(!ok) return;
-  await addDeposit(amt);
+ document.getElementById('betsList').innerHTML=(data||[]).map(b=>`<div style="background:#1a1a1a;border:1px solid #222;padding:8px;border-radius:8px;margin-bottom:6px;display:flex;justify-content:space-between"><span>${b.markets?.title||'Market'} ${b.stake}</span><span style="color:${b.status=='won'?'#00ff88':b.status=='lost'?'#ff4757':'#888'}">${b.status}</span></div>`).join('')||'No bets';
+ updateBal();
 }
 async function addDeposit(extra){
-  totalDeposited+=extra;
-  let newBal=balance+extra;
-  await sb.from('profiles').update({balance:newBal,total_deposited:totalDeposited,starting_balance:totalDeposited}).eq('id',myUid);
-  balance=newBal; localStorage.setItem('bashiri_start',totalDeposited); updateBal();
-  alert(`Deposit ${extra} via Till 0116982197 credited\nTotal deposited: ${totalDeposited}\nNew target: ${totalDeposited*2}\nBalance: ${balance}`);
+ totalDeposited+=extra; let nb=balance+extra;
+ await sb.from('profiles').update({balance:nb,total_deposited:totalDeposited,starting_balance:totalDeposited}).eq('id',myUid);
+ balance=nb; localStorage.setItem('bashiri_start',totalDeposited); updateBal();
+}
+async function requestDeposit(){
+ let amt=parseInt(prompt('Amount to deposit via Till 0116982197:','30')); if(!amt) return;
+ if(!confirm(`LIPA NA M-PESA\nTill: 0116982197\nAmount: KES ${amt}\nPay then OK to credit`)) return;
+ await addDeposit(amt); alert('✅ Deposit credited: '+amt+'\nTotal deposited: '+totalDeposited+'\nNew target: '+(totalDeposited*2));
 }
 async function requestWithdraw(){
-  if(balance<totalDeposited*2){ alert('Wager not met! Must reach '+(totalDeposited*2)); return; }
-  let phone=prompt('Enter M-PESA phone (07...):','07');
-  if(!phone) return;
-  let amt=parseInt(prompt(`Amount to withdraw? Max ${balance} Min 10:`, Math.min(balance,50)));
-  if(!amt||amt>balance||amt<10){ alert('Invalid'); return; }
-  let {error}=await sb.from('withdrawals').insert([{user_id:myUid,amount:amt,phone:phone,status:'pending'}]);
-  if(error){ alert(error.message); return; }
-  let newBal=balance-amt;
-  await sb.from('profiles').update({balance:newBal}).eq('id',myUid);
-  balance=newBal; updateBal();
-  alert(`✅ Withdraw Requested!\nKES ${amt} → ${phone}\nPay from Till 0116982197\nNew Balance: ${newBal}`);
+ let phone=prompt('M-PESA phone 07...','07'); if(!phone) return;
+ let amt=parseInt(prompt(`Amount max ${balance}:`,balance)); if(!amt) return;
+ await sb.from('withdrawals').insert([{user_id:myUid,amount:amt,phone,status:'pending'}]);
+ let nb=balance-amt; await sb.from('profiles').update({balance:nb}).eq('id',myUid); balance=nb; updateBal(); alert('Withdraw requested KES '+amt);
 }
-async function init(){ await loadProfile(); await loadMarkets(); }
-init();
+loadProfile().then(loadMarkets);
 </script>
 </body>
 </html>
