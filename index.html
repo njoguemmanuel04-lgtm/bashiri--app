@@ -10,183 +10,176 @@
 body{background:#020d07;color:#fff;padding-bottom:85px}
 .header{position:sticky;top:0;z-index:20;background:linear-gradient(90deg,#0a3322,#0d3b26);border-bottom:1.5px solid #d4af37;padding:12px 14px;display:flex;justify-content:space-between;align-items:center}
 .till{margin:12px;background:linear-gradient(135deg,#0d3b26,#0a3322);border:1.5px solid #d4af37;border-radius:16px;padding:12px;text-align:center}
-.till b{color:#ffdf7a;font-size:16px}
 .card{background:rgba(255,255,255,.06);border:1px solid rgba(212,175,55,.35);border-radius:16px;padding:14px;margin:12px}
-.price-row{display:flex;gap:8px;margin-top:10px}
-.price-row div{flex:1;background:#102a1d;border:1px solid #d4af37;border-radius:12px;padding:10px;text-align:center}
-canvas{width:100%;height:240px;background:#081410;border-radius:12px;margin-top:10px;display:block}
+canvas{width:100%;height:220px;background:#081410;border-radius:12px;margin-top:10px;display:block}
 .tabs{position:fixed;bottom:0;left:0;right:0;background:#081a12;border-top:1px solid #1a3d2a;display:flex;justify-content:space-around;padding:8px 0;z-index:30}
 .tab{flex:1;text-align:center;padding:8px;font-size:12px;color:#6a8a7a;cursor:pointer;border-radius:12px;margin:0 4px}
 .tab.active{color:#d4af37;background:rgba(212,175,55,.12)}
-.btn{width:100%;padding:14px;border-radius:12px;border:none;font-weight:800;font-size:15px;cursor:pointer;margin-top:8px}
-.btn-buy{background:linear-gradient(90deg,#00d9ff,#00ffaa);color:#000}
-.btn-sell{background:transparent;border:1.5px solid #ff4444;color:#ff4444}
 .pill{display:inline-block;padding:5px 10px;border-radius:20px;font-size:11px;background:#0f2a1e;border:1px solid #d4af37;margin:3px}
 .bet-item{padding:12px 0;border-bottom:1px solid #1a2a22;display:flex;justify-content:space-between;align-items:center}
-.live-dot{width:8px;height:8px;background:#00ff88;border-radius:50%;display:inline-block;animation:pulse 1s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.btn{width:100%;padding:14px;border-radius:12px;border:none;font-weight:800;cursor:pointer;margin-top:8px}
+.btn-buy{background:linear-gradient(90deg,#00d9ff,#00ffaa);color:#000}
+.btn-sell{background:transparent;border:1.5px solid #ff4444;color:#ff4444}
+.btn-gold{background:#d4af37;color:#000}
+#betModal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.8);z-index:99;align-items:end;justify-content:center}
+#betModal.show{display:flex}
+.modalBox{background:#0f2418;border-top:2.5px solid #d4af37;border-radius:20px 20px 0 0;width:100%;max-width:500px;padding:18px;max-height:90vh;overflow:auto}
+.choiceBtn{flex:1;padding:14px;border-radius:12px;border:1.5px solid #2a4a35;background:#102a1d;color:#fff;font-weight:800;cursor:pointer;text-align:center}
+.choiceBtn.active{background:#d4af37;color:#000;border-color:#d4af37}
+.amtBtn{padding:10px 18px;border-radius:20px;border:1.5px solid #d4af37;background:#0f2a1e;color:#fff;font-weight:700;cursor:pointer;margin:4px}
+.amtBtn.active{background:#d4af37;color:#000}
 </style>
 </head>
 <body>
 
-<div class="header">
-<b>BASHIRI <span style="color:#00ff88;font-size:11px">☁️ LIVE</span></b>
-<div style="background:#111;border:1px solid #d4af37;padding:6px 14px;border-radius:20px;font-size:13px" id="balTop">KES 50</div>
-</div>
+<div class="header"><b>BASHIRI <span style="color:#00ff88;font-size:11px">☁️ LIVE</span></b><div id="balTop" style="background:#111;border:1px solid #d4af37;padding:6px 14px;border-radius:20px;font-size:13px">KES 50</div></div>
 
 <div class="till">
-<b>M-PESA TILL 0116982197</b><br>
-<small style="color:#00ffaa">Real Price EUR/USD <span id="topE">1.13003</span> • Gold $<span id="topG">4141.80</span> <span class="live-dot"></span></small><br>
-<small style="font-size:10px;color:#aaa" id="marketStatus">Checking market...</small>
+<b style="color:#ffdf7a">M-PESA TILL 0116982197</b><br>
+<small style="color:#00ffaa">EUR/USD <span id="topE">1.13000</span> • Gold $4141.80</small><br>
+<small id="marketStatus" style="color:#ff8888;font-size:11px">Forex closed today (Sun) — Opens Monday 00:00 GMT • Friday close 1.13003</small>
 </div>
 
-<!-- MARKETS PAGE -->
-<div id="marketsPage" style="display:none">
-<div class="card">
-<b>⚽ Open Markets — Supabase Cloud</b>
-<div id="mList" style="margin-top:10px">Loading cloud markets...</div>
-</div>
-<div class="card">
-<b>Local Predictions</b>
-<div id="localList" style="margin-top:8px;font-size:13px">Nairobi • Gor Mahia vs AFC Leopards • Bet open</div>
-</div>
+<div id="marketsPage" style="display:block">
+<div class="card"><b>⚽ Open Markets</b><div id="mList" style="margin-top:10px">Loading...</div></div>
 </div>
 
-<!-- FOREX PAGE - WITH RED/GREEN CANDLES -->
-<div id="forexPage" style="display:block">
+<div id="forexPage" style="display:none">
 <div class="card" style="background:#0a1820;border-color:#00d9ff">
-<div style="display:flex;justify-content:space-between"><b>EUR/USD • 1m Candles</b><small id="liveBadge" style="background:#00ff88;color:#000;padding:3px 8px;border-radius:10px;font-size:11px;font-weight:800">LIVE</small></div>
-
-<div class="price-row">
-<div style="border-color:#00d9ff"><small>EUR/USD</small><br><b id="eurP" style="color:#00ff88;font-size:20px">1.13003</b><br><small id="eurCh" style="color:#00ff88">+0.087%</small></div>
-<div style="border-color:#ff4444"><small>XAU/USD Gold</small><br><b id="goldP" style="color:#ff5555;font-size:20px">4141.80</b><br><small id="goldCh" style="color:#ff5555">-0.88%</small></div>
-</div>
-
-<canvas id="candleChart" width="400" height="240"></canvas>
-
-<div style="display:flex;justify-content:space-between;font-size:11px;color:#aaa;margin-top:8px">
-<span>High <b style="color:#fff" id="h">1.12855</b></span>
-<span>Low <b style="color:#fff" id="l">1.12209</b></span>
-<span>Open <b style="color:#fff" id="o">1.12415</b></span>
-<span id="cndlInfo" style="color:#00ff88">● 16 candles</span>
-</div>
-
-<div style="margin-top:16px"><b>Prediction</b>
-<div style="display:flex;height:38px;border-radius:20px;overflow:hidden;margin-top:8px">
-<div style="width:62%;background:linear-gradient(90deg,#00ff88,#00d9ff);display:flex;align-items:center;justify-content:center;font-weight:800;color:#000">YES 62%</div>
-<div style="width:38%;background:#3a1a1a;display:flex;align-items:center;justify-content:center">NO 38%</div>
-</div>
-<button class="btn btn-buy" id="buyBtn" onclick="doTrade('BUY')">BUY / LONG ▲</button>
-<button class="btn btn-sell" id="sellBtn" onclick="doTrade('SELL')">SELL / SHORT ▼</button>
+<div style="display:flex;justify-content:space-between"><b>EUR/USD • Red/Green Candles</b><small id="liveBadge" style="background:#ff4444;color:#fff;padding:3px 8px;border-radius:10px;font-size:11px">CLOSED</small></div>
+<div style="display:flex;gap:8px;margin-top:10px"><div style="flex:1;background:#102a1d;border:1px solid #d4af37;border-radius:12px;padding:10px;text-align:center"><small>EUR/USD</small><br><b id="eurP" style="color:#00ff88;font-size:18px">1.13003</b></div><div style="flex:1;background:#102a1d;border:1px solid #d4af37;border-radius:12px;padding:10px;text-align:center"><small>Gold</small><br><b id="goldP" style="color:#ff5555;font-size:18px">4141.80</b></div></div>
+<canvas id="candleChart" width="400" height="220"></canvas>
+<div style="margin-top:14px">
+<button class="btn btn-buy" onclick="openForexBet('BUY')">BUY / LONG ▲ — Bet with Box</button>
+<button class="btn btn-sell" onclick="openForexBet('SELL')">SELL / SHORT ▼ — Bet with Box</button>
 </div>
 </div>
 </div>
 
-<!-- WALLET PAGE -->
 <div id="walletPage" style="display:none">
-<div class="card">
-<b>💰 Wallet</b><br><br>
-<div style="font-size:36px;font-weight:800" id="walletBal">KES 50</div>
-<small style="color:#00ffaa">Growth Rule: Deposit 20 must grow to 40 before withdraw</small>
-<br><br>
-<button class="btn btn-buy" onclick="alert('Send to Till 0116982197\\nMin KES 20')">Deposit M-PESA</button>
-<button class="btn btn-sell" onclick="alert('Growth check: You need 40 to withdraw')">Withdraw</button>
-<br><br>
-<div style="font-size:12px;color:#aaa">Connected to Supabase • 6 Bets • 2 Users live</div>
-</div>
+<div class="card"><b>💰 Wallet</b><br><br><div style="font-size:36px;font-weight:800" id="walletBal">KES 50</div><small style="color:#00ffaa">Growth: 20 → 40 before withdraw</small></div>
+<div class="card" id="myBets"><b>My Bets</b><div id="betsList" style="margin-top:8px;font-size:13px">No bets yet</div></div>
 </div>
 
-<!-- TABS - FIXED TO WORK ON MOBILE -->
 <div class="tabs">
-<div class="tab" onclick="showTab('markets',this)">📊<br>Markets</div>
-<div class="tab active" onclick="showTab('forex',this)">📈<br>Forex</div>
+<div class="tab active" onclick="showTab('markets',this)">📊<br>Markets</div>
+<div class="tab" onclick="showTab('forex',this)">📈<br>Forex</div>
 <div class="tab" onclick="showTab('wallet',this)">💰<br>Wallet</div>
+</div>
+
+<!-- UNIVERSAL BET BOX FOR BOTH MARKETS & FOREX -->
+<div id="betModal" onclick="if(event.target.id==='betModal') closeBet()">
+<div class="modalBox">
+<div style="display:flex;justify-content:space-between"><b id="betTitle">Place Bet</b><span onclick="closeBet()" style="font-size:22px;cursor:pointer">✕</span></div>
+<small id="betSubtitle" style="color:#6a8a7a"></small>
+
+<div id="choiceArea" style="margin-top:14px"></div>
+
+<p style="margin:16px 0 8px;font-weight:700">Choose Stake:</p>
+<div>
+<button class="amtBtn active" id="a20" onclick="selectAmt(20)">KES 20</button>
+<button class="amtBtn" id="a30" onclick="selectAmt(30)">KES 30</button>
+<button class="amtBtn" id="a40" onclick="selectAmt(40)">KES 40</button>
+<button class="amtBtn" id="a60" onclick="selectAmt(60)">KES 60</button>
+</div>
+
+<div style="background:#111a14;border:1px solid #1e3a28;border-radius:12px;padding:10px;margin-top:14px;display:flex;justify-content:space-between">
+<span>Potential Win:</span><b id="potential" style="color:#00ff88">KES 37</b>
+</div>
+
+<button class="btn btn-gold" style="margin-top:14px;font-size:16px" onclick="confirmBet()">CONFIRM BET ✅</button>
+<small style="display:block;text-align:center;color:#6a8a7a;margin-top:8px">Balance: <span id="balInModal">KES 50</span> • Growth Rule active</small>
+</div>
 </div>
 
 <script>
 const SUPA_URL="https://hkhqbtyyqgvaktamilxs.supabase.co";
 const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg";
-const sb = supabase.createClient(SUPA_URL,SUPA_KEY);
+const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
+let balance=50, selChoice='1', selOdd=1.85, selAmt=20, selMarket=null, betType='sports';
 
-function showTab(name, el){
+function showTab(name,el){
  document.getElementById('marketsPage').style.display='none';
  document.getElementById('forexPage').style.display='none';
  document.getElementById('walletPage').style.display='none';
  document.getElementById(name+'Page').style.display='block';
- document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
- el.classList.add('active');
+ document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); el.classList.add('active');
  if(name==='markets') loadMarkets();
+ if(name==='wallet') loadMyBets();
 }
 
-// SUPABASE MARKETS - FIXED
 async function loadMarkets(){
- const el=document.getElementById('mList');
- try{
-  const {data,error}=await sb.from('markets').select('*').order('id',{ascending:false}).limit(10);
-  if(error) throw error;
-  if(!data||data.length===0){ el.innerHTML='<small>No markets yet — publish in /admin</small>'; return; }
-  el.innerHTML=data.map(m=>`
-    <div class="bet-item">
-      <div><b>${m.title||'Market #'+m.id}</b><br>
-      <span class="pill">1: ${m.odd1||m.home_odd||1.85}</span>
-      <span class="pill">X: ${m.oddX||m.draw_odd||3.2}</span>
-      <span class="pill">2: ${m.odd2||m.away_odd||2.1}</span>
-      <small style="display:block;color:#6a8a7a;margin-top:4px">${m.status||'open'} • ID ${m.id}</small>
-      </div>
-      <button style="background:#d4af37;border:none;padding:8px 14px;border-radius:8px;font-weight:800" onclick="placeBet(${m.id})">Bet</button>
-    </div>`).join('');
- }catch(e){ el.innerHTML='Error: '+e.message+'<br><small>Run ALTER TABLE markets ADD COLUMN odd1 FLOAT;</small>'; }
-}
-function placeBet(id){ alert('Bet placed on market '+id+'!\\n20→40 growth rule active. Balance must grow before withdraw.'); }
-
-// RED/GREEN CANDLES - REAL PRICE BASED
-let candles=[
- {o:1.12415,h:1.1250,l:1.1238,c:1.1248},{o:1.1248,h:1.1260,l:1.1245,c:1.1255},{o:1.1255,h:1.1257,l:1.1249,c:1.1251},{o:1.1251,h:1.1253,l:1.1242,c:1.1244},{o:1.1244,h:1.1251,l:1.1239,c:1.1249},{o:1.1249,h:1.1262,l:1.1247,c:1.1259},{o:1.1259,h:1.1285,l:1.1256,c:1.1278},{o:1.1278,h:1.1285,l:1.1269,c:1.1271},{o:1.1271,h:1.1275,l:1.1258,c:1.1260},{o:1.1260,h:1.1263,l:1.1245,c:1.1249},{o:1.1249,h:1.1255,l:1.1235,c:1.1238},{o:1.1238,h:1.1246,l:1.1220,c:1.1225},{o:1.1225,h:1.1240,l:1.1220,c:1.1236},{o:1.1236,h:1.1250,l:1.1234,c:1.1247},{o:1.1247,h:1.1260,l:1.1245,c:1.1256},{o:1.1256,h:1.1305,l:1.1249,c:1.13003}
-];
-function drawCandles(){
- const c=document.getElementById('candleChart'); if(!c) return;
- const ctx=c.getContext('2d'); const W=c.width,H=c.height;
- ctx.clearRect(0,0,W,H);
- ctx.strokeStyle='#142a1e'; ctx.lineWidth=0.5;
- for(let i=0;i<5;i++){ ctx.beginPath(); ctx.moveTo(0,i*H/5); ctx.lineTo(W,i*H/5); ctx.stroke(); }
- const min=Math.min(...candles.map(x=>x.l))*0.9995, max=Math.max(...candles.map(x=>x.h))*1.0005, range=max-min;
- const cw=W/candles.length*0.6, gap=W/candles.length*0.4;
- candles.forEach((k,i)=>{
-  const x=i*(cw+gap)+gap/2, oY=H-(k.o-min)/range*H, cY=H-(k.c-min)/range*H, hY=H-(k.h-min)/range*H, lY=H-(k.l-min)/range*H, green=k.c>=k.o;
-  ctx.strokeStyle=green?'#00ff88':'#ff4444'; ctx.lineWidth=1;
-  ctx.beginPath(); ctx.moveTo(x+cw/2,hY); ctx.lineTo(x+cw/2,lY); ctx.stroke();
-  ctx.fillStyle=green?'#00ff88':'#ff4444';
-  ctx.fillRect(x,Math.min(oY,cY),cw,Math.max(2,Math.abs(oY-cY)));
- });
-}
-async function loadLive(){
- try{ const r=await fetch('https://api.exchangerate-api.com/v4/latest/EUR'); const d=await r.json(); const p=d.rates.USD; document.getElementById('eurP').innerText=p.toFixed(5); document.getElementById('topE').innerText=p.toFixed(5); candles[candles.length-1].c=p; }catch(e){}
- try{ const r2=await fetch('https://api.gold-api.com/price/XAU'); const d2=await r2.json(); document.getElementById('goldP').innerText=d2.price.toFixed(2); document.getElementById('topG').innerText=d2.price.toFixed(2); }catch(e){}
- drawCandles();
-}
-function checkMarket(){
- const now=new Date(); const day=now.getUTCDay(); const hour=now.getUTCHours();
- const closed=(day===0||day===6||(day===5&&hour>=22));
- const badge=document.getElementById('liveBadge'), status=document.getElementById('marketStatus'), b1=document.getElementById('buyBtn'), b2=document.getElementById('sellBtn');
- if(closed){
-  badge.innerText='● CLOSED'; badge.style.background='#ff4444'; badge.style.color='#fff';
-  status.innerText='Forex closed today (Sun) — Opens Monday 00:00 GMT • Showing Friday close 1.13003 / 4141.80';
-  status.style.color='#ff8888';
-  b1.innerText='MARKET CLOSED'; b2.innerText='Opens Monday'; b1.style.opacity='0.5'; b2.style.opacity='0.5';
- }else{
-  badge.innerText='● LIVE'; badge.style.background='#00ff88';
-  status.innerText='Market Open • Real Price EUR/USD 1.13003 • Gold $4141.80 ● Live';
- }
-}
-function doTrade(side){
- const closed=(new Date().getUTCDay()===0||new Date().getUTCDay()===6);
- if(closed){ alert('Forex Market is CLOSED today (Sunday)\\nIt opens Monday 00:00 GMT\\nPrice shown is Friday close'); return; }
- alert(side+' order at '+document.getElementById('eurP').innerText+'\\nGrowth rule 20→40 active');
+ try{ const {data}=await sb.from('markets').select('*').order('id',{ascending:false}).limit(10);
+  document.getElementById('mList').innerHTML=data.map(m=>`<div class="bet-item"><div><b>${m.title}</b><br><span class="pill">1: 1.85</span><span class="pill">X: 3.2</span><span class="pill">2: 2.1</span></div><button style="background:#d4af37;border:none;padding:8px 14px;border-radius:8px;font-weight:800" onclick="openSportsBet('${m.id}','${m.title.replace(/'/g,"")}')">Bet</button></div>`).join('');
+ }catch(e){}
 }
 
-drawCandles(); loadLive(); loadMarkets(); checkMarket();
-setInterval(loadLive,30000);
-setInterval(()=>{ if(new Date().getUTCDay()!==0&&new Date().getUTCDay()!==6){ let last=candles[candles.length-1]; last.c+=(Math.random()-0.5)*0.0003; document.getElementById('eurP').innerText=last.c.toFixed(5); drawCandles(); }},2000);
+// SPORTS BET BOX
+function openSportsBet(id,title){
+ betType='sports'; selMarket={id,title}; selChoice='1'; selOdd=1.85; selAmt=20;
+ document.getElementById('betTitle').innerText=title;
+ document.getElementById('betSubtitle').innerText='Choose 1, X, 2';
+ document.getElementById('choiceArea').innerHTML=`
+  <p style="font-weight:700;margin-bottom:8px">Choose Outcome:</p>
+  <div style="display:flex;gap:8px">
+   <button class="choiceBtn active" id="c1" onclick="selectChoice('1',1.85)">1<br><small>1.85</small></button>
+   <button class="choiceBtn" id="cX" onclick="selectChoice('X',3.2)">X<br><small>3.2</small></button>
+   <button class="choiceBtn" id="c2" onclick="selectChoice('2',2.1)">2<br><small>2.1</small></button>
+  </div>`;
+ selectAmt(20); document.getElementById('betModal').classList.add('show'); updateBal();
+}
+
+// FOREX BET BOX - SAME STAKE 20,30,40,60
+function openForexBet(side){
+ betType='forex';
+ const price=document.getElementById('eurP').innerText;
+ selMarket={id:'forex-eurusd', title:`EUR/USD ${side} @ ${price}`};
+ selChoice=side; selOdd=1.9; selAmt=20;
+ document.getElementById('betTitle').innerText=`Forex ${side} — EUR/USD ${price}`;
+ document.getElementById('betSubtitle').innerText=side==='BUY'?'Price will go UP ▲':'Price will go DOWN ▼';
+ document.getElementById('choiceArea').innerHTML=`
+  <p style="font-weight:700;margin-bottom:8px">Your Direction:</p>
+  <div style="display:flex;gap:8px">
+   <button class="choiceBtn ${side==='BUY'?'active':''}" id="cBUY" onclick="selectChoice('BUY',1.9)" style="${side==='BUY'?'':''}">BUY ▲<br><small>1.9</small></button>
+   <button class="choiceBtn ${side==='SELL'?'active':''}" id="cSELL" onclick="selectChoice('SELL',1.9)">SELL ▼<br><small>1.9</small></button>
+  </div>
+  <small style="color:#00ffaa;display:block;margin-top:8px">Live Price: ${price} • Gold $4141.80 • Market Closed (Sun) - bet for Monday open</small>`;
+ selectAmt(20); document.getElementById('betModal').classList.add('show'); updateBal();
+}
+
+function closeBet(){ document.getElementById('betModal').classList.remove('show'); }
+function selectChoice(c,odd){
+ selChoice=c; selOdd=odd;
+ document.querySelectorAll('.choiceBtn').forEach(b=>b.classList.remove('active'));
+ const el=document.getElementById('c'+c); if(el) el.classList.add('active');
+ updatePotential();
+}
+function selectAmt(a){
+ selAmt=a;
+ document.querySelectorAll('.amtBtn').forEach(b=>b.classList.remove('active'));
+ document.getElementById('a'+a).classList.add('active');
+ updatePotential();
+}
+function updatePotential(){ document.getElementById('potential').innerText='KES '+(selAmt*selOdd).toFixed(0); }
+function updateBal(){ document.getElementById('balInModal').innerText='KES '+balance; document.getElementById('balTop').innerText='KES '+balance; }
+
+async function confirmBet(){
+ if(selAmt>balance){ alert('Insufficient! Balance KES '+balance); return; }
+ const {error}=await sb.from('bets').insert([{market_id: selMarket.id, choice: selChoice, amount: selAmt, odds: selOdd, status: 'open'}]);
+ if(error){ alert('Error: '+error.message); return; }
+ balance-=selAmt; updateBal(); document.getElementById('walletBal').innerText='KES '+balance;
+ closeBet();
+ alert(`✅ ${betType.toUpperCase()} Bet Placed!\n${selMarket.title}\nChoice: ${selChoice} @ ${selOdd}\nStake: KES ${selAmt}\nWin: KES ${(selAmt*selOdd).toFixed(0)}`);
+ loadMyBets();
+}
+async function loadMyBets(){
+ try{ const {data}=await sb.from('bets').select('*').order('created_at',{ascending:false}).limit(10);
+  document.getElementById('betsList').innerHTML=data && data.length ? data.map(b=>`<div style="padding:8px 0;border-bottom:1px solid #222"><b>${b.choice} @ ${b.odds}</b> - KES ${b.amount} → Win KES ${(b.amount*b.odds).toFixed(0)}<br><small style="color:#888">${b.status} • ${new Date(b.created_at).toLocaleTimeString()}</small></div>`).join('') : 'No bets yet';
+ }catch(e){}
+}
+let candles=[{o:1.12415,h:1.1250,l:1.1238,c:1.1248},{o:1.1248,h:1.1260,l:1.1245,c:1.1255},{o:1.1255,h:1.1257,l:1.1249,c:1.1251},{o:1.1251,h:1.1253,l:1.1242,c:1.1244},{o:1.1249,h:1.1262,l:1.1247,c:1.1259},{o:1.1259,h:1.1285,l:1.1256,c:1.1278},{o:1.1278,h:1.1285,l:1.1269,c:1.1271},{o:1.1271,h:1.1275,l:1.1258,c:1.1260},{o:1.1260,h:1.1263,l:1.1245,c:1.1249},{o:1.1249,h:1.1255,l:1.1235,c:1.1238},{o:1.1238,h:1.1246,l:1.1220,c:1.1225},{o:1.1225,h:1.1240,l:1.1220,c:1.1236},{o:1.1236,h:1.1250,l:1.1234,c:1.1247},{o:1.1247,h:1.1260,l:1.1245,c:1.1256},{o:1.1256,h:1.1305,l:1.1249,c:1.13003}];
+function drawCandles(){ const c=document.getElementById('candleChart'); const ctx=c.getContext('2d'); const W=c.width,H=c.height; ctx.clearRect(0,0,W,H); const min=Math.min(...candles.map(x=>x.l))*0.9995,max=Math.max(...candles.map(x=>x.h))*1.0005,range=max-min; const cw=W/candles.length*0.6,gap=W/candles.length*0.4; candles.forEach((k,i)=>{ const x=i*(cw+gap)+gap/2,oY=H-(k.o-min)/range*H,cY=H-(k.c-min)/range*H,hY=H-(k.h-min)/range*H,lY=H-(k.l-min)/range*H,green=k.c>=k.o; ctx.strokeStyle=green?'#00ff88':'#ff4444'; ctx.beginPath(); ctx.moveTo(x+cw/2,hY); ctx.lineTo(x+cw/2,lY); ctx.stroke(); ctx.fillStyle=green?'#00ff88':'#ff4444'; ctx.fillRect(x,Math.min(oY,cY),cw,Math.max(2,Math.abs(oY-cY))); }); }
+drawCandles(); loadMarkets();
 </script>
 </body>
 </html>
