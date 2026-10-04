@@ -1,65 +1,82 @@
-<!-- BASHIRI PREMIUM ADMIN v5.0 - FULL CLOUD SUPABASE -->
-<!DOCTYPE html>
-<html><head><meta name="viewport" content="width=device-width,initial-scale=1">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#021a12;color:#fff;font-family:Inter,sans-serif;padding:12px}
-.top{display:flex;justify-content:space-between;align-items:center;background:linear-gradient(90deg,#0a3322,#123d2a);border:1.5px solid #d4af37;border-radius:14px;padding:14px}
-.till{background:linear-gradient(180deg,#0d3b26,#082a1b);border:1px solid rgba(212,175,55,.6);border-radius:16px;padding:16px;margin:14px 0;box-shadow:0 0 15px rgba(212,175,55,.2)}
-.till b{color:#ffdf7a;font-size:22px}
+*{box-sizing:border-box}body{margin:0;background:#021a12;color:#fff;font-family:sans-serif;padding:12px}
+.till{background:#0d3b26;border:1px solid #d4af37;border-radius:16px;padding:16px;margin:12px 0}
+.till b{color:#ffdf7a;font-size:21px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.gcard{background:linear-gradient(180deg,#103a27,#0a2a1d);border:1px solid #d4af37;border-radius:16px;padding:14px;box-shadow:0 4px 20px rgba(0,0,0,.4)}
-.gcard b{font-size:26px;display:block;margin:6px 0}
-.gcard small{color:#9fe0b5}
-.gcard .icon{width:38px;height:38px;border:1.5px solid #d4af37;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#d4af37}
-.table{background:rgba(255,255,255,.06);border:1px solid rgba(212,175,55,.4);border-radius:16px;padding:10px;margin-top:16px;backdrop-filter:blur(10px)}
-table{width:100%;border-collapse:collapse}th{color:#d4af37;font-size:12px;text-align:left;padding:8px}td{padding:10px 8px;border-top:1px solid rgba(255,255,255,.08);font-size:13px}
-.btn{border:1px solid #d4af37;background:linear-gradient(90deg,#d4af37,#ffdf7a);color:#000;padding:7px 14px;border-radius:10px;font-weight:800}
-.btn2{background:transparent;color:#d4af37;border:1px solid #d4af37}
-.publish{background:rgba(255,255,255,.06);border:1px solid rgba(212,175,55,.4);border-radius:16px;padding:14px;margin-top:16px}
-.publish input,.publish select{width:100%;padding:12px;border-radius:12px;border:1px solid #d4af37;background:#0a2a1d;color:white;margin:6px 0}
-.nav{position:fixed;bottom:10px;left:10px;right:10px;background:#0a3322;border:1px solid #d4af37;border-radius:20px;display:flex;justify-content:space-around;padding:10px}
-.nav div{padding:8px 12px;border-radius:12px}.nav .active{background:rgba(212,175,55,.25);color:#ffdf7a}
+.gcard{background:#103a27;border:1px solid #d4af37;border-radius:16px;padding:14px}
+.gcard b{font-size:26px;display:block}
+.table{background:rgba(255,255,255,.06);border:1px solid #d4af37;border-radius:16px;padding:10px;margin-top:12px}
+table{width:100%;border-collapse:collapse}th{color:#d4af37;font-size:11px;padding:6px;text-align:left}td{padding:8px;border-top:1px solid rgba(255,255,255,.1);font-size:12px}
+.btn{background:linear-gradient(90deg,#d4af37,#ffdf7a);color:#000;padding:6px 12px;border-radius:8px;font-weight:800;border:none}
+.publish{background:rgba(255,255,255,.06);border:1px solid #d4af37;border-radius:16px;padding:14px;margin-top:12px}
+.publish input{width:100%;padding:12px;border-radius:12px;border:1px solid #d4af37;background:#0a2a1d;color:white;margin:5px 0}
 </style></head><body>
-<div class="top"><span>👑 Kenya Betting Admin</span><span>🔔 <span id="notif">0</span></span></div>
-<div class="till"><div style="color:#2ecc71">● M-PESA</div><b>M-PESA TILL 0116982197</b><br><small>Till Number • 0116982197 • Active • Verified • Cloud Connected ☁️</small></div>
+
+<div style="background:linear-gradient(90deg,#0a3322,#123d2a);border:1.5px solid #d4af37;border-radius:14px;padding:12px;display:flex;justify-content:space-between"><span>👑 Kenya Betting Admin • Cloud Connected ☁️</span><span id="notif">0</span></div>
+<div class="till"><b>M-PESA TILL 0116982197</b><br><small id="stat">Active • Verified • Supabase Cloud</small></div>
 
 <div class="grid">
-<div class="gcard"><div class="icon">↗</div><small>Total Bets</small><b id="b1">0</b><small>+1,204 today +9.4% ☁️</small></div>
-<div class="gcard"><div class="icon">👥</div><small>Active Users</small><b id="b2">0</b><small id="b2s">+0 online now</small></div>
-<div class="gcard"><div class="icon">💵</div><small>Revenue (KES)</small><b id="b3">KES 0</b><small id="b3s">+KES 0 today</small></div>
-<div class="gcard"><div class="icon">⏰</div><small>Pending Withdrawals</small><b id="b4">KES 0</b><small id="b4s">0 requests • Needs 20→40</small></div>
+<div class="gcard"><small>Total Bets</small><b id="b1">0</b><small>☁️ live</small></div>
+<div class="gcard"><small>Active Users</small><b id="b2">0</b></div>
+<div class="gcard"><small>Revenue (KES)</small><b id="b3">KES 0</b></div>
+<div class="gcard"><small>Pending Withdrawals</small><b id="b4">0</b><small>Needs 20→40</small></div>
 </div>
 
 <div class="table">
-<div style="display:flex;justify-content:space-between"><b>Withdrawal <span style="color:#d4af37">Requests</span></b><span style="color:#d4af37">View All</span></div>
-<table><thead><tr><th>USER</th><th>AMOUNT</th><th>PHONE</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody id="wBody"><tr><td colspan=5>Loading Cloud...</td></tr></tbody></table>
+<b>Withdrawal Requests — <span style="color:#d4af37">Growth Check</span></b>
+<table><thead><tr><th>USER</th><th>AMOUNT</th><th>PHONE</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody id="wBody"><tr><td colspan=5>Loading...</td></tr></tbody></table>
 </div>
 
 <div class="publish">
-<b>⊕ Publish Market</b><br><br>
-<small>Market Name</small><input id="title" placeholder="e.g. Gor Mahia vs AFC Leopards — Winner">
-<div style="display:flex;gap:8px"><div style="flex:1"><small>Odds Home</small><input id="odd1" value="1.85"></div><div style="flex:1"><small>Away</small><input id="odd2" value="2.10"></div><div style="flex:1"><small>Draw</small><input id="oddX" value="3.20"></div></div>
-<small>Category.</small><select><option>Football • FKF Premier League</option><option>Double Chance</option></select><br><br>
-<button class="btn" style="width:100%;padding:14px" onclick="publish()">Publish Market</button><div id="pStatus"></div>
-<div id="mList" style="margin-top:10px;font-size:13px"></div>
+<b>⊕ Publish Market — BUTTONS FIXED</b><br><br>
+<input id="title" placeholder="e.g. Gor Mahia vs AFC Leopards — Winner">
+<div style="display:flex;gap:6px"><input id="odd1" placeholder="Home 1.85" value="1.85"><input id="odd2" placeholder="Away 2.10" value="2.10"><input id="oddX" placeholder="Draw 3.20" value="3.20"></div>
+<button class="btn" style="width:100%;padding:14px;margin-top:10px" onclick="publish()">🚀 Publish Market TO CLOUD</button>
+<div id="pStatus" style="margin-top:8px;color:#ffdf7a"></div>
+<div id="mList" style="margin-top:10px;font-size:12px"></div>
 </div>
 
-<div style="height:80px"></div>
-<div class="nav"><div class="active">🛡️ Dashboard</div><div>📈 Markets</div><div>⊕ Withdrawals</div><div>⚙️ Settings</div></div>
-
 <script>
-const supabase=window.supabase.createClient("https://hkhqbtyyqgvaktamilxs.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg");
+const URL="https://hkhqbtyyqgvaktamilxs.supabase.co";
+const KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg";
+const sb=window.supabase.createClient(URL,KEY);
+
 async function load(){
- const {data:mk}=await supabase.from('markets').select('*'); document.getElementById('b1').innerText=mk?mk.length:0; document.getElementById('mList').innerHTML=mk?mk.map(m=>`⚽ ${m.title} - <small>${m.status}</small>`).join('<br>'):'';
- const {data:bets}=await supabase.from('bets').select('*'); let tot=0; if(bets) bets.forEach(b=>tot+=+b.amount||0); document.getElementById('b3').innerText='KES '+tot;
- const {data:tr}=await supabase.from('transactions').select('*'); let pend=0, dep=0; if(tr){ tr.forEach(t=>{if(t.status=='pending'&&t.type=='withdraw') pend++; if(t.type=='deposit') dep+=+t.amount||0}); }
- document.getElementById('notif').innerText=pend; document.getElementById('b4').innerText='KES '+(pend*200||0); document.getElementById('b4s').innerText=pend+' requests • Needs 20→40'; document.getElementById('b2').innerText=tr?tr.length:0;
- let rows=''; if(tr){ tr.filter(t=>t.type=='withdraw').slice(0,5).forEach(t=>{ rows+=`<tr><td>${(t.phone||'User').slice(0,8)}</td><td>KES ${t.amount||0}</td><td>${(t.phone||'07..')}</td><td><span style="background:${t.status=='pending'?'#ffdf7a':'#2ecc71'};color:#000;padding:4px 8px;border-radius:8px">${t.status}</span></td><td><button class="btn" onclick="approve(${t.id})">Approve</button></td></tr>`; }); }
- document.getElementById('wBody').innerHTML=rows||'<tr><td colspan=5>No requests</td></tr>';
+ try{
+  const {data:mk,error:e1}=await sb.from('markets').select('*').order('id',{ascending:false});
+  if(e1) document.getElementById('stat').innerText='Error markets: '+e1.message;
+  else { document.getElementById('b1').innerText=mk.length; document.getElementById('mList').innerHTML=mk.map(m=>`⚽ ${m.title} — ${m.status} <button class='btn' onclick='closeM(${m.id})'>Close</button>`).join('<br>'); }
+
+  const {data:tr,error:e2}=await sb.from('transactions').select('*');
+  if(e2) document.getElementById('wBody').innerHTML='<tr><td colspan=5>Error: '+e2.message+'</td></tr>';
+  else {
+   let pend=tr.filter(t=>t.type=='withdraw'&&t.status=='pending').length;
+   document.getElementById('notif').innerText=pend; document.getElementById('b4').innerText=pend;
+   let rows=''; tr.filter(t=>t.type=='withdraw').forEach(t=>{
+     rows+=`<tr><td>${(t.phone||'User').substring(0,8)}</td><td>KES ${t.amount}</td><td>${t.phone||''}</td><td>${t.status}</td><td><button class='btn' onclick='approve(${t.id})'>Approve</button> <button class='btn' style='background:transparent;color:#d4af37;border:1px solid #d4af37' onclick='reject(${t.id})'>Reject</button></td></tr>`;
+   });
+   document.getElementById('wBody').innerHTML=rows||'<tr><td colspan=5>No withdrawals — insert test in SQL</td></tr>';
+   document.getElementById('b2').innerText=tr.length;
+   let rev=0; tr.forEach(t=>{if(t.type=='deposit') rev+=Number(t.amount||0)}); document.getElementById('b3').innerText='KES '+rev;
+  }
+ }catch(err){ alert('Cloud Error: '+err.message); }
 }
-async function publish(){ const title=document.getElementById('title').value; const odd1=parseFloat(document.getElementById('odd1').value); const odd2=parseFloat(document.getElementById('odd2').value); const oddX=parseFloat(document.getElementById('oddX').value); const {error}=await supabase.from('markets').insert([{title,odd1,odd2,oddX,status:'open'}]); document.getElementById('pStatus').innerText=error?error.message:'✅ Published to Supabase Cloud!'; load(); }
-async function approve(id){ await supabase.from('transactions').update({status:'approved'}).eq('id',id); load(); }
-load(); setInterval(load,10000);
-</script>
-</body></html>
+
+async function publish(){
+ const title=document.getElementById('title').value; const odd1=parseFloat(document.getElementById('odd1').value); const odd2=parseFloat(document.getElementById('odd2').value); const oddX=parseFloat(document.getElementById('oddX').value);
+ if(!title){ alert('Enter Market Name'); return; }
+ document.getElementById('pStatus').innerText='⏳ Publishing...';
+ try{
+  const {data,error}=await sb.from('markets').insert([{title,odd1,odd2,oddX,status:'open'}]).select();
+  if(error){ document.getElementById('pStatus').innerText='❌ Error: '+error.message; alert('Publish Error: '+error.message); }
+  else { document.getElementById('pStatus').innerText='✅ Published! ID:'+data[0].id; document.getElementById('title').value=''; load(); }
+ }catch(e){ document.getElementById('pStatus').innerText='❌ '+e.message; alert(e.message); }
+}
+async function approve(id){ const {error}=await sb.from('transactions').update({status:'approved'}).eq('id',id); if(error) alert(error.message); else load(); }
+async function reject(id){ const {error}=await sb.from('transactions').update({status:'rejected'}).eq('id',id); if(error) alert(error.message); else load(); }
+async function closeM(id){ await sb.from('markets').update({status:'closed'}).eq('id',id); load(); }
+
+load();
+</script></body></html>
