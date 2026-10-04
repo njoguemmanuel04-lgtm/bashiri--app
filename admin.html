@@ -9,12 +9,12 @@
 .gcard b{font-size:26px;display:block}
 .table{background:rgba(255,255,255,.06);border:1px solid #d4af37;border-radius:16px;padding:10px;margin-top:12px}
 table{width:100%;border-collapse:collapse}th{color:#d4af37;font-size:11px;padding:6px;text-align:left}td{padding:8px;border-top:1px solid rgba(255,255,255,.1);font-size:12px}
-.btn{background:linear-gradient(90deg,#d4af37,#ffdf7a);color:#000;padding:6px 12px;border-radius:8px;font-weight:800;border:none}
+.btn{background:linear-gradient(90deg,#d4af37,#ffdf7a);color:#000;padding:6px 12px;border-radius:8px;font-weight:800;border:none;cursor:pointer}
 .publish{background:rgba(255,255,255,.06);border:1px solid #d4af37;border-radius:16px;padding:14px;margin-top:12px}
 .publish input{width:100%;padding:12px;border-radius:12px;border:1px solid #d4af37;background:#0a2a1d;color:white;margin:5px 0}
 </style></head><body>
 
-<div style="background:linear-gradient(90deg,#0a3322,#123d2a);border:1.5px solid #d4af37;border-radius:14px;padding:12px;display:flex;justify-content:space-between"><span>👑 Kenya Betting Admin • Cloud Connected ☁️</span><span id="notif">0</span></div>
+<div style="background:#0a3322;border:1.5px solid #d4af37;border-radius:14px;padding:12px;display:flex;justify-content:space-between"><span>👑 Kenya Betting Admin • Cloud Connected ☁️</span><span id="notif">0</span></div>
 <div class="till"><b>M-PESA TILL 0116982197</b><br><small id="stat">Active • Verified • Supabase Cloud</small></div>
 
 <div class="grid">
@@ -26,57 +26,58 @@ table{width:100%;border-collapse:collapse}th{color:#d4af37;font-size:11px;paddin
 
 <div class="table">
 <b>Withdrawal Requests — <span style="color:#d4af37">Growth Check</span></b>
-<table><thead><tr><th>USER</th><th>AMOUNT</th><th>PHONE</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody id="wBody"><tr><td colspan=5>Loading...</td></tr></tbody></table>
+<table><thead><tr><th>USER</th><th>AMOUNT</th><th>PHONE</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody id="wBody"><tr><td colspan=5>Loading from Cloud...</td></tr></tbody></table>
 </div>
 
 <div class="publish">
-<b>⊕ Publish Market — BUTTONS FIXED</b><br><br>
-<input id="title" placeholder="e.g. Gor Mahia vs AFC Leopards — Winner">
-<div style="display:flex;gap:6px"><input id="odd1" placeholder="Home 1.85" value="1.85"><input id="odd2" placeholder="Away 2.10" value="2.10"><input id="oddX" placeholder="Draw 3.20" value="3.20"></div>
-<button class="btn" style="width:100%;padding:14px;margin-top:10px" onclick="publish()">🚀 Publish Market TO CLOUD</button>
-<div id="pStatus" style="margin-top:8px;color:#ffdf7a"></div>
+<b>⊕ Publish Market — FINAL FIXED</b><br><br>
+<input id="title" placeholder="e.g. Gor Mahia vs AFC Leopards" value="Gor mahia vs fc leopard">
+<div style="display:flex;gap:6px"><input id="odd1" value="1.85"><input id="odd2" value="2.10"><input id="oddX" value="3.20"></div>
+<button class="btn" style="width:100%;padding:14px;margin-top:10px;background:gold" onclick="doPublish()">🚀 Publish Market TO CLOUD</button>
+<div id="pStatus" style="margin-top:8px;color:#ffdf7a;word-break:break-all"></div>
 <div id="mList" style="margin-top:10px;font-size:12px"></div>
 </div>
 
 <script>
-const URL="https://hkhqbtyyqgvaktamilxs.supabase.co";
-const KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg";
-const sb=window.supabase.createClient(URL,KEY);
+// === SUPABASE CLOUD CONFIG ===
+const SUPA_URL="https://hkhqbtyyqgvaktamilxs.supabase.co";
+const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg";
+const supabaseClient = window.supabase.createClient(SUPA_URL, SUPA_KEY);
 
-async function load(){
+async function doLoad(){
  try{
-  const {data:mk,error:e1}=await sb.from('markets').select('*').order('id',{ascending:false});
-  if(e1) document.getElementById('stat').innerText='Error markets: '+e1.message;
-  else { document.getElementById('b1').innerText=mk.length; document.getElementById('mList').innerHTML=mk.map(m=>`⚽ ${m.title} — ${m.status} <button class='btn' onclick='closeM(${m.id})'>Close</button>`).join('<br>'); }
+  let res1 = await supabaseClient.from('markets').select('*').order('id',{ascending:false});
+  if(res1.error){ document.getElementById('stat').innerText=res1.error.message; }
+  else{ document.getElementById('b1').innerText=res1.data.length; document.getElementById('mList').innerHTML=res1.data.map(m=>`⚽ ${m.title} — ${m.status} <button class='btn' onclick='closeM(${m.id})'>Close</button>`).join('<br>'); }
 
-  const {data:tr,error:e2}=await sb.from('transactions').select('*');
-  if(e2) document.getElementById('wBody').innerHTML='<tr><td colspan=5>Error: '+e2.message+'</td></tr>';
-  else {
-   let pend=tr.filter(t=>t.type=='withdraw'&&t.status=='pending').length;
+  let res2 = await supabaseClient.from('transactions').select('*');
+  if(res2.error){ document.getElementById('wBody').innerHTML='<tr><td colspan=5>Error: '+res2.error.message+' — Run SQL fix I gave</td></tr>'; }
+  else{
+   let tr=res2.data; let pend=tr.filter(t=>t.type=='withdraw'&&t.status=='pending').length;
    document.getElementById('notif').innerText=pend; document.getElementById('b4').innerText=pend;
    let rows=''; tr.filter(t=>t.type=='withdraw').forEach(t=>{
-     rows+=`<tr><td>${(t.phone||'User').substring(0,8)}</td><td>KES ${t.amount}</td><td>${t.phone||''}</td><td>${t.status}</td><td><button class='btn' onclick='approve(${t.id})'>Approve</button> <button class='btn' style='background:transparent;color:#d4af37;border:1px solid #d4af37' onclick='reject(${t.id})'>Reject</button></td></tr>`;
+     rows+=`<tr><td>${(t.phone||'User').substring(0,8)}</td><td>KES ${t.amount}</td><td>${t.phone||''}</td><td>${t.status}</td><td><button class='btn' onclick='approve(${t.id})'>Approve</button></td></tr>`;
    });
-   document.getElementById('wBody').innerHTML=rows||'<tr><td colspan=5>No withdrawals — insert test in SQL</td></tr>';
+   document.getElementById('wBody').innerHTML=rows||'<tr><td colspan=5>No withdrawals</td></tr>';
    document.getElementById('b2').innerText=tr.length;
-   let rev=0; tr.forEach(t=>{if(t.type=='deposit') rev+=Number(t.amount||0)}); document.getElementById('b3').innerText='KES '+rev;
   }
- }catch(err){ alert('Cloud Error: '+err.message); }
+ }catch(err){ document.getElementById('pStatus').innerText='Error: '+err.message; }
 }
 
-async function publish(){
- const title=document.getElementById('title').value; const odd1=parseFloat(document.getElementById('odd1').value); const odd2=parseFloat(document.getElementById('odd2').value); const oddX=parseFloat(document.getElementById('oddX').value);
+async function doPublish(){
+ const title=document.getElementById('title').value.trim();
+ const odd1=parseFloat(document.getElementById('odd1').value);
+ const odd2=parseFloat(document.getElementById('odd2').value);
+ const oddX=parseFloat(document.getElementById('oddX').value);
  if(!title){ alert('Enter Market Name'); return; }
- document.getElementById('pStatus').innerText='⏳ Publishing...';
- try{
-  const {data,error}=await sb.from('markets').insert([{title,odd1,odd2,oddX,status:'open'}]).select();
-  if(error){ document.getElementById('pStatus').innerText='❌ Error: '+error.message; alert('Publish Error: '+error.message); }
-  else { document.getElementById('pStatus').innerText='✅ Published! ID:'+data[0].id; document.getElementById('title').value=''; load(); }
- }catch(e){ document.getElementById('pStatus').innerText='❌ '+e.message; alert(e.message); }
+ document.getElementById('pStatus').innerText='⏳ Publishing to Supabase Cloud...';
+ let result = await supabaseClient.from('markets').insert([{title:title, odd1:odd1, odd2:odd2, oddX:oddX, status:'open'}]).select();
+ if(result.error){ document.getElementById('pStatus').innerText='❌ '+result.error.message; alert(result.error.message); }
+ else{ document.getElementById('pStatus').innerText='✅ Published! ID '+result.data[0].id+' — Cloud Saved!'; document.getElementById('title').value=''; doLoad(); }
 }
-async function approve(id){ const {error}=await sb.from('transactions').update({status:'approved'}).eq('id',id); if(error) alert(error.message); else load(); }
-async function reject(id){ const {error}=await sb.from('transactions').update({status:'rejected'}).eq('id',id); if(error) alert(error.message); else load(); }
-async function closeM(id){ await sb.from('markets').update({status:'closed'}).eq('id',id); load(); }
 
-load();
+async function approve(id){ let r=await supabaseClient.from('transactions').update({status:'approved'}).eq('id',id); if(r.error) alert(r.error.message); else doLoad(); }
+async function closeM(id){ await supabaseClient.from('markets').update({status:'closed'}).eq('id',id); doLoad(); }
+
+doLoad();
 </script></body></html>
