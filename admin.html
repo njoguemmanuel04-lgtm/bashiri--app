@@ -1,23 +1,133 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>BASHIRI ADMIN CLOUD</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<style>body{background:#0a1410;color:#fff;font-family:system-ui;padding:14px}input,select{width:100%;padding:12px;border-radius:10px;border:0;margin:6px 0;font-weight:600}.btn{padding:12px;width:100%;border-radius:10px;border:0;font-weight:800;margin-top:6px;cursor:pointer}.g{background:#00ff88;color:#000}.r{background:#ff4d4d;color:#fff}.card{background:#152f21;padding:12px;border-radius:12px;margin-top:10px;border:1px solid rgba(255,255,255,.1)}.small{font-size:11px;opacity:.7}</style>
-</head><body>
-<h2>🛡️ BASHIRI ADMIN CLOUD - 0116982197</h2>
-<p class="small">Publish → all users see instantly! Supabase Connected</p>
-<select id="type"><option value="home">Home Trending</option><option value="local">Local Markets</option><option value="forex">Forex</option></select>
-<input id="newQ" placeholder="Question e.g Will it rain Embu tomorrow?">
-<button class="btn g" onclick="publish()">+ Publish to Cloud</button>
-<div id="status" class="small"></div>
-<div id="list"></div>
-<div id="txs" class="card"><b>Transactions</b><div id="txList" class="small"></div></div>
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin Dashboard - Eldoret & Mwea Wager System</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#f2f4f7;display:flex;min-height:100vh}
+.sidebar{width:220px;background:#0a3d1f;color:#fff;padding:20px;display:flex;flex-direction:column}
+.sidebar h2{color:#ffcc00;margin:10px 0 20px 0;font-size:22px}
+.menu{flex:1}
+.menu div{padding:12px;border-radius:8px;margin-bottom:6px;cursor:pointer;display:flex;gap:10px}
+.menu div.active{background:#ffcc00;color:#000;font-weight:bold}
+.main{flex:1;padding:15px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.badge-yellow{background:#ffe600;color:#000;padding:12px;border-radius:10px;border:2px solid #0a3d1f;margin-bottom:15px;display:flex;gap:10px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:15px}
+.card{background:#fff;padding:15px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+.card h4{font-size:13px;color:#666}
+.card .big{font-size:22px;font-weight:bold;margin:6px 0}
+.green{color:#0a8a3a}.yellow{color:#b89600}
+.table-card{background:#fff;border-radius:12px;padding:15px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
+th{background:#f5f5f5;padding:10px;text-align:left}
+td{padding:10px;border-bottom:1px solid #eee}
+.status-yellow{background:#ffe600;padding:5px 10px;border-radius:20px;font-size:12px;font-weight:bold}
+.status-green{background:#0a8a3a;color:#fff;padding:5px 10px;border-radius:20px;font-size:12px}
+.btn-green{background:#0a8a3a;color:#fff;border:none;padding:6px 14px;border-radius:6px;cursor:pointer}
+.btn-yellow{background:#ffcc00;color:#000;border:none;padding:6px 14px;border-radius:6px;cursor:pointer}
+.search{padding:8px;border-radius:8px;border:1px solid #ccc;width:200px}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+<h2>🟢 M-PESA</h2>
+<div class="menu">
+<div class="active">📊 Dashboard</div>
+<div>👤 Users</div>
+<div>💰 Deposits</div>
+<div>🎲 Wagers</div>
+<div>⏰ Withdrawals</div>
+<div>📈 Users Growth Check</div>
+<div>📋 Reports</div>
+<div>⚙️ Settings</div>
+<div>❓ Help</div>
+</div>
+<small>v2.1.0 • Kenya</small>
+</div>
+
+<div class="main">
+<div class="top">
+<div><h2>Admin Dashboard - Eldoret & Mwea Wager System</h2><small>Real-time monitoring • Kenya • Updated 04 Oct 2026 • 14:32 EAT</small></div>
+<div>AD Admin | Nairobi 🔔3 ⚙️</div>
+</div>
+
+<div class="badge-yellow">
+<span>ⓘ</span>
+<div><b>Pending Withdrawals</b><br><small>Growth Check Required: Users must grow from 20 to 40 to be eligible for withdrawal approval. 12 withdrawals pending review.</small></div>
+</div>
+
+<div class="stats">
+<div class="card"><h4>Total Users</h4><div class="big">1,248</div><small class="green">+42 new today ▲ 3.5%</small></div>
+<div class="card"><h4>Total Deposits KES</h4><div class="big">KES 3,450,200</div><small class="green">+ KES 120,500 today ▲ 5.2%</small></div>
+<div class="card"><h4>Total Wagers Today</h4><div class="big">KES 987,600</div><small class="green">+ KES 78,900 today ▲ 2.8%</small></div>
+<div class="card"><h4>Pending Withdrawals</h4><div class="big">12</div><small class="yellow">KES 74,000 • Needs 20→40 check</small></div>
+</div>
+
+<div class="table-card">
+<div style="display:flex;justify-content:space-between">
+<h3>Withdrawal Requests — Growth Check (20→40)</h3>
+<div><input class="search" placeholder="Search by phone..."> <button>Filter: Pending</button></div>
+</div>
+
+<table>
+<thead>
+<tr><th>User Phone</th><th>Deposited 20</th><th>Current Balance</th><th>Profit from Wagers</th><th>Growth Status</th><th>Action</th></tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+<div style="margin-top:10px;display:flex;justify-content:space-between"><small>Showing 1-5 of 12 pending withdrawals</small><small>‹ Previous <span style="background:#0a8a3a;color:#fff;padding:3px 8px;border-radius:4px">1</span> 2 3 Next ›</small></div>
+<small style="color:#666;margin-top:10px;display:block">Kenya Betting Regulatory Compliance • Growth rule: Deposit 20 → Balance must reach 40 to approve withdrawal • All approvals logged</small>
+</div>
+</div>
+
 <script>
-const SUPABASE_URL = "https://hkhqbtyyqgvaktamilxs.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg";
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-function setStatus(m){document.getElementById('status').innerText=m;}
-async function publish(){let q=document.getElementById('newQ').value.trim();let t=document.getElementById('type').value;if(!q)return alert('Enter question');setStatus('Publishing...');let {error}=await sb.from('markets').insert({question:q,type:t});if(error){alert(error.message);setStatus('Error: '+error.message);}else{alert('✅ Published to '+t);document.getElementById('newQ').value='';setStatus('Published!');load();}}
-async function settle(id,res){if(!confirm('Settle as '+res+'?'))return;let {error}=await sb.from('markets').update({settled:true,result:res}).eq('id',id);if(error)alert(error.message);else{alert('Settled '+res);load();}}
-async function delMarket(id){if(!confirm('Delete market?'))return;await sb.from('markets').delete().eq('id',id);load();}
-async function load(){try{let {data:m,error}=await sb.from('markets').select('*').order('created_at',{ascending:false}).limit(30);if(error){document.getElementById('list').innerHTML='Error: '+error.message;return;}document.getElementById('list').innerHTML=(m||[]).map(x=>`<div class="card"><b>${x.question}</b><br><span class="small">[${x.type}] YES ${x.yes_count||0} NO ${x.no_count||0} Pool ${x.pool||0} ${x.settled?'SETTLED '+x.result:''}</span><br><div style="display:flex;gap:6px;margin-top:6px"><button class="btn g" onclick="settle('${x.id}','YES')">Settle YES</button><button class="btn r" onclick="settle('${x.id}','NO')">Settle NO</button><button class="btn" style="background:#333;color:#fff" onclick="delMarket('${x.id}')">Del</button></div></div>`).join('')||'No markets';let {data:tx}=await sb.from('transactions').select('*').order('created_at',{ascending:false}).limit(30);document.getElementById('txList').innerHTML=(tx||[]).map(t=>`${new Date(t.created_at).toLocaleTimeString()} - ${t.type} ${t.amount} ${t.mpesa_code||''} ${t.phone||''} ${t.status}`).join('<br>')||'No tx yet';setStatus('Connected ✅ '+(m||[]).length+' markets');}catch(e){setStatus('Error '+e.message);}}
-load();setInterval(load,4000);
-</script></body></html>
+let withdrawals = [
+  {phone:'0712 345 678', dep:20, bal:1850, profit:540, wagered:36},
+  {phone:'0798 112 993', dep:20, bal:2400, profit:780, wagered:40},
+  {phone:'0704 556 301', dep:20, bal:1120, profit:320, wagered:33},
+  {phone:'0722 998 441', dep:20, bal:3010, profit:1050, wagered:40},
+  {phone:'0715 223 874', dep:20, bal:950, profit:210, wagered:29},
+];
+
+function render(){
+  let tbody=document.getElementById('tbody');
+  tbody.innerHTML='';
+  withdrawals.forEach((w,i)=>{
+    let need = 40 - w.wagered;
+    let status = w.wagered>=40 
+      ? `<span class="status-green">✓ 20→40 Eligible to Withdraw</span>` 
+      : `<span class="status-yellow">20→${w.wagered} — Need ${need} more</span>`;
+    tbody.innerHTML+=`<tr>
+      <td>${w.phone}</td>
+      <td>KES ${w.dep}</td>
+      <td>KES ${w.bal.toLocaleString()}</td>
+      <td>KES ${w.profit}</td>
+      <td>${status}</td>
+      <td><button class="btn-green" onclick="approve(${i})">Approve</button> <button class="btn-yellow" onclick="reject(${i})">Reject</button></td>
+    </tr>`;
+  });
+}
+
+function approve(i){
+  let w=withdrawals[i];
+  if(w.wagered<40){return alert(`❌ REJECTED: ${w.phone} has 20→${w.wagered}, needs ${40-w.wagered} more wagers. Rule: Must grow 20 to 40.`);}
+  alert(`✅ APPROVED: ${w.phone} - Send KES ${w.bal-11} (after 11 fee). Profit kept: ${w.profit*0.15} from wager rule.`);
+  withdrawals.splice(i,1); render();
+}
+function reject(i){
+  withdrawals.splice(i,1); render();
+}
+render();
+
+// AUTO-SYNC with your bashiri-final.html
+let single = JSON.parse(localStorage.getItem('bashiri_final')||'null');
+if(single){
+  withdrawals.unshift({phone:'YOU TEST', dep:single.deposited, bal:Math.floor(single.balance), profit:Math.floor(single.wagered*0.15), wagered:single.wagered});
+  render();
+}
+</script>
+</body>
+</html>
