@@ -2,49 +2,57 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>BASHIRI - Live Exchange</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/dist/umd/supabase.min.js"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui}
 body{background:#020d07;color:#fff;padding-bottom:85px}
-.header{position:sticky;top:0;z-index:20;background:linear-gradient(90deg,#0a3322,#0d3b26);border-bottom:1.5px solid #d4af37;padding:12px 14px;display:flex;justify-content:space-between;align-items:center}
-.till{margin:12px;background:linear-gradient(135deg,#0d3b26,#0a3322);border:1.5px solid #d4af37;border-radius:16px;padding:12px;text-align:center}
-.card{background:rgba(255,255,255,.06);border:1px solid rgba(212,175,55,.35);border-radius:16px;padding:14px;margin:12px}
-canvas{width:100%;height:220px;background:#081410;border-radius:12px;margin-top:10px;display:block}
-.tabs{position:fixed;bottom:0;left:0;right:0;background:#081a12;border-top:1px solid #1a3d2a;display:flex;justify-content:space-around;padding:8px 0;z-index:30}
-.tab{flex:1;text-align:center;padding:8px;font-size:12px;color:#6a8a7a;cursor:pointer;border-radius:12px;margin:0 4px}
-.tab.active{color:#d4af37;background:rgba(212,175,55,.12)}
-.pill{display:inline-block;padding:5px 10px;border-radius:20px;font-size:11px;background:#0f2a1e;border:1px solid #d4af37;margin:3px}
-.bet-item{padding:12px 0;border-bottom:1px solid #1a2a22;display:flex;justify-content:space-between;align-items:center}
-.btn{width:100%;padding:14px;border-radius:12px;border:none;font-weight:800;cursor:pointer;margin-top:8px}
-.btn-buy{background:linear-gradient(90deg,#00d9ff,#00ffaa);color:#000}
-.btn-sell{background:transparent;border:1.5px solid #ff4444;color:#ff4444}
+.header{position:sticky;top:0;z-index:20;background:#081410;padding:14px;border-bottom:1px solid #1a2a20;display:flex;justify-content:space-between}
+.till{margin:12px;background:linear-gradient(135deg,#0f2418,#1a3c24);border:1px solid #d4af37;padding:10px;border-radius:10px;text-align:center}
+.card{background:rgba(255,255,255,.06);border:1px solid #1a2a20;padding:14px;margin:12px;border-radius:14px}
+canvas{width:100%;height:220px;background:#081410;border-radius:12px;border:1px solid #1a2a20}
+.tabs{position:fixed;bottom:0;left:0;right:0;background:#081410;border-top:1px solid #1a2a20;display:flex}
+.tab{flex:1;text-align:center;padding:12px 8px;font-size:13px;cursor:pointer;color:#888}
+.tab.active{color:#d4af37;background:rgba(212,175,55,.12);font-weight:800}
+.pill{display:inline-block;padding:5px 10px;border-radius:20px;border:1px solid #1a2a20;font-size:11px}
+.bet-item{padding:12px 0;border-bottom:1px solid #1a2a20}
+.btn{width:100%;padding:14px;border-radius:12px;border:none;font-weight:800;cursor:pointer}
+.btn-buy{background:linear-gradient(90deg,#00d9ff,#00ff88);color:#000}
+.btn-sell{background:transparent;border:1.5px solid #ff4757;color:#ff4757}
 .btn-gold{background:#d4af37;color:#000}
-#betModal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:99;align-items:end;justify-content:center}
+#betModal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:50;align-items:flex-end}
 #betModal.show{display:flex}
-.modalBox{background:#0f2418;border-top:2.5px solid #d4af37;border-radius:20px 20px 0 0;width:100%;max-width:500px;padding:18px}
-.choiceBtn{flex:1;padding:14px;border-radius:12px;border:1.5px solid #2a4a35;background:#102a1d;color:#fff;font-weight:800;cursor:pointer;text-align:center}
+.modalBox{background:#0f2418;border-top:2.5px solid #d4af37;width:100%;padding:18px;border-radius:20px 20px 0 0}
+.choiceBtn{flex:1;padding:14px;border-radius:12px;border:1.5px solid #1a2a20;background:#081410;color:#fff;cursor:pointer;font-weight:700}
 .choiceBtn.active{background:#d4af37;color:#000;border-color:#d4af37}
-.amtBtn{padding:10px 18px;border-radius:20px;border:1.5px solid #d4af37;background:#0f2a1e;color:#fff;font-weight:700;cursor:pointer;margin:4px}
+.amtBtn{padding:10px 18px;border-radius:20px;border:1.5px solid #1a2a20;background:#081410;color:#fff;margin:4px;cursor:pointer}
 .amtBtn.active{background:#d4af37;color:#000}
 </style>
 </head>
 <body>
 
-<div class="header"><b>BASHIRI <span style="color:#00ff88;font-size:11px">☁️ LIVE</span></b><div id="balTop" style="background:#111;border:1px solid #d4af37;padding:6px 14px;border-radius:20px;font-size:13px">KES 50</div></div>
+<div class="header"><b>BASHIRI <span style="color:#00ff88">LIVE</span></b><div>KES <span id="balTop">50</span> <span style="color:#d4af37">Till 0116982197</span></div></div>
 
-<div class="till"><b style="color:#ffdf7a">M-PESA TILL 0116982197</b><br><small style="color:#00ffaa">EUR/USD <span id="topE">1.13000</span> • Gold $4141.80</small><br><small id="marketStatus" style="color:#ff8888;font-size:11px">Forex closed today (Sun) — Opens Monday 00:00 GMT • Friday close 1.13003</small></div>
+<div class="till"><b style="color:#ffdf7a">M-PESA TILL 0116982197</b> • Bet 20 Win 12 Profit</div>
 
-<div id="marketsPage" style="display:block"><div class="card"><b>⚽ Open Markets</b><div id="mList" style="margin-top:10px">Loading...</div></div></div>
+<div id="marketsPage" style="display:block"><div class="card"><h3>⚽ Sports Markets</h3><div id="mList">Loading...</div></div></div>
 
-<div id="forexPage" style="display:none"><div class="card" style="background:#0a1820;border-color:#00d9ff"><div style="display:flex;justify-content:space-between"><b>EUR/USD • Red/Green Candles</b><small style="background:#ff4444;color:#fff;padding:3px 8px;border-radius:10px;font-size:11px">CLOSED</small></div><div style="display:flex;gap:8px;margin-top:10px"><div style="flex:1;background:#102a1d;border:1px solid #d4af37;border-radius:12px;padding:10px;text-align:center"><small>EUR/USD</small><br><b id="eurP" style="color:#00ff88;font-size:18px">1.13003</b></div><div style="flex:1;background:#102a1d;border:1px solid #d4af37;border-radius:12px;padding:10px;text-align:center"><small>Gold</small><br><b id="goldP" style="color:#ff5555;font-size:18px">4141.80</b></div></div><canvas id="candleChart" width="400" height="220"></canvas><div style="margin-top:14px"><button class="btn btn-buy" onclick="openForexBet('BUY')">BUY / LONG ▲ — Bet 20,30,40,60</button><button class="btn btn-sell" onclick="openForexBet('SELL')">SELL / SHORT ▼ — Bet 20,30,40,60</button></div></div></div>
+<div id="forexPage" style="display:none"><div class="card"><h3>📈 Forex - EUR/USD</h3><canvas id="candleCanvas"></canvas><div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-buy" onclick="openForexBet('BUY')">BUY ↑</button><button class="btn btn-sell" onclick="openForexBet('SELL')">SELL ↓</button></div></div></div>
 
-<div id="walletPage" style="display:none"><div class="card"><b>💰 Wallet</b><br><br><div style="font-size:36px;font-weight:800" id="walletBal">KES 50</div><small style="color:#00ffaa">Growth: 20 → 40 before withdraw</small></div><div class="card"><b>My Bets</b><div id="betsList" style="margin-top:8px;font-size:13px">No bets yet</div></div></div>
+<div id="walletPage" style="display:none"><div class="card"><h3>💼 Wallet</h3><p>Balance: KES <b id="balWallet">50</b></p><p>Till: <b>0116982197</b></p><div id="betsList">Loading bets...</div></div></div>
 
-<div class="tabs"><div class="tab active" onclick="showTab('markets',this)">📊<br>Markets</div><div class="tab" onclick="showTab('forex',this)">📈<br>Forex</div><div class="tab" onclick="showTab('wallet',this)">💰<br>Wallet</div></div>
+<div class="tabs"><div class="tab active" onclick="showTab('markets',this)">⚽ Markets</div><div class="tab" onclick="showTab('forex',this)">📈 Forex</div><div class="tab" onclick="showTab('wallet',this)">💼 Wallet</div></div>
 
-<div id="betModal" onclick="if(event.target.id==='betModal') closeBet()"><div class="modalBox"><div style="display:flex;justify-content:space-between"><b id="betTitle">Place Bet</b><span onclick="closeBet()" style="font-size:22px;cursor:pointer">✕</span></div><small id="betSubtitle" style="color:#6a8a7a"></small><div id="choiceArea" style="margin-top:14px"></div><p style="margin:16px 0 8px;font-weight:700">Choose Stake:</p><div><button class="amtBtn active" id="a20" onclick="selectAmt(20)">KES 20</button><button class="amtBtn" id="a30" onclick="selectAmt(30)">KES 30</button><button class="amtBtn" id="a40" onclick="selectAmt(40)">KES 40</button><button class="amtBtn" id="a60" onclick="selectAmt(60)">KES 60</button></div><div style="background:#111a14;border:1px solid #1e3a28;border-radius:12px;padding:10px;margin-top:14px;display:flex;justify-content:space-between"><span>Profit:</span><b id="potential" style="color:#00ff88">KES 12 profit</b></div><div style="font-size:11px;color:#888;text-align:center;margin-top:4px" id="totalReturn">Total return KES 32</div><button class="btn btn-gold" style="margin-top:14px;font-size:16px" onclick="confirmBet()">CONFIRM BET ✅</button><small style="display:block;text-align:center;color:#6a8a7a;margin-top:8px">Balance: <span id="balInModal">KES 50</span> • 20→12 profit • Growth Rule active</small></div></div>
+<div id="betModal" onclick="if(event.target.id==='betModal')closeBet()">
+<div class="modalBox">
+<h3 id="betTitle">Place Bet</h3><small id="betSubtitle">20 wins 12</small>
+<div id="choiceArea" style="margin:12px 0"></div>
+<div style="margin:12px 0"><b>Stake:</b> <button class="amtBtn active" id="a20" onclick="selectAmt(20)">20</button> <button class="amtBtn" id="a50" onclick="selectAmt(50)">50</button> <button class="amtBtn" id="a100" onclick="selectAmt(100)">100</button> <button class="amtBtn" id="a200" onclick="selectAmt(200)">200</button></div>
+<div class="card" style="margin:12px 0"><div>Potential Profit: <b id="potential" style="color:#d4af37">KES 12</b></div><div id="totalReturn">Total Return: KES 32</div><div><small>Balance: KES <span id="balInModal">50</span></small></div></div>
+<button class="btn btn-gold" onclick="confirmBet()">Confirm Bet</button><button class="btn" style="background:transparent;color:#888;margin-top:8px" onclick="closeBet()">Cancel</button>
+</div>
+</div>
 
 <script>
 const SUPA_URL="https://hkhqbtyyqgvaktamilxs.supabase.co";
@@ -53,43 +61,49 @@ const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
 let balance=50, selChoice='1', selOdd=1.6, selAmt=20, selMarket=null, betType='sports';
 
 function showTab(name,el){
- document.getElementById('marketsPage').style.display='none';
- document.getElementById('forexPage').style.display='none';
- document.getElementById('walletPage').style.display='none';
- document.getElementById(name+'Page').style.display='block';
- document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); el.classList.add('active');
- if(name==='markets') loadMarkets(); if(name==='wallet') loadMyBets();
+ document.getElementById('marketsPage').style.display=name==='markets'?'block':'none';
+ document.getElementById('forexPage').style.display=name==='forex'?'none':'none';
+ document.getElementById('forexPage').style.display=name==='forex'?'block':'none';
+ document.getElementById('walletPage').style.display=name==='wallet'?'block':'none';
+ document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+ if(el) el.classList.add('active');
+ if(name==='markets') loadMarkets(); if(name==='wallet') loadMyBets(); if(name==='forex') drawCandles();
 }
+
 async function loadMarkets(){
- try{ const {data}=await sb.from('markets').select('*').order('id',{ascending:false}).limit(10);
-  document.getElementById('mList').innerHTML=data.map(m=>`<div class="bet-item"><div><b>${m.title}</b><br><span class="pill">1: 1.6</span><span class="pill">X: 2.5</span><span class="pill">2: 1.8</span></div><button style="background:#d4af37;border:none;padding:8px 14px;border-radius:8px;font-weight:800" onclick="openSportsBet('${m.id}','${m.title.replace(/'/g,"")}')">Bet</button></div>`).join('');
+ try{ const {data}=await sb.from('markets').select('*').eq('status','open').order('created_at',{ascending:false});
+ document.getElementById('mList').innerHTML=data.map(m=>`<div class="bet-item"><b>${m.title||m.question}</b><br><small>${m.type||'custom'} • ${m.status}</small><br><button class="btn btn-gold" style="margin-top:8px" onclick="openSportsBet('${m.id}','${(m.title||m.question).replace(/'/g,"\\'")}')">Bet Now - 20 → 12</button></div>`).join('');
  }catch(e){}
 }
+
 function openSportsBet(id,title){
- betType='sports'; selMarket={id,title}; selChoice='1'; selOdd=1.6; selAmt=20;
+ betType='sports'; selMarket={id,title}; selChoice='1'; selOdd=1.6;
  document.getElementById('betTitle').innerText=title;
- document.getElementById('betSubtitle').innerText='20 wins 12 profit • Choose 1, X, 2';
+ document.getElementById('betSubtitle').innerText='20 wins 12 profit - Choose outcome';
  document.getElementById('choiceArea').innerHTML=`
-  <p style="font-weight:700;margin-bottom:8px">Choose Outcome:</p>
-  <div style="display:flex;gap:8px">
-   <button class="choiceBtn active" id="c1" onclick="selectChoice('1',1.6)">1<br><small>1.6 (12)</small></button>
-   <button class="choiceBtn" id="cX" onclick="selectChoice('X',2.5)">X<br><small>2.5 (45)</small></button>
-   <button class="choiceBtn" id="c2" onclick="selectChoice('2',1.8)">2<br><small>1.8 (16)</small></button>
-  </div>`;
- selectAmt(20); document.getElementById('betModal').classList.add('show'); updateBal();
+ <p style="font-weight:700;margin-bottom:8px">Choose Outcome</p>
+ <div style="display:flex;gap:8px">
+  <button class="choiceBtn active" id="c1" onclick="selectChoice('1',1.6)">1 - ${title.split(' ')[0]} Win</button>
+  <button class="choiceBtn" id="cX" onclick="selectChoice('X',2.5)">X - Draw</button>
+  <button class="choiceBtn" id="c2" onclick="selectChoice('2',1.8)">2 - Other Win</button>
+ </div>`;
+ selectAmt(20); document.getElementById('betModal').classList.add('show');
 }
+
 function openForexBet(side){
- betType='forex'; const price=document.getElementById('eurP').innerText;
- selMarket={id:'forex-eurusd', title:`EUR/USD ${side} @ ${price}`}; selChoice=side; selOdd=1.6; selAmt=20;
- document.getElementById('betTitle').innerText=`Forex ${side} — ${price}`;
- document.getElementById('betSubtitle').innerText=side==='BUY'?'Price UP ▲ — 20 wins 12 profit':'Price DOWN ▼ — 20 wins 12 profit';
+ betType='forex'; const price=document.getElementById('balTop')?document.getElementById('balTop').innerText:'1.1248';
+ selMarket={id:'forex-eurusd', title:`EUR/USD ${side} @ ${price}`};
+ selChoice=side; selOdd=side==='BUY'?1.6:1.6;
+ document.getElementById('betTitle').innerText=`Forex ${side}`;
+ document.getElementById('betSubtitle').innerText=side==='BUY'?'Price going UP':'Price going DOWN';
  document.getElementById('choiceArea').innerHTML=`
-  <div style="display:flex;gap:8px">
-   <button class="choiceBtn ${side==='BUY'?'active':''}" id="cBUY" onclick="selectChoice('BUY',1.6)">BUY ▲<br><small>1.6</small></button>
-   <button class="choiceBtn ${side==='SELL'?'active':''}" id="cSELL" onclick="selectChoice('SELL',1.6)">SELL ▼<br><small>1.6</small></button>
-  </div>`;
- selectAmt(20); document.getElementById('betModal').classList.add('show'); updateBal();
+ <div style="display:flex;gap:8px">
+  <button class="choiceBtn ${side==='BUY'?'active':''}" id="cBUY" onclick="selectChoice('BUY',1.6)">BUY ↑</button>
+  <button class="choiceBtn ${side==='SELL'?'active':''}" id="cSELL" onclick="selectChoice('SELL',1.6)">SELL ↓</button>
+ </div>`;
+ selectAmt(20); document.getElementById('betModal').classList.add('show');
 }
+
 function closeBet(){ document.getElementById('betModal').classList.remove('show'); }
 function selectChoice(c,odd){
  selChoice=c; selOdd=odd;
@@ -100,37 +114,42 @@ function selectChoice(c,odd){
 function selectAmt(a){
  selAmt=a;
  document.querySelectorAll('.amtBtn').forEach(b=>b.classList.remove('active'));
- document.getElementById('a'+a).classList.add('active');
+ const el=document.getElementById('a'+a); if(el) el.classList.add('active'); else document.getElementById('a20').classList.add('active');
  updatePotential();
 }
 function updatePotential(){
- let profit = Math.round(selAmt * 0.6); // YOUR RULE: 20->12
- if(selChoice==='X') profit = Math.round(selAmt * 1.5); // X pays more
+ let profit = Math.round(selAmt * 0.6); // YOUR RULE: 20 → 12
+ if(selChoice==='X') profit = Math.round(selAmt * 1.5);
  if(selChoice==='2') profit = Math.round(selAmt * 0.8);
- document.getElementById('potential').innerText='KES '+profit+' profit';
- document.getElementById('totalReturn').innerText='Total return KES '+(selAmt+profit)+' (stake + profit)';
+ document.getElementById('potential').innerText='KES '+profit;
+ document.getElementById('totalReturn').innerText='Total Return: KES '+(selAmt+profit);
 }
-function updateBal(){ document.getElementById('balInModal').innerText='KES '+balance; document.getElementById('balTop').innerText='KES '+balance; }
+function updateBal(){ document.getElementById('balTop').innerText=balance; document.getElementById('balWallet').innerText=balance; document.getElementById('balInModal').innerText=balance; }
+
 async function confirmBet(){
- if(selAmt>balance){ alert('Insufficient! Balance KES '+balance); return; }
- const profit = document.getElementById('potential').innerText;
- const {error}=await sb.from('bets').insert([{market_id:selMarket.id, choice:selChoice, amount:selAmt, odds:selOdd, status:'open'}]);
+ if(selAmt>balance){ alert('Insufficient! Balance KES '+balance+'\nDeposit to Till 0116982197'); return; }
+ const profitText = document.getElementById('potential').innerText;
+ const profit = parseInt(profitText.replace('KES ',''));
+ // YOUR ORIGINAL INSERT - keeps market_id, choice, amount, odds
+ const {error}=await sb.from('bets').insert([{market_id:selMarket.id, market_title:selMarket.title, selection:selChoice, choice:selChoice, amount:selAmt, profit:profit, odds:selOdd, status:'open', user_id: localStorage.getItem('bashiri_uid')||null}]);
  if(error){ alert('Error: '+error.message); return; }
- balance-=selAmt; updateBal(); document.getElementById('walletBal').innerText='KES '+balance;
+ balance-=selAmt; updateBal(); document.getElementById('balInModal').innerText=balance;
  closeBet();
- alert(`✅ Bet Placed!\n${selMarket.title}\nStake: KES ${selAmt}\n${profit}\nGrowth Rule: Must reach 40 to withdraw`);
+ alert(`✅ Bet Placed!\n${selMarket.title}\nStake: KES ${selAmt} → Profit: KES ${profit}\nChoice: ${selChoice}`);
  loadMyBets();
 }
+
 async function loadMyBets(){
- try{ const {data}=await sb.from('bets').select('*').order('created_at',{ascending:false}).limit(10);
-  document.getElementById('betsList').innerHTML=data && data.length ? data.map(b=>{
-   let prof = b.choice==='1'?Math.round(b.amount*0.6): b.choice==='X'?Math.round(b.amount*1.5): Math.round(b.amount*0.8);
-   return `<div style="padding:8px 0;border-bottom:1px solid #222"><b>${b.choice} @ ${b.odds}</b> - KES ${b.amount} → Profit KES ${prof}<br><small style="color:#888">${b.status} • ${new Date(b.created_at).toLocaleTimeString()}</small></div>`;
-  }).join('') : 'No bets yet';
+ try{ const {data}=await sb.from('bets').select('*').order('created_at',{ascending:false}).limit(20);
+ document.getElementById('betsList').innerHTML=data && data.length ? data.map(b=>{
+  let prof = b.choice==='1'?Math.round(b.amount*0.6): b.choice==='X'?Math.round(b.amount*1.5): b.choice==='2'?Math.round(b.amount*0.8): b.profit||12;
+  return `<div style="padding:8px 0;border-bottom:1px solid #1a2a20"><b>${b.market_title||b.market_id}</b> - ${b.choice||b.selection} - KES ${b.amount} → Profit ${prof}<br><small>Status: ${b.status}</small></div>`;
+ }).join('') : 'No bets yet';
  }catch(e){}
 }
-let candles=[{o:1.12415,h:1.1250,l:1.1238,c:1.1248},{o:1.1248,h:1.1260,l:1.1245,c:1.1255},{o:1.1255,h:1.1257,l:1.1249,c:1.1251},{o:1.1251,h:1.1253,l:1.1242,c:1.1244},{o:1.1249,h:1.1262,l:1.1247,c:1.1259},{o:1.1259,h:1.1285,l:1.1256,c:1.1278},{o:1.1278,h:1.1285,l:1.1269,c:1.1271},{o:1.1271,h:1.1275,l:1.1258,c:1.1260},{o:1.1260,h:1.1263,l:1.1245,c:1.1249},{o:1.1249,h:1.1255,l:1.1235,c:1.1238},{o:1.1238,h:1.1246,l:1.1220,c:1.1225},{o:1.1225,h:1.1240,l:1.1220,c:1.1236},{o:1.1236,h:1.1250,l:1.1234,c:1.1247},{o:1.1247,h:1.1260,l:1.1245,c:1.1256},{o:1.1256,h:1.1305,l:1.1249,c:1.13003}];
-function drawCandles(){ const c=document.getElementById('candleChart'); const ctx=c.getContext('2d'); const W=c.width,H=c.height; ctx.clearRect(0,0,W,H); const min=Math.min(...candles.map(x=>x.l))*0.9995,max=Math.max(...candles.map(x=>x.h))*1.0005,range=max-min; const cw=W/candles.length*0.6,gap=W/candles.length*0.4; candles.forEach((k,i)=>{ const x=i*(cw+gap)+gap/2,oY=H-(k.o-min)/range*H,cY=H-(k.c-min)/range*H,hY=H-(k.h-min)/range*H,lY=H-(k.l-min)/range*H,green=k.c>=k.o; ctx.strokeStyle=green?'#00ff88':'#ff4444'; ctx.beginPath(); ctx.moveTo(x+cw/2,hY); ctx.lineTo(x+cw/2,lY); ctx.stroke(); ctx.fillStyle=green?'#00ff88':'#ff4444'; ctx.fillRect(x,Math.min(oY,cY),cw,Math.max(2,Math.abs(oY-cY))); }); }
+
+let candles=[{o:1.12415,h:1.1250,l:1.1238,c:1.1248},{o:1.1248,h:1.1260,l:1.1240,c:1.1255},{o:1.1255,h:1.1258,l:1.1245,c:1.1250},{o:1.1250,h:1.1252,l:1.1235,c:1.1240}];
+function drawCandles(){ const c=document.getElementById('candleCanvas'); if(!c) return; const ctx=c.getContext('2d'); c.width=c.offsetWidth*2; c.height=220*2; ctx.clearRect(0,0,c.width,c.height); const w=c.width/candles.length; candles.forEach((k,i)=>{ const x=i*w+w/2; const highY=20, lowY=200; ctx.fillStyle=k.c>=k.o?'#00e676':'#ff4757'; ctx.fillRect(x-3, 50, 6, 100); }); }
 drawCandles(); loadMarkets();
 </script>
 </body>
