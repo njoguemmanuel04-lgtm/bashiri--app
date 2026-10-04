@@ -1,83 +1,32 @@
-<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<style>
-*{box-sizing:border-box}body{margin:0;background:#021a12;color:#fff;font-family:sans-serif;padding:12px}
-.till{background:#0d3b26;border:1px solid #d4af37;border-radius:16px;padding:16px;margin:12px 0}
-.till b{color:#ffdf7a;font-size:21px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.gcard{background:#103a27;border:1px solid #d4af37;border-radius:16px;padding:14px}
-.gcard b{font-size:26px;display:block}
-.table{background:rgba(255,255,255,.06);border:1px solid #d4af37;border-radius:16px;padding:10px;margin-top:12px}
-table{width:100%;border-collapse:collapse}th{color:#d4af37;font-size:11px;padding:6px;text-align:left}td{padding:8px;border-top:1px solid rgba(255,255,255,.1);font-size:12px}
-.btn{background:linear-gradient(90deg,#d4af37,#ffdf7a);color:#000;padding:6px 12px;border-radius:8px;font-weight:800;border:none;cursor:pointer}
-.publish{background:rgba(255,255,255,.06);border:1px solid #d4af37;border-radius:16px;padding:14px;margin-top:12px}
-.publish input{width:100%;padding:12px;border-radius:12px;border:1px solid #d4af37;background:#0a2a1d;color:white;margin:5px 0}
-</style></head><body>
-
-<div style="background:#0a3322;border:1.5px solid #d4af37;border-radius:14px;padding:12px;display:flex;justify-content:space-between"><span>👑 Kenya Betting Admin • Cloud Connected ☁️</span><span id="notif">0</span></div>
-<div class="till"><b>M-PESA TILL 0116982197</b><br><small id="stat">Active • Verified • Supabase Cloud</small></div>
-
-<div class="grid">
-<div class="gcard"><small>Total Bets</small><b id="b1">0</b><small>☁️ live</small></div>
-<div class="gcard"><small>Active Users</small><b id="b2">0</b></div>
-<div class="gcard"><small>Revenue (KES)</small><b id="b3">KES 0</b></div>
-<div class="gcard"><small>Pending Withdrawals</small><b id="b4">0</b><small>Needs 20→40</small></div>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BASHIRI ADMIN</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui}body{background:#020d07;color:#fff;padding:14px}
+.card{background:#0f2418;border:1.5px solid #d4af37;border-radius:14px;padding:14px;margin:10px 0}
+.btn{padding:10px 14px;border-radius:8px;border:none;font-weight:800;cursor:pointer;margin:3px}
+.btn-gold{background:#d4af37;color:#000}.btn-green{background:#00ff88;color:#000}.btn-red{background:#ff4444;color:#fff}
+input,select{width:100%;padding:12px;border-radius:8px;border:1px solid #2a4a35;background:#081410;color:#fff;margin:6px 0}
+.tabs{display:flex;gap:6px;margin:10px 0}.tab{flex:1;padding:10px;text-align:center;background:#102a1d;border:1px solid #d4af37;border-radius:10px;cursor:pointer;font-size:13px}.tab.active{background:#d4af37;color:#000}
+.item{padding:12px 0;border-bottom:1px solid #1a2a22;display:flex;justify-content:space-between;align-items:center;gap:10px}</style>
+</head><body>
+<h2>BASHIRI ADMIN 🔐</h2>
+<div id="loginBox" class="card"><p>Enter Admin PIN (till number)</p><input id="pin" type="password" placeholder="011698"><button class="btn btn-gold" onclick="login()">Login</button></div>
+<div id="adminBox" style="display:none">
+<div class="tabs"><div class="tab active" onclick="show('deposits',this)">💰 Deposits<br><small id="depCount">0</small></div><div class="tab" onclick="show('bets',this)">🎲 Bets<br><small id="betCount">0</small></div><div class="tab" onclick="show('markets',this)">⚽ Markets</div></div>
+<div id="depositsPage" class="card"><b>Till 0116982197 - M-Pesa Deposits</b><div id="depList">Loading...</div></div>
+<div id="betsPage" class="card" style="display:none"><b>Bets - 20→12 Profit Rule</b><div id="betList">Loading...</div></div>
+<div id="marketsPage" class="card" style="display:none"><b>Create Market</b><input id="mTitle" placeholder="e.g. Gor Mahia vs AFC Leopards"><select id="mStatus"><option value="open">OPEN</option><option value="closed">CLOSED</option></select><button class="btn btn-gold" onclick="createMarket()">Create +</button><hr style="margin:12px 0;border-color:#1a3a2a"><div id="marketList"></div></div>
 </div>
-
-<div class="table">
-<b>Withdrawal Requests — <span style="color:#d4af37">Growth Check</span></b>
-<table><thead><tr><th>USER</th><th>AMOUNT</th><th>PHONE</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody id="wBody"><tr><td colspan=5>Loading from Cloud...</td></tr></tbody></table>
-</div>
-
-<div class="publish">
-<b>⊕ Publish Market — FINAL FIXED</b><br><br>
-<input id="title" placeholder="e.g. Gor Mahia vs AFC Leopards" value="Gor mahia vs fc leopard">
-<div style="display:flex;gap:6px"><input id="odd1" value="1.85"><input id="odd2" value="2.10"><input id="oddX" value="3.20"></div>
-<button class="btn" style="width:100%;padding:14px;margin-top:10px;background:gold" onclick="doPublish()">🚀 Publish Market TO CLOUD</button>
-<div id="pStatus" style="margin-top:8px;color:#ffdf7a;word-break:break-all"></div>
-<div id="mList" style="margin-top:10px;font-size:12px"></div>
-</div>
-
 <script>
-// === SUPABASE CLOUD CONFIG ===
-const SUPA_URL="https://hkhqbtyyqgvaktamilxs.supabase.co";
-const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg";
-const supabaseClient = window.supabase.createClient(SUPA_URL, SUPA_KEY);
-
-async function doLoad(){
- try{
-  let res1 = await supabaseClient.from('markets').select('*').order('id',{ascending:false});
-  if(res1.error){ document.getElementById('stat').innerText=res1.error.message; }
-  else{ document.getElementById('b1').innerText=res1.data.length; document.getElementById('mList').innerHTML=res1.data.map(m=>`⚽ ${m.title} — ${m.status} <button class='btn' onclick='closeM(${m.id})'>Close</button>`).join('<br>'); }
-
-  let res2 = await supabaseClient.from('transactions').select('*');
-  if(res2.error){ document.getElementById('wBody').innerHTML='<tr><td colspan=5>Error: '+res2.error.message+' — Run SQL fix I gave</td></tr>'; }
-  else{
-   let tr=res2.data; let pend=tr.filter(t=>t.type=='withdraw'&&t.status=='pending').length;
-   document.getElementById('notif').innerText=pend; document.getElementById('b4').innerText=pend;
-   let rows=''; tr.filter(t=>t.type=='withdraw').forEach(t=>{
-     rows+=`<tr><td>${(t.phone||'User').substring(0,8)}</td><td>KES ${t.amount}</td><td>${t.phone||''}</td><td>${t.status}</td><td><button class='btn' onclick='approve(${t.id})'>Approve</button></td></tr>`;
-   });
-   document.getElementById('wBody').innerHTML=rows||'<tr><td colspan=5>No withdrawals</td></tr>';
-   document.getElementById('b2').innerText=tr.length;
-  }
- }catch(err){ document.getElementById('pStatus').innerText='Error: '+err.message; }
-}
-
-async function doPublish(){
- const title=document.getElementById('title').value.trim();
- const odd1=parseFloat(document.getElementById('odd1').value);
- const odd2=parseFloat(document.getElementById('odd2').value);
- const oddX=parseFloat(document.getElementById('oddX').value);
- if(!title){ alert('Enter Market Name'); return; }
- document.getElementById('pStatus').innerText='⏳ Publishing to Supabase Cloud...';
- let result = await supabaseClient.from('markets').insert([{title:title, odd1:odd1, odd2:odd2, oddX:oddX, status:'open'}]).select();
- if(result.error){ document.getElementById('pStatus').innerText='❌ '+result.error.message; alert(result.error.message); }
- else{ document.getElementById('pStatus').innerText='✅ Published! ID '+result.data[0].id+' — Cloud Saved!'; document.getElementById('title').value=''; doLoad(); }
-}
-
-async function approve(id){ let r=await supabaseClient.from('transactions').update({status:'approved'}).eq('id',id); if(r.error) alert(r.error.message); else doLoad(); }
-async function closeM(id){ await supabaseClient.from('markets').update({status:'closed'}).eq('id',id); doLoad(); }
-
-doLoad();
+const sb=supabase.createClient("https://hkhqbtyyqgvaktamilxs.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg");
+function login(){if(document.getElementById('pin').value!=='011698'){alert('Wrong PIN! 011698');return}document.getElementById('loginBox').style.display='none';document.getElementById('adminBox').style.display='block';loadAll()}
+function show(n,el){['deposits','bets','markets'].forEach(x=>document.getElementById(x+'Page').style.display='none');document.getElementById(n+'Page').style.display='block';document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active')}
+async function loadAll(){loadDeposits();loadBets();loadMarkets()}
+async function loadDeposits(){const{data}=await sb.from('deposits').select('*').order('created_at',{ascending:false}).limit(50);document.getElementById('depCount').innerText=(data?.filter(d=>d.status==='pending').length||0)+' pending';document.getElementById('depList').innerHTML=data?.length?data.map(d=>`<div class="item"><div><b>KES ${d.amount}</b> - ${d.mpesa_code||'NO CODE'}<br><small>${d.phone||''} • ${d.status} • ${new Date(d.created_at).toLocaleString()}</small></div>${d.status==='pending'?`<div><button class="btn btn-green" onclick="approveDep('${d.id}')">Approve</button><button class="btn btn-red" onclick="rejectDep('${d.id}')">Reject</button></div>`:`<b style="color:${d.status==='approved'?'#0f8':'#f44'}">${d.status}</b>`}</div>`).join(''):'No deposits yet - users will appear here after paying to Till 0116982197';}
+async function approveDep(id){await sb.from('deposits').update({status:'approved'}).eq('id',id);alert('Approved! Now manually add to user wallet');loadDeposits()}
+async function rejectDep(id){await sb.from('deposits').update({status:'rejected'}).eq('id',id);loadDeposits()}
+async function loadBets(){const{data}=await sb.from('bets').select('*').order('created_at',{ascending:false}).limit(50);document.getElementById('betCount').innerText=(data?.filter(b=>b.status==='open').length||0)+' open';document.getElementById('betList').innerHTML=data?.length?data.map(b=>{let p=b.choice==='1'?Math.round(b.amount*0.6):b.choice==='X'?Math.round(b.amount*1.5):Math.round(b.amount*0.8);return `<div class="item"><div><b>${b.choice} @ ${b.odds}</b> KES ${b.amount}→${p} profit<br><small>${b.market_id} • ${b.status} • ${new Date(b.created_at).toLocaleString()}</small></div>${b.status==='open'?`<div><button class="btn btn-green" onclick="settle('${b.id}','won')">WIN +${b.amount+p}</button><button class="btn btn-red" onclick="settle('${b.id}','lost')">LOSE</button></div>`:`<b>${b.status}</b>`}</div>`}).join(''):'No bets - your 20→12 bet from screenshot will appear here';}
+async function settle(id,s){await sb.from('bets').update({status:s}).eq('id',id);loadBets()}
+async function loadMarkets(){const{data}=await sb.from('markets').select('*').order('id',{ascending:false}).limit(30);document.getElementById('marketList').innerHTML=data?.map(m=>`<div class="item"><div><b>${m.title}</b><br><small>${m.status}</small></div><button class="btn btn-red" onclick="delM('${m.id}')">Del</button></div>`).join('')||'No markets';}
+async function createMarket(){const t=document.getElementById('mTitle').value;if(!t)return alert('Enter title');const{error}=await sb.from('markets').insert([{title:t,status:document.getElementById('mStatus').value}]);if(error)return alert(error.message);document.getElementById('mTitle').value='';loadMarkets()}
+async function delM(id){if(!confirm('Delete?'))return;await sb.from('markets').delete().eq('id',id);loadMarkets()}
 </script></body></html>
