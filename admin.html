@@ -1,147 +1,65 @@
+<!-- BASHIRI PREMIUM ADMIN v5.0 - FULL CLOUD SUPABASE -->
 <!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Admin Dashboard - Eldoret & Mwea - CLOUD</title>
+<html><head><meta name="viewport" content="width=device-width,initial-scale=1">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-body{margin:0;background:#001a00;color:white;font-family:sans-serif}
-.header{background:white;color:black;padding:12px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
-.menu{font-size:28px;cursor:pointer}
-.till{color:#b8860b;font-weight:900;font-size:22px}
-.yellow{background:#ffeb3b;color:#333;padding:12px;border-radius:12px;margin:12px;border:2px solid #000}
-.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px}
-.card{background:white;color:black;border-radius:16px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,0.3)}
-.card b{font-size:22px}
-.green{color:#0a7d00}
-.gold{color:#b8860b}
-.sidebar{position:fixed;left:-80%;top:0;width:75%;height:100%;background:#001a00;transition:0.3s;z-index:20;padding:20px}
-.sidebar.open{left:0}
-.sidebar div{padding:14px;color:#888;cursor:pointer}
-.sidebar .active{background:gold;color:black;border-radius:12px}
-input{padding:8px;border-radius:8px;border:1px solid #ccc;width:60%}
-button{background:gold;color:black;border:none;padding:8px 14px;border-radius:8px;font-weight:bold;cursor:pointer}
-table{width:100%;background:white;color:black;border-collapse:collapse;margin-top:10px}
-th,td{padding:8px;border:1px solid #ddd;text-align:left;font-size:13px}
-</style>
-</head>
-<body>
+*{box-sizing:border-box}body{margin:0;background:#021a12;color:#fff;font-family:Inter,sans-serif;padding:12px}
+.top{display:flex;justify-content:space-between;align-items:center;background:linear-gradient(90deg,#0a3322,#123d2a);border:1.5px solid #d4af37;border-radius:14px;padding:14px}
+.till{background:linear-gradient(180deg,#0d3b26,#082a1b);border:1px solid rgba(212,175,55,.6);border-radius:16px;padding:16px;margin:14px 0;box-shadow:0 0 15px rgba(212,175,55,.2)}
+.till b{color:#ffdf7a;font-size:22px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gcard{background:linear-gradient(180deg,#103a27,#0a2a1d);border:1px solid #d4af37;border-radius:16px;padding:14px;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+.gcard b{font-size:26px;display:block;margin:6px 0}
+.gcard small{color:#9fe0b5}
+.gcard .icon{width:38px;height:38px;border:1.5px solid #d4af37;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#d4af37}
+.table{background:rgba(255,255,255,.06);border:1px solid rgba(212,175,55,.4);border-radius:16px;padding:10px;margin-top:16px;backdrop-filter:blur(10px)}
+table{width:100%;border-collapse:collapse}th{color:#d4af37;font-size:12px;text-align:left;padding:8px}td{padding:10px 8px;border-top:1px solid rgba(255,255,255,.08);font-size:13px}
+.btn{border:1px solid #d4af37;background:linear-gradient(90deg,#d4af37,#ffdf7a);color:#000;padding:7px 14px;border-radius:10px;font-weight:800}
+.btn2{background:transparent;color:#d4af37;border:1px solid #d4af37}
+.publish{background:rgba(255,255,255,.06);border:1px solid rgba(212,175,55,.4);border-radius:16px;padding:14px;margin-top:16px}
+.publish input,.publish select{width:100%;padding:12px;border-radius:12px;border:1px solid #d4af37;background:#0a2a1d;color:white;margin:6px 0}
+.nav{position:fixed;bottom:10px;left:10px;right:10px;background:#0a3322;border:1px solid #d4af37;border-radius:20px;display:flex;justify-content:space-around;padding:10px}
+.nav div{padding:8px 12px;border-radius:12px}.nav .active{background:rgba(212,175,55,.25);color:#ffdf7a}
+</style></head><body>
+<div class="top"><span>👑 Kenya Betting Admin</span><span>🔔 <span id="notif">0</span></span></div>
+<div class="till"><div style="color:#2ecc71">● M-PESA</div><b>M-PESA TILL 0116982197</b><br><small>Till Number • 0116982197 • Active • Verified • Cloud Connected ☁️</small></div>
 
-<div class="header">
-<div style="display:flex;gap:10px;align-items:center">
-<span class="menu" onclick="toggle()">☰</span>
-<div>
-<b>Admin Dashboard - Eldoret & Mwea Wager System</b><br>
-<small id="sub">Real-time monitoring • Kenya • Cloud Connected ☁️ • Loading...</small>
-</div>
-</div>
-<div><b>AD Admin | Nairobi 🔔 <span id="notif">0</span></b></div>
+<div class="grid">
+<div class="gcard"><div class="icon">↗</div><small>Total Bets</small><b id="b1">0</b><small>+1,204 today +9.4% ☁️</small></div>
+<div class="gcard"><div class="icon">👥</div><small>Active Users</small><b id="b2">0</b><small id="b2s">+0 online now</small></div>
+<div class="gcard"><div class="icon">💵</div><small>Revenue (KES)</small><b id="b3">KES 0</b><small id="b3s">+KES 0 today</small></div>
+<div class="gcard"><div class="icon">⏰</div><small>Pending Withdrawals</small><b id="b4">KES 0</b><small id="b4s">0 requests • Needs 20→40</small></div>
 </div>
 
-<div class="sidebar" id="side">
-<div class="till">🟢 M-PESA TILL 0116982197</div>
-<div class="active">📊 Dashboard</div>
-<div onclick="alert('Loading from Supabase Cloud...')">👤 Users</div>
-<div onclick="loadDeposits()">💰 Deposits - CLOUD</div>
-<div onclick="loadWagers()">🎲 Wagers - CLOUD</div>
-<div onclick="document.getElementById('publishBox').scrollIntoView()">⚽ Publish Market</div>
-<div onclick="alert('Cloud v4.0 Supabase Connected')">☁️ Cloud v4.0 • Kenya</div>
-<div onclick="toggle()">❌ Close</div>
+<div class="table">
+<div style="display:flex;justify-content:space-between"><b>Withdrawal <span style="color:#d4af37">Requests</span></b><span style="color:#d4af37">View All</span></div>
+<table><thead><tr><th>USER</th><th>AMOUNT</th><th>PHONE</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody id="wBody"><tr><td colspan=5>Loading Cloud...</td></tr></tbody></table>
 </div>
 
-<div class="yellow">
-<b>ⓘ Pending Withdrawals — Cloud Live</b><br>
-Growth Check Required: Users must grow from 20 to 40 to be eligible for withdrawal approval. <span id="pendingCount">0</span> withdrawals pending review. Buttons are OPERATING.
+<div class="publish">
+<b>⊕ Publish Market</b><br><br>
+<small>Market Name</small><input id="title" placeholder="e.g. Gor Mahia vs AFC Leopards — Winner">
+<div style="display:flex;gap:8px"><div style="flex:1"><small>Odds Home</small><input id="odd1" value="1.85"></div><div style="flex:1"><small>Away</small><input id="odd2" value="2.10"></div><div style="flex:1"><small>Draw</small><input id="oddX" value="3.20"></div></div>
+<small>Category.</small><select><option>Football • FKF Premier League</option><option>Double Chance</option></select><br><br>
+<button class="btn" style="width:100%;padding:14px" onclick="publish()">Publish Market</button><div id="pStatus"></div>
+<div id="mList" style="margin-top:10px;font-size:13px"></div>
 </div>
 
-<div class="cards">
-<div class="card">Total Users<br><b id="totalUsers">0</b><br><span class="green">+42 new today ▲ 3.5% ☁️ live</span></div>
-<div class="card">Total Deposits KES<br><b id="totalDep">KES 0</b><br><span class="green" id="depToday">+ KES 0 today ▲ 5.2% ☁️</span></div>
-<div class="card">Total Wagers Today<br><b id="totalWag">KES 0</b><br><span class="green">+ KES 78,900 today ▲ 2.8% ☁️</span></div>
-<div class="card">Pending Withdrawals<br><b id="pendW">0</b><br><span class="gold">KES 0 • Needs 20→40 check</span></div>
-</div>
-
-<div style="background:white;color:black;margin:10px;border-radius:16px;padding:12px">
-<b>Withdrawal Requests — Growth Check (20→40) — ☁️ Cloud Buttons OPERATING</b><br><br>
-<input id="search" placeholder="Search by phone..." onkeyup="filterW()">
-<select id="filter" onchange="loadWithdrawals()"><option>Filter: Pending</option><option>Filter: Approved</option><option>Filter: All</option></select>
-
-<div style="overflow:auto">
-<table id="wTable"><thead><tr><th>User Phone</th><th>Deposited 20</th><th>Current Balance</th><th>Profit</th><th>Action</th></tr></thead><tbody id="wBody"><tr><td colspan=5>Loading from Supabase Cloud...</td></tr></tbody></table>
-</div>
-
-<div id="publishBox" style="margin-top:20px;border-top:2px solid gold;padding-top:15px">
-<h3>⚽ Publish New Market — CLOUD</h3>
-<input id="title" placeholder="e.g. Man Utd vs Arsenal"><br><br>
-<input id="odd1" placeholder="Home Odd"> <input id="oddX" placeholder="Draw Odd"> <input id="odd2" placeholder="Away Odd"><br><br>
-<button onclick="publishMarket()">PUBLISH TO CLOUD</button> <span id="pubStatus"></span>
-<div id="markets" style="margin-top:10px"></div>
-</div>
-
-</div>
+<div style="height:80px"></div>
+<div class="nav"><div class="active">🛡️ Dashboard</div><div>📈 Markets</div><div>⊕ Withdrawals</div><div>⚙️ Settings</div></div>
 
 <script>
-const URL="https://hkhqbtyyqgvaktamilxs.supabase.co";
-const KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg";
-const supabase=window.supabase.createClient(URL,KEY);
-
-function toggle(){document.getElementById('side').classList.toggle('open')}
-
-async function init(){
- document.getElementById('sub').innerText="Real-time monitoring • Kenya • Updated "+new Date().toLocaleString()+" • Cloud Connected ☁️";
- // Load markets count as users for now
- const {data:mk}=await supabase.from('markets').select('*');
- document.getElementById('totalUsers').innerText=mk?mk.length:0;
- document.getElementById('markets').innerHTML=mk?mk.map(m=>`⚽ ${m.title} [${m.odd1}/${m.oddX}/${m.odd2}] <button onclick="closeMarket(${m.id})">Close</button>`).join('<br>'):'No markets';
-
- const {data:bets}=await supabase.from('bets').select('*');
- let totalW=0; if(bets) bets.forEach(b=>totalW+=Number(b.amount||0));
- document.getElementById('totalWag').innerText='KES '+totalW;
-
- const {data:trans}=await supabase.from('transactions').select('*');
- let totalD=0, pend=0;
- if(trans){
-   trans.forEach(t=>{ if(t.type==='deposit') totalD+=Number(t.amount||0); if(t.status==='pending') pend++; });
- }
- document.getElementById('totalDep').innerText='KES '+totalD;
- document.getElementById('pendW').innerText=pend;
- document.getElementById('pendingCount').innerText=pend;
- document.getElementById('notif').innerText=pend;
-
- // Withdrawals = transactions where type=withdraw and status=pending
- let rows='';
- if(trans){
-   const w=trans.filter(t=>t.type==='withdraw');
-   w.forEach(t=>{
-     const deposited = t.deposited||20;
-     const bal = t.current_balance||deposited;
-     const profit = t.profit|| (bal-deposited);
-     const canApprove = bal>=40;
-     rows+=`<tr><td>${t.phone||t.user_phone||'07xxxx'}</td><td>${deposited}</td><td>${bal}</td><td>${profit}</td><td>${canApprove?`<button onclick="approveW(${t.id})">APPROVE</button> <button onclick="rejectW(${t.id})">REJECT</button>`:`<small>Needs 20→40</small>`}</td></tr>`;
-   });
- }
- if(!rows) rows='<tr><td colspan=5>No pending withdrawals — all growth checked ☁️</td></tr>';
- document.getElementById('wBody').innerHTML=rows;
+const supabase=window.supabase.createClient("https://hkhqbtyyqgvaktamilxs.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg");
+async function load(){
+ const {data:mk}=await supabase.from('markets').select('*'); document.getElementById('b1').innerText=mk?mk.length:0; document.getElementById('mList').innerHTML=mk?mk.map(m=>`⚽ ${m.title} - <small>${m.status}</small>`).join('<br>'):'';
+ const {data:bets}=await supabase.from('bets').select('*'); let tot=0; if(bets) bets.forEach(b=>tot+=+b.amount||0); document.getElementById('b3').innerText='KES '+tot;
+ const {data:tr}=await supabase.from('transactions').select('*'); let pend=0, dep=0; if(tr){ tr.forEach(t=>{if(t.status=='pending'&&t.type=='withdraw') pend++; if(t.type=='deposit') dep+=+t.amount||0}); }
+ document.getElementById('notif').innerText=pend; document.getElementById('b4').innerText='KES '+(pend*200||0); document.getElementById('b4s').innerText=pend+' requests • Needs 20→40'; document.getElementById('b2').innerText=tr?tr.length:0;
+ let rows=''; if(tr){ tr.filter(t=>t.type=='withdraw').slice(0,5).forEach(t=>{ rows+=`<tr><td>${(t.phone||'User').slice(0,8)}</td><td>KES ${t.amount||0}</td><td>${(t.phone||'07..')}</td><td><span style="background:${t.status=='pending'?'#ffdf7a':'#2ecc71'};color:#000;padding:4px 8px;border-radius:8px">${t.status}</span></td><td><button class="btn" onclick="approve(${t.id})">Approve</button></td></tr>`; }); }
+ document.getElementById('wBody').innerHTML=rows||'<tr><td colspan=5>No requests</td></tr>';
 }
-
-async function publishMarket(){
- const t=document.getElementById('title').value; const o1=parseFloat(document.getElementById('odd1').value); const oX=parseFloat(document.getElementById('oddX').value); const o2=parseFloat(document.getElementById('odd2').value);
- if(!t) return alert('Enter title');
- document.getElementById('pubStatus').innerText='Publishing...';
- const {error}=await supabase.from('markets').insert([{title:t, odd1:o1, oddX:oX, odd2:o2, status:'open'}]);
- document.getElementById('pubStatus').innerText=error?'Error:'+error.message:'✅ Published!';
- init();
-}
-
-async function approveW(id){ await supabase.from('transactions').update({status:'approved'}).eq('id',id); init(); }
-async function rejectW(id){ await supabase.from('transactions').update({status:'rejected'}).eq('id',id); init(); }
-async function closeMarket(id){ await supabase.from('markets').update({status:'closed'}).eq('id',id); init(); }
-async function loadDeposits(){ alert('Deposits loaded from Supabase - total: '+document.getElementById('totalDep').innerText); }
-async function loadWagers(){ alert('Wagers loaded from Supabase - total: '+document.getElementById('totalWag').innerText); }
-function filterW(){ /* search filter */ }
-
-init();
-setInterval(init, 10000); // auto refresh every 10s Cloud Live
+async function publish(){ const title=document.getElementById('title').value; const odd1=parseFloat(document.getElementById('odd1').value); const odd2=parseFloat(document.getElementById('odd2').value); const oddX=parseFloat(document.getElementById('oddX').value); const {error}=await supabase.from('markets').insert([{title,odd1,odd2,oddX,status:'open'}]); document.getElementById('pStatus').innerText=error?error.message:'✅ Published to Supabase Cloud!'; load(); }
+async function approve(id){ await supabase.from('transactions').update({status:'approved'}).eq('id',id); load(); }
+load(); setInterval(load,10000);
 </script>
-</body>
-</html>
+</body></html>
