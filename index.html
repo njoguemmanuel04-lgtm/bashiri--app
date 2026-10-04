@@ -96,7 +96,7 @@ async function placeBet(market_id,choice){
  USER_BAL-=20; updateBal();
  await sb.from('profiles').update({balance:USER_BAL}).eq('id',USER_ID)
  let {error}=await sb.from('bets').insert([{user_id:USER_ID,market_id:market_id,choice:choice,stake:20,status:'open'}])
- if(error){ let {error:e2}=await sb.from('bets').insert([{user_id:USER_ID,market_id:market_id,selection:choice,amount:20,status:'open'}]) }
+ if(error){ await sb.from('bets').insert([{user_id:USER_ID,market_id:market_id,selection:choice,amount:20,status:'open'}]) }
  alert('Bet placed! 20 deducted');
 }
 async function withdraw(){
@@ -107,15 +107,16 @@ async function withdraw(){
  if(amount<40) return alert('Min withdraw 40 - You entered '+amount)
  if(USER_BAL<amount) return alert('Low balance '+USER_BAL+' - You want '+amount)
  if(USER_BAL<40) return alert('Need 40 to withdraw - Your balance '+USER_BAL+' - Grow 20 to 40 first')
+ let {error}=await sb.from('withdrawals').insert([{user_id:USER_ID,amount:amount,phone:phone}])
+ if(error){ alert('FAILED: '+error.message); return }
  USER_BAL-=amount; updateBal();
  await sb.from('profiles').update({balance:USER_BAL}).eq('id',USER_ID)
- await sb.from('withdrawals').insert([{user_id:USER_ID,amount:amount,mpesa_number:phone,status:'pending',mpesa_code:phone}])
  alert('Withdraw KES '+amount+' to '+phone+' requested! Admin will send in 10 mins')
  loadWithdrawals();
 }
 async function loadWithdrawals(){
  let {data}=await sb.from('withdrawals').select('*').eq('user_id',USER_ID).order('created_at',{ascending:false})
- document.getElementById('withHistory').innerHTML='<h3>Your Withdrawals</h3>'+(data||[]).map(w=>`<div style="border-bottom:1px solid #222;padding:8px 0">${w.amount} KES to ${w.mpesa_number||w.mpesa_code||''} - ${w.status} - ${new Date(w.created_at).toLocaleString()}</div>`).join('')||'No withdrawals'
+ document.getElementById('withHistory').innerHTML='<h3>Your Withdrawals</h3>'+(data||[]).map(w=>`<div style="border-bottom:1px solid #222;padding:8px 0">${w.amount} KES to ${w.phone||''} - ${w.status||'pending'} - ${new Date(w.created_at).toLocaleString()}</div>`).join('')||'No withdrawals'
 }
 init();
 </script>
