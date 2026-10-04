@@ -64,23 +64,27 @@ async function createMarket(){
 }
 async function delMarket(id){ if(confirm('Delete?')){ await sb.from('markets').delete().eq('id',id); loadMarkets(); } }
 
-// FIXED - NO RELATIONSHIP NEEDED
 async function loadBets(){
  let {data,error}=await sb.from('bets').select('*').order('created_at',{ascending:false});
  if(error){ document.getElementById('betsList').innerHTML='ERROR: '+error.message; return; }
  document.getElementById('cBets').innerText=data.length;
  if(data.length==0){ document.getElementById('betsList').innerHTML='No bets yet. Go to main site and place YES 20 bet.'; return; }
- let ids=[...new Set(data.map(b=>b.market_id))];
+ let ids=[...new Set(data.map(b=>b.market_id).filter(Boolean))];
  let {data:mk}=await sb.from('markets').select('id,title').in('id',ids);
  let mp={}; (mk||[]).forEach(m=>mp[m.id]=m.title);
- document.getElementById('betsList').innerHTML=data.map(b=>`
+ document.getElementById('betsList').innerHTML=data.map(b=>{
+  let stake=b.stake||b.amount||b.stake_amount||20;
+  let choice=(b.choice||b.selection||b.outcome||'yes').toString();
+  let choiceShow=choice=='1'?'YES':choice=='0'?'NO':choice.toUpperCase();
+  return `
  <div style="background:#1a1a1a;border:1px solid #333;padding:12px;border-radius:10px;margin-bottom:10px">
- <b>${mp[b.market_id]||'Market'}</b> | Choice: ${b.choice.toUpperCase()} | Stake: ${b.stake} | <span style="color:${b.status=='won'?'#00ff88':b.status=='lost'?'#ff4757':'#d4af37'}">${b.status.toUpperCase()}</span><br>
+ <b>${mp[b.market_id]||'Market'}</b> | Choice: ${choiceShow} | Stake: ${stake} | <span style="color:${b.status=='won'||b.status=='WON'?'#00ff88':b.status=='lost'?'#ff4757':'#d4af37'}">${(b.status||'pending').toUpperCase()}</span><br>
  <small>User ${b.user_id.slice(0,8)} • ${new Date(b.created_at).toLocaleString()}</small>
  <div style="margin-top:10px;display:flex;gap:8px">
- <button class="btn green" onclick="resolveBet('${b.id}','${b.user_id}',${b.stake},'won')" ${b.status!='pending'?'disabled style=opacity:0.3':''}>✅ WIN → Pay 32</button>
- <button class="btn red" onclick="resolveBet('${b.id}','${b.user_id}',${b.stake},'lost')" ${b.status!='pending'?'disabled style=opacity:0.3':''}>❌ LOSE</button>
- </div></div>`).join('');
+ <button class="btn green" onclick="resolveBet('${b.id}','${b.user_id}',${stake},'won')" ${(b.status!='pending'&&b.status!='PENDING')?'disabled style=opacity:0.3':''}>✅ WIN → Pay 32</button>
+ <button class="btn red" onclick="resolveBet('${b.id}','${b.user_id}',${stake},'lost')" ${(b.status!='pending'&&b.status!='PENDING')?'disabled style=opacity:0.3':''}>❌ LOSE</button>
+ </div></div>`;
+ }).join('');
 }
 async function resolveBet(bid,uid,stake,res){
  if(!confirm('Mark as '+res.toUpperCase()+'?')) return;
@@ -88,7 +92,7 @@ async function resolveBet(bid,uid,stake,res){
  if(res=='won'){
   let {data}=await sb.from('profiles').select('balance').eq('id',uid).single();
   await sb.from('profiles').update({balance:(data.balance||0)+32}).eq('id',uid);
-  alert('User paid 32');
+  alert('Paid 32 to user');
  }
  loadBets(); loadUsers();
 }
