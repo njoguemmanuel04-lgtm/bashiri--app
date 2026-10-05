@@ -1,8 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BASHIRI PREDICT - Send Money 0116982197</title>
+<!-- GOOGLE VERIFICATION - KEEP THIS -->
+<meta name="google-site-verification" content="aFDJAL6FZJC_yjULR2v94OIk1oepDSVrOprWJfM_XJw" />
+<!-- GOOGLE SEO START -->
+<title>BASHIRI PREDICT - Forex Trading Kenya | Send Money 0116982197</title>
+<meta name="description" content="Bashiri Predict - Kenya's forex trading platform. Trade EUR/USD, GBP/USD, XAU/USD Gold, BTC/USD from 20 KES. Win 1.6x in 2H. Send Money 0116982197. Nairobi, Kenya.">
+<meta name="keywords" content="forex trading Kenya, Bashiri app, EUR USD Kenya, Gold trading Kenya, BTC Kenya, Send Money 0116982197">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://bashiri-app.vercel.app/">
+<meta property="og:title" content="Bashiri - Forex Trading Kenya | Trade & Win 1.6x">
+<meta property="og:description" content="Trade EUR/USD, Gold, BTC from 20 KES. Win 1.6x in 2H. Send Money 0116982197">
+<meta property="og:image" content="https://bashiri-app.vercel.app/logo.png">
+<meta property="og:url" content="https://bashiri-app.vercel.app/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_KE">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FinancialService","name":"Bashiri Predict","url":"https://bashiri-app.vercel.app/","description":"Forex trading in Kenya","address":{"@type":"PostalAddress","addressLocality":"Nairobi","addressCountry":"KE"},"contactPoint":{"@type":"ContactPoint","telephone":"+254116982197","contactType":"customer service"}}</script>
+<!-- GOOGLE SEO END -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 body{background:#0a0a0a;color:#fff;font-family:system-ui;margin:0;padding:10px}
@@ -31,38 +47,15 @@ input{width:95%;padding:12px;background:#000;border:1px solid #333;color:#fff;bo
 <button class="btn" style="background:#222;color:#fff;flex:1" onclick="show('wallet')">Wallet</button>
 <button class="btn" style="background:#222;color:#fff;flex:1" onclick="show('forex')">Forex</button>
 </div>
-
 <div id="view-markets"></div>
-
 <div id="view-wallet" style="display:none">
-<div class="wallet-bal">
-<p>Your Balance</p>
-<h1 id="balBig">KES 20</h1>
-<p>Grow 20 -> 40 to Withdraw</p>
-<div class="progress"><div id="prog" class="prog" style="width:50%"></div></div>
-<small id="progText">50% - Need 20 more</small>
-<small id="progOk" style="display:none;color:#00ff88;font-weight:700">✅ Ready to Withdraw!</small>
-</div>
-<div class="card">
-<h3>💰 Deposit - Send Money 0116982197</h3>
-<p>1. M-Pesa -> Send Money -> Phone: <b>0116982197</b></p>
-<p>2. Amount Min 20</p>
-<button class="btn gold" onclick="alert('After Send Money 0116982197, wait admin to add balance')">I Sent Money</button>
-</div>
-<div class="card">
-<h3>💸 Withdraw - Grow 20 to 40</h3>
-<p>Min: <b>KES 40</b></p>
-<input id="withPhone" placeholder="M-Pesa Number 07xx...">
-<input id="withAmount" type="number" placeholder="Amount">
-<button class="btn green" onclick="withdraw()">Withdraw</button>
-</div>
+<div class="wallet-bal"><p>Your Balance</p><h1 id="balBig">KES 20</h1><p>Grow 20 -> 40 to Withdraw</p><div class="progress"><div id="prog" class="prog" style="width:50%"></div></div><small id="progText">50% - Need 20 more</small><small id="progOk" style="display:none;color:#00ff88;font-weight:700">✅ Ready to Withdraw!</small></div>
+<div class="card"><h3>💰 Deposit - Send Money 0116982197</h3><p>1. M-Pesa -> Send Money -> Phone: <b>0116982197</b></p><p>2. Amount Min 20</p><button class="btn gold" onclick="alert('After Send Money 0116982197, wait admin to add balance')">I Sent Money</button></div>
+<div class="card"><h3>💸 Withdraw - Grow 20 to 40</h3><p>Min: <b>KES 40</b></p><input id="withPhone" placeholder="M-Pesa Number 07xx..."><input id="withAmount" type="number" placeholder="Amount"><button class="btn green" onclick="withdraw()">Withdraw</button></div>
 <div class="card" id="withHistory">Loading...</div>
 </div>
-
 <div id="view-forex" style="display:none">
-<div class="card" style="border-color:#00ff88">
-<div style="display:flex;justify-content:space-between"><div><b style="color:#00ff88">FOREX LIVE</b> <small id="pairName">EUR/USD</small></div><div id="livePrice" class="live-price price-up">1.0866</div></div>
-</div>
+<div class="card" style="border-color:#00ff88"><div style="display:flex;justify-content:space-between"><div><b style="color:#00ff88">FOREX LIVE</b> <small id="pairName">EUR/USD</small></div><div id="livePrice" class="live-price price-up">1.0866</div></div></div>
 <div style="display:flex;gap:6px;flex-wrap:wrap;">
 <button class="forex-pair active" onclick="setPair('EUR/USD',this)">EUR/USD</button>
 <button class="forex-pair" onclick="setPair('GBP/USD',this)">GBP/USD</button>
@@ -82,7 +75,6 @@ input{width:95%;padding:12px;background:#000;border:1px solid #333;color:#fff;bo
 <div id="fxTrades" style="margin-top:12px"></div>
 </div>
 </div>
-
 <script>
 const SUPABASE_URL='https://hkhqbtyyqgvaktamilxs.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg';
@@ -90,7 +82,6 @@ const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 let USER_ID=localStorage.getItem('bashiri_uid');
 if(!USER_ID){ USER_ID=crypto.randomUUID(); localStorage.setItem('bashiri_uid',USER_ID); }
 let USER_BAL=20;
-
 async function init(){
 let {data:prof}=await sb.from('profiles').select('balance').eq('id',USER_ID).single();
 if(!prof){ await sb.from('profiles').insert([{id:USER_ID,balance:20}]); }
@@ -143,7 +134,6 @@ async function loadWithdrawals(){
 let {data}=await sb.from('withdrawals').select('*').eq('user_id',USER_ID).order('created_at',{ascending:false});
 document.getElementById('withHistory').innerHTML=(data||[]).map(w=>`<div>${w.amount} to ${w.phone} - ${w.status}</div>`).join('')||'No withdraw history';
 }
-
 let currentPair="EUR/USD"; let lastPrice=1.0866;
 function initForex(){ loadTvChart(currentPair); startLivePrice(); }
 function setPair(pair,el){
@@ -168,8 +158,7 @@ if(el){ el.innerText=lastPrice.toFixed(4); el.className=change>=0?'live-price pr
 }
 function getFxTrades(){ try{return JSON.parse(localStorage.getItem('bashiri_fx_trades')||'[]')}catch(e){return []} }
 function saveFxTrades(t){ localStorage.setItem('bashiri_fx_trades',JSON.stringify(t)); }
-
-// ✅ FIXED - ONLY USES COLUMNS THAT EXIST (amount, NOT stake)
+// ✅ FIXED - ONLY USES COLUMNS THAT EXIST (amount)
 async function tradeFx(type){
 let amt=parseInt(document.getElementById('fxAmount').value)||20;
 if(amt<20) return alert('Min 20 bob');
@@ -177,16 +166,15 @@ if(USER_BAL<amt) return alert('Low balance! KES '+USER_BAL);
 let entryPrice=lastPrice;
 USER_BAL-=amt; updateBal();
 await sb.from('profiles').update({balance:USER_BAL}).eq('id',USER_ID);
-// SAVE TO SUPABASE FOR ADMIN - market_id = FOREX_EURUSD
+// SAVE TO SUPABASE FOR ADMIN - market_id = FOREX
 let mid='FOREX_'+currentPair.replace('/','');
 let {error}=await sb.from('bets').insert([{user_id:USER_ID, market_id:mid, choice:type+' '+currentPair+' @ '+entryPrice.toFixed(4), amount:amt, status:'active'}]);
-if(error){ alert('Save failed: '+error.message); console.log(error); USER_BAL+=amt; updateBal(); return; }
+if(error){ alert('Save failed: '+error.message); USER_BAL+=amt; updateBal(); return; }
 let trade={id:crypto.randomUUID(),pair:currentPair,type:type,amount:amt,entry:entryPrice,expiry:Date.now()+2*60*60*1000,status:'active'};
 let trades=getFxTrades(); trades.unshift(trade); saveFxTrades(trades);
 document.getElementById('fxResult').innerHTML=`<div class="card" style="background:#00ff88;color:#000">✅ ${type} ${currentPair} @ ${entryPrice.toFixed(4)} KES ${amt} SAVED TO ADMIN</div>`;
 renderFxTrades();
 }
-
 async function renderFxTrades(){
 let trades=getFxTrades();
 if(!trades.length){ document.getElementById('fxTrades').innerHTML='<div class="muted">No active sessions</div>'; return; }
