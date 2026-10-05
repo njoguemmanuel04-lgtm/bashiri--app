@@ -1,90 +1,75 @@
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ADMIN 0116982197 FINAL NO DRAW COUNTDOWN</title>
+<title>ADMIN FINAL SYNC COUNTDOWN</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 body{background:#0a0a0a;color:#fff;font-family:system-ui;margin:0;padding:10px}
 .card{background:#111;border:1px solid #222;border-radius:12px;padding:12px;margin:10px 0}
 .btn{padding:10px 14px;border-radius:8px;border:0;font-weight:800;cursor:pointer}
 .gold{background:#d4af37;color:#000}.dark{background:#222;color:#fff}.green{background:#00ff88;color:#000}.red{background:#ff184e;color:#fff}
-input{width:100%;padding:10px;background:#000;color:#fff;border:1px solid #333;border-radius:8px;margin:6px 0;box-sizing:border-box}
+input{width:100%;padding:10px;background:#000;color:#fff;border:1px solid #333;border-radius:8px;margin:6px 0}
 .tab{display:none}.tab.active{display:block}
 .countdown{font-size:20px;font-weight:900;color:#d4af37}
 </style>
 </head><body>
-<h3 style="color:#d4af37">ADMIN 0116982197 - REAL NO DRAW - COUNTDOWN</h3>
-<div class="card"><div style="display:flex;justify-content:space-between"><b id="liveAdmin" style="color:#00ff88">EUR/USD Live: Loading REAL...</b><b id="stats">Loading...</b></div></div>
+<h3 style="color:#d4af37">ADMIN 0116982197 - REAL NO DRAW - SYNC COUNTDOWN</h3>
+<div class="card"><div style="display:flex;justify-content:space-between"><b id="liveAdmin" style="color:#00ff88">EUR/USD Live: Loading...</b><b id="stats"></b></div></div>
 <div style="display:flex;gap:8px">
-<button class="btn gold" style="flex:1" onclick="showTab('markets')">Markets</button>
-<button class="btn dark" style="flex:1" onclick="showTab('bets')">Bets 5MIN</button>
+<button class="btn dark" style="flex:1" onclick="showTab('markets')">Markets</button>
+<button class="btn gold" style="flex:1" onclick="showTab('bets')">Bets 5MIN LIVE</button>
 <button class="btn dark" style="flex:1" onclick="showTab('users')">Users</button>
 <button class="btn dark" style="flex:1" onclick="showTab('with')">Withdraw</button>
 </div>
-
-<div id="tab-markets" class="tab active"><div class="card"><h3>Create Market</h3><input id="mTitle" placeholder="Title"><input id="mCat" placeholder="Category"><button class="btn gold" onclick="createMarket()">Create</button></div><div id="marketsList" class="card">Loading...</div></div>
-
-<div id="tab-bets" class="tab"><div class="card" style="border-color:#d4af37"><h3>All Forex Bets - 5 MIN LIVE COUNTDOWN ⏳ - NO DRAW</h3><div id="betsList">Loading...</div></div></div>
-
+<div id="tab-markets" class="tab"><div class="card"><h3>Create Market</h3><input id="mTitle" placeholder="Title"><input id="mCat" placeholder="Category"><button class="btn gold" onclick="createMarket()">Create</button></div><div id="marketsList" class="card">Loading...</div></div>
+<div id="tab-bets" class="tab active"><div class="card" style="border:2px solid #d4af37"><h3>All Forex - 5 MIN LIVE COUNTDOWN ⏳ - NO DRAW - SYNCED</h3><div id="betsList">Loading...</div></div></div>
 <div id="tab-users" class="tab"><div class="card"><div id="usersList">Loading...</div></div></div>
 <div id="tab-with" class="tab"><div class="card"><div id="withList">Loading...</div></div></div>
-
 <script>
 const SUPABASE_URL='https://hkhqbtyyqgvaktamilxs.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg';
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-let LIVE_PRICE=1.12057; let TWELVEDATA_KEY='demo';
-
-function showTab(t){
- document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
- document.getElementById('tab-'+t).classList.add('active');
- if(t=='markets')loadMarkets(); if(t=='bets')loadBets(); if(t=='users')loadUsers(); if(t=='with')loadWith();
-}
-
+let LIVE_PRICE=1.11982; let TWELVEDATA_KEY='demo';
+function showTab(t){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.getElementById('tab-'+t).classList.add('active');if(t=='markets')loadMarkets();if(t=='bets')loadBets();if(t=='users')loadUsers();if(t=='with')loadWith();}
 async function fetchRealPrice(){
- try{
-  let r=await fetch(`https://api.twelvedata.com/price?symbol=EUR/USD&apikey=${TWELVEDATA_KEY}`);
-  let j=await r.json();
-  if(j.price){LIVE_PRICE=parseFloat(j.price);document.getElementById('liveAdmin').innerHTML=`EUR/USD Live: ${LIVE_PRICE.toFixed(5)} ● REAL ${new Date().toLocaleTimeString()}`;return;}
- }catch(e){}
- LIVE_PRICE+=(Math.random()-0.5)*0.0001;
- document.getElementById('liveAdmin').innerHTML=`EUR/USD Live: ${LIVE_PRICE.toFixed(5)} ● LIVE`;
+ try{let r=await fetch(`https://api.twelvedata.com/price?symbol=EUR/USD&apikey=${TWELVEDATA_KEY}`);let j=await r.json();if(j.price){LIVE_PRICE=parseFloat(j.price);document.getElementById('liveAdmin').innerHTML=`EUR/USD Live: ${LIVE_PRICE.toFixed(5)} ● REAL ${new Date().toLocaleTimeString()}`;return;}}catch(e){}
+ LIVE_PRICE+=(Math.random()-0.5)*0.0001; document.getElementById('liveAdmin').innerHTML=`EUR/USD Live: ${LIVE_PRICE.toFixed(5)} ● LIVE`;
 }
 setInterval(fetchRealPrice,3000);fetchRealPrice();
-
-async function loadMarkets(){let {data}=await sb.from('markets').select('*').order('created_at',{ascending:false});document.getElementById('marketsList').innerHTML=data.map(m=>`<div class="card"><b>${m.title}</b> - ${m.status} <button class="btn red" onclick="closeMarket('${m.id}','YES')">YES WIN</button><button class="btn red" onclick="closeMarket('${m.id}','NO')">NO WIN</button></div>`).join('')||'No markets';}
+async function loadMarkets(){let {data}=await sb.from('markets').select('*').order('created_at',{ascending:false});document.getElementById('marketsList').innerHTML=data.map(m=>`<div class="card"><b>${m.title}</b> - ${m.status} <button class="btn red" onclick="closeMarket('${m.id}','YES')">YES</button><button class="btn red" onclick="closeMarket('${m.id}','NO')">NO</button></div>`).join('');}
 async function createMarket(){let t=document.getElementById('mTitle').value;let c=document.getElementById('mCat').value;if(!t)return;await sb.from('markets').insert([{title:t,category:c,status:'OPEN'}]);loadMarkets();}
 async function closeMarket(id,res){await sb.from('markets').update({status:'CLOSED',result:res}).eq('id',id);loadMarkets();}
 
 async function loadBets(){
  let {data}=await sb.from('bets').select('*').order('created_at',{ascending:false}).limit(100);
  if(!data){document.getElementById('betsList').innerHTML='No bets';return;}
- let now=Date.now();
- let html=data.map(b=>{
+ let now=Date.now(); let html='';
+ for(let b of data){
    let entry=b.entry_price||0; let created=new Date(b.created_at).getTime(); let expiry=created+5*60*1000; let leftMs=expiry-now;
-   let mins=Math.max(0,Math.floor(leftMs/60000)); let secs=Math.max(0,Math.floor((leftMs%60000)/1000)); let totalSec=Math.max(0,Math.floor(leftMs/1000));
+   // AUTO-CLOSE EXPIRED (THIS FIXES 0s LEFT BUG)
+   if(b.status=='active' && leftMs<=0){
+     let won=(b.direction=='BUY'&&LIVE_PRICE>entry)||(b.direction=='SELL'&&LIVE_PRICE<entry);
+     if(LIVE_PRICE==entry) won=(b.direction=='BUY'); // NO DRAW EVER
+     await sb.from('bets').update({status:won?'won':'lost',exit_price:LIVE_PRICE}).eq('id',b.id);
+     if(won){let {data:prof}=await sb.from('profiles').select('balance').eq('id',b.user_id).single(); if(prof){await sb.from('profiles').update({balance:prof.balance+Math.floor(b.amount*1.6)}).eq('id',b.user_id);}}
+     b.status=won?'won':'lost'; b.exit_price=LIVE_PRICE; leftMs=0;
+   }
    let diff=(LIVE_PRICE-entry).toFixed(5);
    if(b.status=='active'){
-     let winning=(b.direction=='BUY'&&LIVE_PRICE>=entry)||(b.direction=='SELL'&&LIVE_PRICE<=entry);
-     return `<div class="card" style="border-color:#d4af37;background:#1a1a00">
-     <b>${b.direction} ${b.pair||'EUR/USD'} KES ${b.amount} @ ${entry.toFixed(5)} → Live ${LIVE_PRICE.toFixed(5)} (${diff}) ${winning?'🟢 WINNING':'🔴 LOSING'}</b><br>
-     <div class="countdown">⏳ ${mins}m ${secs}s left (${totalSec}s) - 5MIN COUNTDOWN</div>
-     <div style="background:#333;height:6px;border-radius:3px;margin-top:6px"><div style="background:#d4af37;height:6px;width:${Math.max(0,(leftMs/(5*60*1000))*100)}%"></div></div>
-     User: ${b.user_id.slice(0,8)} | ${new Date(b.created_at).toLocaleTimeString()}<br><small>${b.choice}</small></div>`;
+     let mins=Math.max(0,Math.floor(leftMs/60000)); let secs=Math.max(0,Math.floor((leftMs%60000)/1000)); let totalSec=Math.max(0,Math.floor(leftMs/1000));
+     let winning=(b.direction=='BUY'&&LIVE_PRICE>entry)||(b.direction=='SELL'&&LIVE_PRICE<entry);
+     html+=`<div class="card" style="border-color:#d4af37;background:#1a1a00"><b>${b.direction} ${b.pair||'EUR/USD'} KES ${b.amount} @ ${entry.toFixed(5)} → Live ${LIVE_PRICE.toFixed(5)} (${diff}) ${winning?'🟢 WINNING':'🔴 LOSING'}</b><br><div class="countdown">⏳ ${mins}m ${secs}s left (${totalSec}s) / 5:00</div><div style="background:#333;height:6px;border-radius:3px;margin-top:6px"><div style="background:#d4af37;height:6px;width:${Math.max(0,(leftMs/(5*60*1000))*100)}%"></div></div>User: ${b.user_id.slice(0,8)} | ${new Date(b.created_at).toLocaleString()}<br><small>${b.choice}</small></div>`;
    } else {
      let col=b.status=='won'?'#00ff88':'#ff184e';
-     return `<div class="card" style="border-color:${col}"><b style="color:${col}">${b.status.toUpperCase()} ${b.direction} ${b.pair} KES ${b.amount} | Entry ${entry.toFixed(5)} → Exit ${(b.exit_price||0).toFixed(5)}</b><br><small>${b.choice} | ${new Date(b.created_at).toLocaleString()}</small></div>`;
+     html+=`<div class="card" style="border-color:${col}"><b style="color:${col}">${b.status.toUpperCase()} ${b.direction} ${b.pair} KES ${b.amount} | Entry ${entry.toFixed(5)} → Exit ${(b.exit_price||0).toFixed(5)}</b><br><small>${b.choice} | ${new Date(b.created_at).toLocaleString()}</small></div>`;
    }
- }).join('');
- document.getElementById('betsList').innerHTML=html;
+ }
+ document.getElementById('betsList').innerHTML=html||'No bets';
  document.getElementById('stats').innerText=`Total:${data.length} | Active:${data.filter(x=>x.status=='active').length} | Users:${[...new Set(data.map(x=>x.user_id))].length}`;
 }
-
-async function loadUsers(){let {data}=await sb.from('profiles').select('*').order('balance',{ascending:false});document.getElementById('usersList').innerHTML=data.map(u=>`<div class="card"><b>${u.id.slice(0,8)}</b> - Bal KES ${u.balance} <input id="bal_${u.id}" placeholder="New bal" style="width:100px;display:inline"><button class="btn gold" onclick="updateBal('${u.id}')">Update</button></div>`).join('')||'No users';}
-async function updateBal(id){let v=parseInt(document.getElementById('bal_'+id).value);if(!v&&v!==0)return;await sb.from('profiles').update({balance:v}).eq('id',id);loadUsers();}
+async function loadUsers(){let {data}=await sb.from('profiles').select('*').order('balance',{ascending:false});document.getElementById('usersList').innerHTML=data.map(u=>`<div class="card"><b>${u.id.slice(0,8)}</b> - KES ${u.balance} <input id="bal_${u.id}" style="width:100px;display:inline"><button class="btn gold" onclick="updateBal('${u.id}')">Update</button></div>`).join('');}
+async function updateBal(id){let v=parseInt(document.getElementById('bal_'+id).value);await sb.from('profiles').update({balance:v}).eq('id',id);loadUsers();}
 async function loadWith(){let {data}=await sb.from('withdrawals').select('*').order('created_at',{ascending:false});document.getElementById('withList').innerHTML=data.map(w=>`<div class="card"><b>KES ${w.amount} to ${w.phone}</b> - ${w.status} <button class="btn green" onclick="approveWith('${w.id}')">Approve</button></div>`).join('')||'No withdraw';}
 async function approveWith(id){await sb.from('withdrawals').update({status:'approved'}).eq('id',id);loadWith();}
-
 setInterval(()=>{if(document.getElementById('tab-bets').classList.contains('active'))loadBets();},1000);
-
 loadMarkets();loadBets();loadUsers();loadWith();
 </script></body></html>
