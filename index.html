@@ -2,23 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<!-- GOOGLE VERIFICATION - KEEP THIS -->
 <meta name="google-site-verification" content="aFDJAL6FZJC_yjULR2v94OIk1oepDSVrOprWJfM_XJw" />
-<!-- GOOGLE SEO START -->
 <title>BASHIRI PREDICT - Forex Trading Kenya | Send Money 0116982197</title>
-<meta name="description" content="Bashiri Predict - Kenya's forex trading platform. Trade EUR/USD, GBP/USD, XAU/USD Gold, BTC/USD from 20 KES. Win 1.6x in 2H. Send Money 0116982197. Nairobi, Kenya.">
-<meta name="keywords" content="forex trading Kenya, Bashiri app, EUR USD Kenya, Gold trading Kenya, BTC Kenya, Send Money 0116982197">
-<meta name="robots" content="index, follow">
-<link rel="canonical" href="https://bashiri-app.vercel.app/">
-<meta property="og:title" content="Bashiri - Forex Trading Kenya | Trade & Win 1.6x">
-<meta property="og:description" content="Trade EUR/USD, Gold, BTC from 20 KES. Win 1.6x in 2H. Send Money 0116982197">
-<meta property="og:image" content="https://bashiri-app.vercel.app/logo.png">
-<meta property="og:url" content="https://bashiri-app.vercel.app/">
-<meta property="og:type" content="website">
-<meta property="og:locale" content="en_KE">
-<meta name="twitter:card" content="summary_large_image">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FinancialService","name":"Bashiri Predict","url":"https://bashiri-app.vercel.app/","description":"Forex trading in Kenya","address":{"@type":"PostalAddress","addressLocality":"Nairobi","addressCountry":"KE"},"contactPoint":{"@type":"ContactPoint","telephone":"+254116982197","contactType":"customer service"}}</script>
-<!-- GOOGLE SEO END -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 body{background:#0a0a0a;color:#fff;font-family:system-ui;margin:0;padding:10px}
@@ -55,18 +40,18 @@ input{width:95%;padding:12px;background:#000;border:1px solid #333;color:#fff;bo
 <div class="card" id="withHistory">Loading...</div>
 </div>
 <div id="view-forex" style="display:none">
-<div class="card" style="border-color:#00ff88"><div style="display:flex;justify-content:space-between"><div><b style="color:#00ff88">FOREX LIVE</b> <small id="pairName">EUR/USD</small></div><div id="livePrice" class="live-price price-up">1.0866</div></div></div>
+<div class="card" style="border-color:#00ff88"><div style="display:flex;justify-content:space-between"><div><b style="color:#00ff88">FOREX LIVE REAL</b> <small id="pairName">EUR/USD</small><br><small id="priceSource" style="color:#888">Fetching real price...</small></div><div id="livePrice" class="live-price price-up">--</div></div></div>
 <div style="display:flex;gap:6px;flex-wrap:wrap;">
 <button class="forex-pair active" onclick="setPair('EUR/USD',this)">EUR/USD</button>
 <button class="forex-pair" onclick="setPair('GBP/USD',this)">GBP/USD</button>
 <button class="forex-pair" onclick="setPair('USD/JPY',this)">USD/JPY</button>
-<button class="forex-pair" onclick="setPair('XAU/USD',this)">XAU/USD</button>
+<button class="forex-pair" onclick="setPair('XAU/USD',this)">XAU/USD Gold</button>
 <button class="forex-pair" onclick="setPair('BTC/USD',this)">BTC/USD</button>
 </div>
 <div id="tv_chart"></div>
 <div class="card" style="background:#1a1a1a;margin-top:10px">
 <input id="fxAmount" type="number" value="20" placeholder="Amount KES">
-<small>Min 20 bob - Win 1.6x (20->32) profit 12 - 2H session</small>
+<small>Min 20 bob - Win 1.6x (20->32) profit 12 - 2H session - REAL PRICE</small>
 <div style="display:flex;gap:10px;margin-top:12px">
 <button class="btn green" style="flex:1;padding:16px;font-size:18px" onclick="tradeFx('BUY')">BUY ↑</button>
 <button class="btn red" style="flex:1;padding:16px;font-size:18px" onclick="tradeFx('SELL')">SELL ↓</button>
@@ -134,78 +119,145 @@ async function loadWithdrawals(){
 let {data}=await sb.from('withdrawals').select('*').eq('user_id',USER_ID).order('created_at',{ascending:false});
 document.getElementById('withHistory').innerHTML=(data||[]).map(w=>`<div>${w.amount} to ${w.phone} - ${w.status}</div>`).join('')||'No withdraw history';
 }
-let currentPair="EUR/USD"; let lastPrice=1.0866;
+
+// ===== REAL PRICE SYSTEM =====
+let currentPair="EUR/USD"; let lastPrice=0; let prevPrice=0;
+
 function initForex(){ loadTvChart(currentPair); startLivePrice(); }
+
 function setPair(pair,el){
 currentPair=pair;
 document.querySelectorAll('.forex-pair').forEach(b=>b.classList.remove('active'));
 if(el) el.classList.add('active');
 document.getElementById('pairName').innerText=pair;
 loadTvChart(pair);
+fetchRealPrice();
 }
+
 function loadTvChart(pair){
 let map={"EUR/USD":"FX%3AEURUSD","GBP/USD":"FX%3AGBPUSD","USD/JPY":"FX%3AUSDJPY","XAU/USD":"OANDA%3AXAUUSD","BTC/USD":"BINANCE%3ABTCUSDT"};
 let sym=map[pair]||"FX%3AEURUSD";
 document.getElementById('tv_chart').innerHTML=`<iframe src="https://s.tradingview.com/widgetembed/?symbol=${sym}&interval=1&hidesidetoolbar=0&symboledit=0&saveimage=0&toolbarbg=rgba(0,0,0,1)&studies=[]&theme=dark&style=1&timezone=Africa%2FNairobi" style="width:100%;height:400px;border:0" frameborder="0"></iframe>`;
 }
-async function startLivePrice(){
-setInterval(async ()=>{
-let change=(Math.random()-0.5)*0.002;
-lastPrice+=change;
-let el=document.getElementById('livePrice');
-if(el){ el.innerText=lastPrice.toFixed(4); el.className=change>=0?'live-price price-up':'live-price price-down'; }
-},2000);
+
+// FETCH REAL PRICE FROM FREE APIs
+async function fetchRealPrice(){
+try{
+let price=0; let source="";
+if(currentPair==="BTC/USD"){
+ let r=await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'); let j=await r.json(); price=parseFloat(j.price); source="Binance Real";
+} else if(currentPair==="XAU/USD"){
+ let r=await fetch('https://api.gold-api.com/price/XAU'); let j=await r.json(); price=parseFloat(j.price); source="Gold-API Real";
+} else if(currentPair==="EUR/USD"){
+ let r=await fetch('https://open.er-api.com/v6/latest/EUR'); let j=await r.json(); price=parseFloat(j.rates.USD); source="Forex Real EUR/USD";
+} else if(currentPair==="GBP/USD"){
+ let r=await fetch('https://open.er-api.com/v6/latest/GBP'); let j=await r.json(); price=parseFloat(j.rates.USD); source="Forex Real GBP/USD";
+} else if(currentPair==="USD/JPY"){
+ let r=await fetch('https://open.er-api.com/v6/latest/USD'); let j=await r.json(); price=parseFloat(j.rates.JPY); source="Forex Real USD/JPY";
 }
+if(price>0){
+ prevPrice=lastPrice||price;
+ lastPrice=price;
+ let el=document.getElementById('livePrice');
+ if(el){
+   el.innerText=currentPair==="XAU/USD"||currentPair==="BTC/USD"?price.toFixed(2):price.toFixed(4);
+   el.className=price>=prevPrice?'live-price price-up':'live-price price-down';
+ }
+ document.getElementById('priceSource').innerText=source+" - "+new Date().toLocaleTimeString();
+}
+}catch(e){ console.log("price fetch fail",e); }
+}
+
+async function startLivePrice(){
+ await fetchRealPrice();
+ setInterval(fetchRealPrice, 5000); // fetch real price every 5 sec
+}
+
 function getFxTrades(){ try{return JSON.parse(localStorage.getItem('bashiri_fx_trades')||'[]')}catch(e){return []} }
 function saveFxTrades(t){ localStorage.setItem('bashiri_fx_trades',JSON.stringify(t)); }
-// ✅ FIXED - ONLY USES COLUMNS THAT EXIST (amount)
+
+// REAL AUTO-PAY TRADE
 async function tradeFx(type){
 let amt=parseInt(document.getElementById('fxAmount').value)||20;
 if(amt<20) return alert('Min 20 bob');
 if(USER_BAL<amt) return alert('Low balance! KES '+USER_BAL);
+if(lastPrice===0) return alert('Wait for real price to load...');
 let entryPrice=lastPrice;
 USER_BAL-=amt; updateBal();
 await sb.from('profiles').update({balance:USER_BAL}).eq('id',USER_ID);
-// SAVE TO SUPABASE FOR ADMIN - market_id = FOREX
+
 let mid='FOREX_'+currentPair.replace('/','');
-let {error}=await sb.from('bets').insert([{user_id:USER_ID, market_id:mid, choice:type+' '+currentPair+' @ '+entryPrice.toFixed(4), amount:amt, status:'active'}]);
+let {data, error}=await sb.from('bets').insert([{
+  user_id:USER_ID,
+  market_id:mid,
+  choice:type+' '+currentPair+' ENTRY:'+entryPrice.toFixed(4),
+  amount:amt,
+  status:'active'
+}]).select();
+
 if(error){ alert('Save failed: '+error.message); USER_BAL+=amt; updateBal(); return; }
-let trade={id:crypto.randomUUID(),pair:currentPair,type:type,amount:amt,entry:entryPrice,expiry:Date.now()+2*60*60*1000,status:'active'};
+
+let betId = data && data[0]? data[0].id : null;
+
+let trade={
+  id:crypto.randomUUID(),
+  bet_id: betId,
+  pair:currentPair,
+  type:type,
+  amount:amt,
+  entry:entryPrice,
+  expiry:Date.now()+2*60*60*1000,
+  status:'active'
+};
 let trades=getFxTrades(); trades.unshift(trade); saveFxTrades(trades);
-document.getElementById('fxResult').innerHTML=`<div class="card" style="background:#00ff88;color:#000">✅ ${type} ${currentPair} @ ${entryPrice.toFixed(4)} KES ${amt} SAVED TO ADMIN</div>`;
+document.getElementById('fxResult').innerHTML=`<div class="card" style="background:#00ff88;color:#000">✅ ${type} ${currentPair} @ ${entryPrice.toFixed(4)} REAL PRICE SAVED<br>Entry: ${entryPrice} → Will auto-pay 1.6x if correct after 2H</div>`;
 renderFxTrades();
 }
+
+// AUTO CHECK WIN + AUTO PAY
 async function renderFxTrades(){
 let trades=getFxTrades();
 if(!trades.length){ document.getElementById('fxTrades').innerHTML='<div class="muted">No active sessions</div>'; return; }
 let now=Date.now();
-let html='<b>Active Sessions (2H)</b><br>';
+let html='<b>Active Sessions (2H) - REAL MARKET PRICE</b><br>';
 let changed=false;
+
 for(let t of trades){
 if(t.status!=='active') continue;
 let diff=t.expiry-now;
 if(diff<=0){
-let exitPrice=lastPrice;
-let win=false;
-if(t.type==='BUY' && exitPrice>t.entry) win=true;
-if(t.type==='SELL' && exitPrice<t.entry) win=true;
-if(win){
-let payout=Math.floor(t.amount*1.6);
-USER_BAL+=payout; t.status='won'; t.payout=payout;
-await sb.from('profiles').update({balance:USER_BAL}).eq('id',USER_ID);
-updateBal(); changed=true;
-}else{ t.status='lost'; t.exit=exitPrice; changed=true; }
+ // SESSION ENDED - CHECK REAL PRICE NOW
+ let exitPrice=lastPrice;
+ let win=false;
+ if(t.type==='BUY' && exitPrice>t.entry) win=true;
+ if(t.type==='SELL' && exitPrice<t.entry) win=true;
+
+ if(win){
+   let payout=Math.floor(t.amount*1.6);
+   USER_BAL+=payout;
+   t.status='won'; t.payout=payout; t.exit=exitPrice;
+   await sb.from('profiles').update({balance:USER_BAL}).eq('id',USER_ID);
+   if(t.bet_id){ await sb.from('bets').update({status:'won'}).eq('id',t.bet_id); }
+   updateBal(); changed=true;
+   html+=`<div class="card" style="background:#00ff8822;border-color:#00ff88">✅ WON ${t.type} ${t.pair} @ ${t.entry.toFixed(4)} → Exit ${exitPrice.toFixed(4)} | +KES ${payout} AUTO-PAID!</div>`;
+ }else{
+   t.status='lost'; t.exit=exitPrice; changed=true;
+   if(t.bet_id){ await sb.from('bets').update({status:'lost'}).eq('id',t.bet_id); }
+   html+=`<div class="card" style="background:#ff184e22;border-color:#ff184e">❌ LOST ${t.type} ${t.pair} @ ${t.entry.toFixed(4)} → Exit ${exitPrice.toFixed(4)} | -${t.amount}</div>`;
+ }
 }else{
-let hrs=Math.floor(diff/3600000);
-let mins=Math.floor((diff%3600000)/60000);
-let secs=Math.floor((diff%60000)/1000);
-html+=`<div class="card" style="background:#1a1a1a;border-color:#00ff88">${t.type} ${t.pair} KES ${t.amount} @ ${t.entry.toFixed(4)}<br><b>${hrs}h ${mins}m ${secs}s left</b> - Live ${lastPrice.toFixed(4)}</div>`;
+ let hrs=Math.floor(diff/3600000);
+ let mins=Math.floor((diff%3600000)/60000);
+ let secs=Math.floor((diff%60000)/1000);
+ let liveDiff = lastPrice? (lastPrice - t.entry) : 0;
+ let isWinning = (t.type==='BUY' && liveDiff>0) || (t.type==='SELL' && liveDiff<0);
+ html+=`<div class="card" style="background:#1a1a1a;border-color:${isWinning?'#00ff88':'#ffaa00'}">${t.type} ${t.pair} KES ${t.amount} @ ${t.entry.toFixed(4)}<br><b>${hrs}h ${mins}m ${secs}s left</b> - Live ${lastPrice?lastPrice.toFixed(4):'--'} | ${isWinning?'🟢 WINNING':'🔴 LOSING'} (${liveDiff>0?'+':''}${liveDiff.toFixed(4)})</div>`;
 }
 }
-let finished=trades.filter(t=>t.status!=='active');
-for(let t of finished){
-if(t.status==='won') html+=`<div class="card" style="background:#00ff8822;border-color:#00ff88">WON ${t.type} ${t.pair} +${t.payout} KES</div>`;
-else html+=`<div class="card" style="background:#ff184e22;border-color:#ff184e">LOST ${t.type} ${t.pair} -${t.amount}</div>`;
+let finished=trades.filter(t=>t.status!=='active' && t.expiry<now-1000);
+for(let t of finished.slice(0,5)){
+ if(t.status==='won') html+=`<div class="card" style="background:#00ff8822;border-color:#00ff88">WON ${t.type} ${t.pair} +${t.payout} KES | Entry ${t.entry.toFixed(4)} → Exit ${t.exit.toFixed(4)}</div>`;
+ else html+=`<div class="card" style="background:#ff184e22;border-color:#ff184e">LOST ${t.type} ${t.pair} -${t.amount} | Entry ${t.entry.toFixed(4)} → Exit ${t.exit?.toFixed(4)}</div>`;
 }
 document.getElementById('fxTrades').innerHTML=html;
 if(changed){ saveFxTrades(trades); }
