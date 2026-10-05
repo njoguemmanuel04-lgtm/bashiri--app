@@ -4,126 +4,133 @@
 <title>BASHIRI ADMIN Till 0116982197</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-body{background:#0a0a0a;color:#fff;font-family:system-ui;margin:0;padding:0}
-.top{background:#111;padding:12px;border-bottom:1px solid #222;position:sticky;top:0;z-index:10}
-.card{background:#111;border:1px solid #222;border-radius:12px;padding:12px;margin:12px}
-.btn{padding:10px 16px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
-.gold{background:#d4af37;color:#000} .dark{background:#222;color:#fff} .green{background:#00ff88;color:#000} .red{background:#ff184e;color:#fff}
-input,select{width:100%;padding:12px;background:#000;border:1px solid #333;color:#fff;border-radius:8px;margin:6px 0}
+body{background:#0a0a0a;color:#fff;font-family:system-ui;padding:0;margin:0}
+.top{background:#111;padding:12px;border-bottom:1px solid #222;position:sticky;top:0;z-index:99}
+.card{background:#111;border:1px solid #222;border-radius:12px;padding:12px;margin:10px}
+.btn{padding:10px 16px;border-radius:10px;border:0;font-weight:800;cursor:pointer}
+.gold{background:#d4af37;color:#000}.dark{background:#222;color:#fff}
+.green{background:#00ff88;color:#000}.red{background:#ff184e;color:#fff}
 .muted{color:#888;font-size:13px}
+input,select{width:100%;padding:12px;background:#000;color:#fff;border:1px solid #333;border-radius:8px;margin:6px 0}
+.livebox{display:flex;gap:8px;flex-wrap:wrap}
 </style>
 </head><body>
-<div class="top"><b style="color:#d4af37">ADMIN - BASHIRI Till 0116982197</b></div>
-<div style="display:flex;gap:8px;margin:12px 0;flex-wrap:wrap;padding:0 12px">
-<button class="btn gold" onclick="show('markets')">Markets (<span id="cMark">0</span>)</button>
-<button class="btn dark" onclick="show('bets')">Bets (<span id="cBets">0</span>)</button>
-<button class="btn dark" onclick="show('users')">Users (<span id="cUsers">0</span>)</button>
-<button class="btn dark" onclick="show('withdraw')">Withdraw (<span id="cWith">0</span>)</button>
+<div class="top"><b style="color:#d4af37">ADMIN 0116982197</b>
+<div class="livebox">
+<span class="card" style="margin:0">EUR/USD Live: <b id="livePrice">Loading...</b> <small id="liveTime"></small></span>
+<span class="card" style="margin:0">Total: <b id="cBets">0</b> | Active: <b id="cAct">0</b> | Users: <b id="cUsers">0</b> | Withdraw: <b id="cWith">0</b></span>
+</div>
+</div>
+<div style="display:flex;gap:8px;margin:12px 0;overflow:auto;padding:0 10px">
+<button class="btn gold" onclick="show('markets')">Markets</button>
+<button class="btn dark" onclick="show('bets')">Bets (Real Price)</button>
+<button class="btn dark" onclick="show('users')">Users</button>
+<button class="btn dark" onclick="show('withdraw')">Withdrawals</button>
 </div>
 
 <div id="v-markets">
 <div class="card">
 <h3>Create Market</h3>
-<input id="mTitle" placeholder="Title e.g. Bitcoin will be above 70k?">
-<select id="mCat"><option>forex</option><option>crypto</option><option>sports</option><option>politics</option></select>
+<input id="mTitle" placeholder="Title e.g. BTC up in 2H">
+<select id="mCat"><option>forex</option><option>crypto</option><option>sports</option></select>
 <select id="mStatus"><option>OPEN</option><option>CLOSED</option></select>
-<button class="btn gold" onclick="createMarket()">Create Market</button>
+<button class="btn gold" onclick="createMarket()">Create</button>
 </div>
 <div id="marketsList" class="card">Loading...</div>
 </div>
 
-<div id="v-bets" style="display:none"><div id="betsList" class="card">Loading bets...</div></div>
-<div id="v-users" style="display:none"><div id="usersList" class="card">Loading users...</div></div>
-<div id="v-withdraw" style="display:none"><div id="withdrawList" class="card">Loading withdraw...</div></div>
+<div id="v-bets" style="display:none"><div id="betsList" class="card">Loading...</div></div>
+<div id="v-users" style="display:none"><div id="usersList" class="card">Loading...</div></div>
+<div id="v-withdraw" style="display:none"><div id="withdrawList" class="card">Loading...</div></div>
 
 <script>
 const SUPABASE_URL='https://hkhqbtyyqgvaktamilxs.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg';
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let LIVE=1.1250;
+async function fetchLive(){
+ try{
+  let r=await fetch('https://open.er-api.com/v6/latest/EUR');
+  let j=await r.json(); LIVE=parseFloat(j.rates.USD);
+  document.getElementById('livePrice').innerHTML=LIVE.toFixed(4)+' <span style="color:#00ff88">● REAL</span>';
+  document.getElementById('liveTime').innerText=new Date().toLocaleTimeString();
+ }catch(e){document.getElementById('livePrice').innerText=LIVE.toFixed(4)+' (cached)'}
+}
+setInterval(fetchLive,5000); fetchLive();
 
 function show(t){
-document.getElementById('v-markets').style.display=t=='markets'?'block':'none';
-document.getElementById('v-bets').style.display=t=='bets'?'block':'none';
-document.getElementById('v-users').style.display=t=='users'?'block':'none';
-document.getElementById('v-withdraw').style.display=t=='withdraw'?'block':'none';
-if(t=='markets') loadMarkets()
-if(t=='bets') loadBets()
-if(t=='users') loadUsers()
-if(t=='withdraw') loadWithdraw()
+ document.getElementById('v-markets').style.display=t=='markets'?'block':'none';
+ document.getElementById('v-bets').style.display=t=='bets'?'block':'none';
+ document.getElementById('v-users').style.display=t=='users'?'block':'none';
+ document.getElementById('v-withdraw').style.display=t=='withdraw'?'block':'none';
+ if(t=='markets') loadMarkets(); if(t=='bets') loadBets(); if(t=='users') loadUsers(); if(t=='withdraw') loadWithdraw();
 }
 
 async function loadMarkets(){
-let {data}=await sb.from('markets').select('*').order('created_at',{ascending:false});
-document.getElementById('cMark').innerText=data?.length||0;
-document.getElementById('marketsList').innerHTML=(data||[]).map(m=>`<div style="border-bottom:1px solid #222;padding:8px 0"><b>${m.title}</b> <span class="muted">[${m.category}] ${m.status}</span> <button class="btn red" style="float:right;padding:4px 8px" onclick="delMarket('${m.id}')">Del</button></div>`).join('')||'No markets';
+ let {data}=await sb.from('markets').select('*').order('id',{ascending:false});
+ document.getElementById('cMark').innerText=data?.length||0;
+ document.getElementById('marketsList').innerHTML=data.map(m=>`<div style="border-bottom:1px solid #222;padding:8px 0"><b>${m.title}</b> ${m.category} ${m.status} <button class="btn red" onclick="delMarket('${m.id}')">Del</button></div>`).join('');
 }
 async function createMarket(){
-let t=document.getElementById('mTitle').value.trim();
-let c=document.getElementById('mCat').value;
-let s=document.getElementById('mStatus').value;
-if(!t) return alert('Title required');
-await sb.from('markets').insert([{title:t,category:c,status:s}]);
-document.getElementById('mTitle').value='';
-loadMarkets()
+ let t=document.getElementById('mTitle').value.trim(); let c=document.getElementById('mCat').value; let s=document.getElementById('mStatus').value;
+ if(!t) return alert('Title needed'); await sb.from('markets').insert([{title:t,category:c,status:s}]); loadMarkets();
 }
-async function delMarket(id){ if(confirm('Delete?')){ await sb.from('markets').delete().eq('id',id); loadMarkets(); } }
+async function delMarket(id){ if(!confirm('Delete?')) return; await sb.from('markets').delete().eq('id',id); loadMarkets(); }
 
 async function loadBets(){
-let {data}=await sb.from('bets').select('*').order('created_at',{ascending:false}).limit(100);
-document.getElementById('cBets').innerText=data?.length||0;
-if(!data||data.length==0){ document.getElementById('betsList').innerHTML='No bets'; return; }
-let ids=[...new Set(data.map(b=>b.market_id).filter(id=>id && !String(id).startsWith('FOREX_')))];
-let mp={};
-if(ids.length>0){
- let {data:mk}=await sb.from('markets').select('id,title').in('id',ids);
- (mk||[]).forEach(m=>mp[m.id]=m.title);
+ let {data}=await sb.from('bets').select('*').order('created_at',{ascending:false}).limit(150);
+ document.getElementById('cBets').innerText=data.length;
+ document.getElementById('cAct').innerText=data.filter(b=>b.status=='active').length;
+ document.getElementById('betsList').innerHTML=data.map(b=>{
+  let entry=b.entry_price||0;
+  if(!entry && b.choice && b.choice.includes('@')){ let p=b.choice.split('@')[1]; entry=parseFloat(p)||0; }
+  if(!entry && b.choice && b.choice.includes('ENTRY:')){ let p=b.choice.split('ENTRY:')[1]; entry=parseFloat(p)||0; }
+  let pair=b.pair||'EUR/USD'; let dir=(b.direction||'').toUpperCase()|| (b.choice.includes('BUY')?'BUY':b.choice.includes('SELL')?'SELL':'?');
+  let diff=entry? (LIVE-entry):0;
+  let winning = dir=='BUY'? diff>0 : dir=='SELL'? diff<0 : false;
+  let color=b.status=='active'? (winning?'#00ff8822':'#ffcc0022'):'#111';
+  let statusTxt=b.status=='active'? (winning?`<b style="color:#00ff88">WINNING +${diff.toFixed(4)}</b>`:`<b style="color:#ffaa00">LOSING ${diff.toFixed(4)}</b>`) : b.status;
+  let payout=Math.floor((b.amount||0)*1.6);
+  return `<div class="card" style="background:${color}"><b>${dir} ${pair}</b> KES ${b.amount} → KES ${payout}<br>
+  Entry: <b>${entry?entry.toFixed(4):'--'}</b> | Live: <b>${LIVE.toFixed(4)}</b> | Diff: ${diff.toFixed(4)}<br>
+  <span class="muted">${b.choice} | User:${(b.user_id||'').slice(0,8)} | ${new Date(b.created_at).toLocaleString()}</span><br>
+  Status: ${statusTxt} - ${b.status}<br>
+  <button class="btn green" onclick="resolveBet('${b.id}','${b.user_id}',${b.amount},'won')">Mark WON</button>
+  <button class="btn red" onclick="resolveBet('${b.id}','${b.user_id}',${b.amount},'lost')">Mark LOST</button>
+  </div>`;
+ }).join('');
 }
-document.getElementById('betsList').innerHTML=data.map(b=>{
-let stake=b.stake||b.amount||20;
-let ch=(b.choice??b.selection)+'';
-let title=mp[b.market_id]||b.market_id||'FOREX';
-let isForex=b.market_id?.toString().startsWith('FOREX_');
-let badge=isForex?`<span style="background:#00ff88;color:#000;padding:2px 8px;border-radius:8px;font-size:11px;margin-left:6px;">FOREX</span>`:'';
-return `<div class="card"><b>${title}</b> ${badge}<br><span class="muted">User: ${String(b.user_id).slice(0,8)} | ${ch} | KES ${stake} | Status: ${b.status}</span><br>
-<button class="btn green" onclick="resolveBet('${b.id}','${b.user_id}',${stake},'won')">Mark WON (+${Math.floor(stake*1.6)})</button>
-<button class="btn red" onclick="resolveBet('${b.id}','${b.user_id}',${stake},'lost')">Mark LOST</button>
-</div>`;
-}).join('')
-}
-
 async function resolveBet(bid,uid,stake,res){
-if(!confirm('Mark '+res+'?')) return
-await sb.from('bets').update({status:res}).eq('id',bid);
-if(res=='won'){
-let {data}=await sb.from('profiles').select('balance').eq('id',uid).single();
-let payout=Math.floor(stake*1.6);
-await sb.from('profiles').update({balance:(data.balance||0)+payout}).eq('id',uid);
-}
-loadBets(); loadUsers()
+ if(!confirm('Mark '+res+'?')) return;
+ await sb.from('bets').update({status:res}).eq('id',bid);
+ if(res=='won'){
+  let {data}=await sb.from('profiles').select('balance').eq('id',uid).single();
+  let payout=Math.floor(stake*1.6);
+  await sb.from('profiles').update({balance:(data.balance||0)+payout}).eq('id',uid);
+ }
+ loadBets(); loadUsers();
 }
 
 async function loadUsers(){
-let {data}=await sb.from('profiles').select('*').order('balance',{ascending:false}).limit(100);
-document.getElementById('cUsers').innerText=data?.length||0;
-document.getElementById('usersList').innerHTML=(data||[]).map(u=>`<div style="border-bottom:1px solid #222;padding:8px 0"><b>${u.id.slice(0,8)}</b> - KES ${u.balance||0} <button class="btn gold" style="padding:4px 8px" onclick="addBal('${u.id}',${u.balance||0})">Add</button> <button class="btn dark" style="padding:4px 8px" onclick="reset20('${u.id}')">Reset 20</button></div>`).join('')||'No users';
+ let {data}=await sb.from('profiles').select('*').order('balance',{ascending:false}).limit(100);
+ document.getElementById('cUsers').innerText=data.length;
+ document.getElementById('usersList').innerHTML=data.map(u=>`<div style="border-bottom:1px solid #222;padding:8px 0">${(u.id||'').slice(0,8)} | Bal: <b>KES ${u.balance}</b> | ${u.phone||''} <button class="btn gold" onclick="addBal('${u.id}',${u.balance})">Add Bal</button> <button class="btn dark" onclick="reset20('${u.id}')">Reset 20</button></div>`).join('');
 }
 async function addBal(uid,a){
-let amt=prompt('Amount?',a||'20'); if(!amt) return
-let {data}=await sb.from('profiles').select('balance').eq('id',uid).single();
-await sb.from('profiles').update({balance:(data.balance||0)+parseInt(amt)}).eq('id',uid);
-loadUsers()
+ let amt=prompt('Amount?',a||'20'); if(!amt) return;
+ let {data}=await sb.from('profiles').select('balance').eq('id',uid).single();
+ await sb.from('profiles').update({balance:(data.balance||0)+parseInt(amt)}).eq('id',uid); loadUsers();
 }
-async function reset20(uid){ if(confirm('Reset 20?')){ await sb.from('profiles').update({balance:20}).eq('id',uid); loadUsers(); } }
+async function reset20(uid){ if(confirm('Reset to 20?')){ await sb.from('profiles').update({balance:20}).eq('id',uid); loadUsers(); } }
 
 async function loadWithdraw(){
-let {data}=await sb.from('withdrawals').select('*').order('created_at',{ascending:false}).limit(100);
-document.getElementById('cWith').innerText=data?.length||0;
-if(!data||data.length==0){ document.getElementById('withdrawList').innerHTML='No withdraw'; return; }
-document.getElementById('withdrawList').innerHTML=data.map(w=>`<div style="border-bottom:1px solid #222;padding:8px 0">${w.user_id.slice(0,8)} - KES ${w.amount} - ${w.phone||''} - ${w.status} <button class="btn green" onclick="markPaid('${w.id}')">Paid</button> <button class="btn red" onclick="delW('${w.id}')">Del</button></div>`).join('');
+ let {data}=await sb.from('withdrawals').select('*').order('created_at',{ascending:false}).limit(100);
+ document.getElementById('cWith').innerText=data?.length||0;
+ if(!data||data.length==0){ document.getElementById('withdrawList').innerHTML='No withdrawals'; return; }
+ document.getElementById('withdrawList').innerHTML=data.map(w=>`<div style="border-bottom:1px solid #222;padding:8px 0">KES ${w.amount} - ${w.phone} - ${w.status} <button class="btn green" onclick="markPaid('${w.id}')">Paid</button> <button class="btn red" onclick="delW('${w.id}')">Del</button></div>`).join('');
 }
 async function markPaid(id){ await sb.from('withdrawals').update({status:'paid'}).eq('id',id); loadWithdraw(); }
 async function delW(id){ if(confirm('Delete?')){ await sb.from('withdrawals').delete().eq('id',id); loadWithdraw(); } }
 
-loadMarkets()
-</script>
-</body></html>
+loadMarkets();
+</script></body></html>
