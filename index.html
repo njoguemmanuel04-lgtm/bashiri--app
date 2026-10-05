@@ -3,7 +3,6 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>BASHIRI - Send Money 0116982197</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://s.tradingview.com/tv.js"></script>
 <style>
 body{background:#0a0a0a;color:#fff;font-family:system-ui;margin:0;padding:12px}
 .top{display:flex;justify-content:space-between;align-items:center;background:#111;padding:12px;border-radius:12px;border:1px solid #222}
@@ -19,10 +18,9 @@ input{width:100%;padding:12px;background:#1a1a1a;border:1px solid #333;color:#ff
 .progress{background:#333;height:10px;border-radius:10px;overflow:hidden;margin:8px 0}
 .progress-bar{background:#00ff88;height:100%}
 small{color:#888}
-/* --- FOREX ADD ONLY --- */
 .forex-pair{padding:8px 12px;border-radius:20px;border:1px solid #333;background:#1a1a1a;color:#fff;font-weight:700}
 .forex-pair.active{background:#00ff88;color:#000;border-color:#00ff88}
-#tv_chart{height:55vh;border-radius:12px;overflow:hidden;border:1px solid #222;background:#0a0a0a}
+#tv_chart{height:60vh;border-radius:12px;overflow:hidden;border:1px solid #222;background:#0a0a0a}
 .live-price{font-size:26px;font-weight:900}
 .price-up{color:#00ff88}.price-down{color:#ff3d57}
 </style>
@@ -62,13 +60,11 @@ small{color:#888}
 </div>
 <div class="card" id="withHistory">Loading...</div>
 </div>
-
-<!-- FOREX VIEW - NEW, ORIGINAL CODE UNTOUCHED -->
 <div id="view-forex" style="display:none">
 <div class="card" style="border-color:#00ff88">
 <div style="display:flex;justify-content:space-between;align-items:center">
 <div><b style="color:#00ff88">FOREX LIVE</b> <small>● LIVE</small></div>
-<div id="livePrice" class="live-price price-up">EUR/USD 1.0845</div>
+<div id="livePrice" class="live-price price-up">EUR/USD 1.0854</div>
 </div>
 <div style="display:flex;gap:6px;flex-wrap:wrap;margin:10px 0">
 <button class="forex-pair active" onclick="setPair('EUR/USD',this)">EUR/USD</button>
@@ -84,7 +80,6 @@ small{color:#888}
 </div>
 </div>
 </div>
-
 <script>
 const SUPABASE_URL='https://hkhqbtyyqgvaktamilxs.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg';
@@ -147,12 +142,15 @@ async function loadWithdrawals(){
 let {data}=await sb.from('withdrawals').select('*').eq('user_id',USER_ID).order('created_at',{ascending:false});
 document.getElementById('withHistory').innerHTML='<b>Withdraw History</b><br>'+(data||[]).map(w=>`<small>${w.amount} to ${w.phone} - ${w.status}</small><br>`).join('')||'No history';
 }
-// FOREX LIVE - ADD ONLY
-let currentPair="EUR/USD"; let lastPrice=1.0845;
+let currentPair="EUR/USD"; let lastPrice=1.0854;
 function initForex(){ loadTvChart(currentPair); startLivePrice(); }
 function setPair(pair,el){ currentPair=pair; document.querySelectorAll('.forex-pair').forEach(b=>b.classList.remove('active')); el.classList.add('active'); document.getElementById('livePrice').innerText=pair+'...'; loadTvChart(pair); }
-function loadTvChart(pair){ let map={"EUR/USD":"FX:EURUSD","GBP/USD":"FX:GBPUSD","USD/JPY":"FX:USDJPY","XAU/USD":"OANDA:XAUUSD","BTC/USD":"BINANCE:BTCUSDT"}; document.getElementById('tv_chart').innerHTML=''; if(window.TradingView){ new window.TradingView.widget({ autosize:true, symbol:map[pair], interval:"1", timezone:"Africa/Nairobi", theme:"dark", style:"1", locale:"en", toolbar_bg:"#0a0a0a", enable_publishing:false, backgroundColor:"#0a0a0a", gridColor:"#1e1e1e", container_id:"tv_chart" }); } }
-async function startLivePrice(){ setInterval(async()=>{ try{ let price=0; if(currentPair==="BTC/USD"){ let r=await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'); let j=await r.json(); price=parseFloat(j.price); }else if(currentPair==="XAU/USD"){ let r=await fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT'); let j=await r.json(); price=parseFloat(j.price); }else{ let from=currentPair.split('/')[0]; let to=currentPair.split('/')[1]; let r=await fetch(`https://api.frankfurter.app/latest?from=${from}&to=${to}`); let j=await r.json(); price=j.rates[to]; } let el=document.getElementById('livePrice'); el.className='live-price '+(price>=lastPrice?'price-up':'price-down'); el.innerText=currentPair+' '+price.toFixed(4); lastPrice=price; }catch(e){ let fake=(lastPrice||1.0845)+(Math.random()-0.5)*0.001; document.getElementById('livePrice').innerText=currentPair+' '+fake.toFixed(4); lastPrice=fake; } },2000); }
+function loadTvChart(pair){
+let map={"EUR/USD":"FX%3AEURUSD","GBP/USD":"FX%3AGBPUSD","USD/JPY":"FX%3AUSDJPY","XAU/USD":"OANDA%3AXAUUSD","BTC/USD":"BINANCE%3ABTCUSDT"};
+let sym=map[pair]||"FX%3AEURUSD";
+document.getElementById('tv_chart').innerHTML=`<iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_123&symbol=${sym}&interval=1&hidesidetoolbar=0&symboledit=1&saveimage=1&toolbarbg=0a0a0a&studies=[]&theme=dark&style=1&timezone=Africa%2FNairobi&withdateranges=1&showpopupbutton=1&locale=en" style="width:100%;height:100%;border:0" frameborder="0" scrolling="no"></iframe>`;
+}
+async function startLivePrice(){ setInterval(async()=>{ try{ let price=0; if(currentPair==="BTC/USD"){ let r=await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'); let j=await r.json(); price=parseFloat(j.price); }else if(currentPair==="XAU/USD"){ let r=await fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT'); let j=await r.json(); price=parseFloat(j.price); }else{ let from=currentPair.split('/')[0]; let to=currentPair.split('/')[1]; let r=await fetch(`https://api.frankfurter.app/latest?from=${from}&to=${to}`); let j=await r.json(); price=j.rates[to]; } let el=document.getElementById('livePrice'); el.className='live-price '+(price>=lastPrice?'price-up':'price-down'); el.innerText=currentPair+' '+price.toFixed(4); lastPrice=price; }catch(e){ let fake=(lastPrice||1.0854)+(Math.random()-0.5)*0.001; document.getElementById('livePrice').innerText=currentPair+' '+fake.toFixed(4); lastPrice=fake; } },2000); }
 function tradeFx(type){ alert(type+' '+currentPair+' at '+document.getElementById('livePrice').innerText+'\nDemo trade placed'); }
 init();
 </script>
