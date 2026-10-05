@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BASHIRI PREDICT - Till 0116982197</title>
+<title>BASHIRI PREDICT - Send Money 0116982197</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 body{background:#0a0a0a;color:#fff;font-family:system-ui;margin:0;padding:10px}
@@ -19,11 +19,12 @@ body{background:#0a0a0a;color:#fff;font-family:system-ui;margin:0;padding:10px}
 .live-price{font-size:22px;font-weight:800}
 .price-up{color:#00ff88}.price-down{color:#ff184e}
 input{width:95%;padding:12px;background:#000;border:1px solid #333;color:#fff;border-radius:8px;margin:6px 0}
+.muted{color:#888}
 </style>
 </head>
 <body>
 <div style="display:flex;justify-content:space-between;align-items:center">
-<b style="color:#d4af37">BASHIRI 🔮 Till 0116982197</b><span id="bal">Bal: KES 20</span>
+<b style="color:#d4af37">BASHIRI 🔮 Send Money 0116982197</b><span id="bal">Bal: KES 20</span>
 </div>
 <div style="display:flex;gap:6px;margin:12px 0">
 <button class="btn gold" onclick="show('markets')" style="flex:1">Markets</button>
@@ -39,14 +40,14 @@ input{width:95%;padding:12px;background:#000;border:1px solid #333;color:#fff;bo
 <h1 id="balBig">KES 20</h1>
 <p>Grow 20 -> 40 to Withdraw</p>
 <div class="progress"><div id="prog" class="prog" style="width:50%"></div></div>
-<small id="progText" style="color:#000">50% - Need 20 more</small>
-<small id="progOk" style="color:#000;font-weight:700;display:none">✅ Ready to Withdraw!</small>
+<small id="progText">50% - Need 20 more</small>
+<small id="progOk" style="display:none;color:#00ff88;font-weight:700">✅ Ready to Withdraw!</small>
 </div>
 <div class="card">
 <h3>💰 Deposit - Send Money 0116982197</h3>
 <p>1. M-Pesa -> Send Money -> Phone: <b>0116982197</b></p>
 <p>2. Amount Min 20</p>
-<button class="btn gold" onclick="alert('After Send, wait admin to add balance')">I Sent Money</button>
+<button class="btn gold" onclick="alert('After Send Money 0116982197, wait admin to add balance')">I Sent Money</button>
 </div>
 <div class="card">
 <h3>💸 Withdraw - Grow 20 to 40</h3>
@@ -116,11 +117,11 @@ let {data}=await sb.from('markets').select('*').order('created_at',{ascending:fa
 document.getElementById('view-markets').innerHTML=(data||[]).map(m=>`<div class="card"><b>${m.title}</b><br><small>${m.category} | ${m.status}</small><div style="margin-top:10px"><button class="yes" onclick="placeBet('${m.id}','yes')">YES</button><button class="no" onclick="placeBet('${m.id}','no')">NO</button></div></div>`).join('')||'No markets yet';
 }
 async function placeBet(market_id,choice){
-if(USER_BAL<20) return alert('Low balance! Send Money Till 0116982197');
+if(USER_BAL<20) return alert('Low balance! Send Money 0116982197');
 USER_BAL-=20; updateBal();
 await sb.from('profiles').update({balance:USER_BAL}).eq('id',USER_ID);
 let {error}=await sb.from('bets').insert([{user_id:USER_ID,market_id:market_id,choice:choice,amount:20,status:'active'}]);
-if(error){ await sb.from('bets').insert([{user_id:USER_ID,market_id:market_id,choice:choice,stake:20,status:'active'}]); }
+if(error){ alert('Bet failed: '+error.message); USER_BAL+=20; updateBal(); return; }
 alert('Bet placed! 20 deducted');
 }
 async function withdraw(){
@@ -168,21 +169,21 @@ if(el){ el.innerText=lastPrice.toFixed(4); el.className=change>=0?'live-price pr
 function getFxTrades(){ try{return JSON.parse(localStorage.getItem('bashiri_fx_trades')||'[]')}catch(e){return []} }
 function saveFxTrades(t){ localStorage.setItem('bashiri_fx_trades',JSON.stringify(t)); }
 
-// 🔥 FIXED - NOW SAVES TO SUPABASE FOR ADMIN
+// ✅ FIXED - ONLY USES COLUMNS THAT EXIST (amount, NOT stake)
 async function tradeFx(type){
 let amt=parseInt(document.getElementById('fxAmount').value)||20;
 if(amt<20) return alert('Min 20 bob');
-if(USER_BAL<amt) return alert('Low balance! You have KES '+USER_BAL);
+if(USER_BAL<amt) return alert('Low balance! KES '+USER_BAL);
 let entryPrice=lastPrice;
 USER_BAL-=amt; updateBal();
 await sb.from('profiles').update({balance:USER_BAL}).eq('id',USER_ID);
-// save to bets for admin
-let market_id='FOREX_'+currentPair.replace('/','');
-let {error}=await sb.from('bets').insert([{user_id:USER_ID,market_id:market_id,choice:type+' '+currentPair+' @ '+entryPrice.toFixed(4),amount:amt,status:'active'}]);
-if(error){ await sb.from('bets').insert([{user_id:USER_ID,market_id:market_id,choice:type+' '+currentPair+' @ '+entryPrice.toFixed(4),stake:amt,status:'active'}]); }
+// SAVE TO SUPABASE FOR ADMIN - market_id = FOREX_EURUSD
+let mid='FOREX_'+currentPair.replace('/','');
+let {error}=await sb.from('bets').insert([{user_id:USER_ID, market_id:mid, choice:type+' '+currentPair+' @ '+entryPrice.toFixed(4), amount:amt, status:'active'}]);
+if(error){ alert('Save failed: '+error.message); console.log(error); USER_BAL+=amt; updateBal(); return; }
 let trade={id:crypto.randomUUID(),pair:currentPair,type:type,amount:amt,entry:entryPrice,expiry:Date.now()+2*60*60*1000,status:'active'};
 let trades=getFxTrades(); trades.unshift(trade); saveFxTrades(trades);
-document.getElementById('fxResult').innerHTML=`<div class="card" style="background:#00ff88;color:#000">✅ ${type} ${currentPair} @ ${entryPrice.toFixed(4)} KES ${amt}<br><b>2H Session - Saved to Admin</b></div>`;
+document.getElementById('fxResult').innerHTML=`<div class="card" style="background:#00ff88;color:#000">✅ ${type} ${currentPair} @ ${entryPrice.toFixed(4)} KES ${amt} SAVED TO ADMIN</div>`;
 renderFxTrades();
 }
 
@@ -204,10 +205,8 @@ if(win){
 let payout=Math.floor(t.amount*1.6);
 USER_BAL+=payout; t.status='won'; t.payout=payout;
 await sb.from('profiles').update({balance:USER_BAL}).eq('id',USER_ID);
-updateBal();
-}else{
-t.status='lost'; t.exit=exitPrice; changed=true;
-}
+updateBal(); changed=true;
+}else{ t.status='lost'; t.exit=exitPrice; changed=true; }
 }else{
 let hrs=Math.floor(diff/3600000);
 let mins=Math.floor((diff%3600000)/60000);
@@ -221,7 +220,7 @@ if(t.status==='won') html+=`<div class="card" style="background:#00ff8822;border
 else html+=`<div class="card" style="background:#ff184e22;border-color:#ff184e">LOST ${t.type} ${t.pair} -${t.amount}</div>`;
 }
 document.getElementById('fxTrades').innerHTML=html;
-if(changed){ saveFxTrades(trades); updateBal(); }
+if(changed){ saveFxTrades(trades); }
 }
 init();
 </script>
