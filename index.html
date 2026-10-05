@@ -48,8 +48,7 @@ small{color:#888}
 <h3>💰 Deposit - Send Money 0116982197</h3>
 <p>1. M-Pesa -> Send Money -> Phone: <b>0116982197</b></p>
 <p>2. Amount Min 20</p>
-<p>3. After sending, click below - Admin adds in 5 mins</p>
-<button class="btn gold" onclick="alert('After Sending M-Pesa, wait Admin will add. DM 0116982197 on WhatsApp')">I Have Sent</button>
+<button class="btn gold" onclick="alert('After Sending M-Pesa, wait Admin will add. DM 0116982197')">I Have Sent</button>
 </div>
 <div class="card">
 <h3>💸 Withdraw - Grow 20 to 40</h3>
@@ -63,8 +62,8 @@ small{color:#888}
 <div id="view-forex" style="display:none">
 <div class="card" style="border-color:#00ff88">
 <div style="display:flex;justify-content:space-between;align-items:center">
-<div><b style="color:#00ff88">FOREX LIVE</b> <small>● LIVE</small></div>
-<div id="livePrice" class="live-price price-up">EUR/USD 1.0854</div>
+<div><b style="color:#00ff88">FOREX LIVE</b> <small>● 2H SESSION</small></div>
+<div id="livePrice" class="live-price price-up">EUR/USD 1.0866</div>
 </div>
 <div style="display:flex;gap:6px;flex-wrap:wrap;margin:10px 0">
 <button class="forex-pair active" onclick="setPair('EUR/USD',this)">EUR/USD</button>
@@ -74,9 +73,15 @@ small{color:#888}
 <button class="forex-pair" onclick="setPair('BTC/USD',this)">BTC/USD</button>
 </div>
 <div id="tv_chart"></div>
+<div class="card" style="background:#1a1a1a;margin-top:12px">
+<input id="fxAmount" type="number" value="20" placeholder="Amount Min 20">
+<small>Min 20 bob — Win 1.6x (20→32) profit 12 — 2 Hour session</small>
 <div style="display:flex;gap:10px;margin-top:12px">
 <button class="btn green" style="flex:1;padding:16px;font-size:18px" onclick="tradeFx('BUY')">BUY ↑</button>
 <button class="btn" style="flex:1;padding:16px;font-size:18px;background:#ff1744;color:#fff" onclick="tradeFx('SELL')">SELL ↓</button>
+</div>
+<div id="fxResult" style="margin-top:10px"></div>
+<div id="fxTrades" style="margin-top:12px"></div>
 </div>
 </div>
 </div>
@@ -91,7 +96,8 @@ async function init(){
 let {data:prof}=await sb.from('profiles').select('*').eq('id',USER_ID).maybeSingle();
 if(!prof){ await sb.from('profiles').insert([{id:USER_ID,balance:20}]); }
 else { USER_BAL=prof.balance||20 }
-updateBal(); loadMarkets(); loadWithdrawals(); initForex();
+updateBal(); loadMarkets(); loadWithdrawals(); initForex(); renderFxTrades();
+setInterval(renderFxTrades,1000);
 }
 function updateBal(){
 document.getElementById('bal').innerText='Bal: KES '+USER_BAL;
@@ -128,7 +134,7 @@ let phone=document.getElementById('withPhone').value.trim();
 let amount=parseInt(document.getElementById('withAmount').value);
 if(!phone||phone.length<10) return alert('Enter M-Pesa No');
 if(!amount||isNaN(amount)) return alert('Enter Amount');
-if(amount<40) return alert('Min withdraw 40 - You need 40');
+if(amount<40) return alert('Min withdraw 40');
 if(USER_BAL<amount) return alert('Low balance '+USER_BAL);
 if(USER_BAL<40) return alert('Need 40 to withdraw, you have '+USER_BAL);
 let {error}=await sb.from('withdrawals').insert([{user_id:USER_ID,phone,amount,status:'pending'}]);
@@ -142,16 +148,66 @@ async function loadWithdrawals(){
 let {data}=await sb.from('withdrawals').select('*').eq('user_id',USER_ID).order('created_at',{ascending:false});
 document.getElementById('withHistory').innerHTML='<b>Withdraw History</b><br>'+(data||[]).map(w=>`<small>${w.amount} to ${w.phone} - ${w.status}</small><br>`).join('')||'No history';
 }
-let currentPair="EUR/USD"; let lastPrice=1.0854;
+let currentPair="EUR/USD"; let lastPrice=1.0866;
 function initForex(){ loadTvChart(currentPair); startLivePrice(); }
 function setPair(pair,el){ currentPair=pair; document.querySelectorAll('.forex-pair').forEach(b=>b.classList.remove('active')); el.classList.add('active'); document.getElementById('livePrice').innerText=pair+'...'; loadTvChart(pair); }
 function loadTvChart(pair){
 let map={"EUR/USD":"FX%3AEURUSD","GBP/USD":"FX%3AGBPUSD","USD/JPY":"FX%3AUSDJPY","XAU/USD":"OANDA%3AXAUUSD","BTC/USD":"BINANCE%3ABTCUSDT"};
 let sym=map[pair]||"FX%3AEURUSD";
-document.getElementById('tv_chart').innerHTML=`<iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_123&symbol=${sym}&interval=1&hidesidetoolbar=0&symboledit=1&saveimage=1&toolbarbg=0a0a0a&studies=[]&theme=dark&style=1&timezone=Africa%2FNairobi&withdateranges=1&showpopupbutton=1&locale=en" style="width:100%;height:100%;border:0" frameborder="0" scrolling="no"></iframe>`;
+document.getElementById('tv_chart').innerHTML=`<iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_123&symbol=${sym}&interval=60&hidesidetoolbar=0&symboledit=1&saveimage=1&toolbarbg=0a0a0a&studies=[]&theme=dark&style=1&timezone=Africa%2FNairobi&withdateranges=1&showpopupbutton=1&locale=en" style="width:100%;height:100%;border:0" frameborder="0" scrolling="no"></iframe>`;
 }
-async function startLivePrice(){ setInterval(async()=>{ try{ let price=0; if(currentPair==="BTC/USD"){ let r=await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'); let j=await r.json(); price=parseFloat(j.price); }else if(currentPair==="XAU/USD"){ let r=await fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT'); let j=await r.json(); price=parseFloat(j.price); }else{ let from=currentPair.split('/')[0]; let to=currentPair.split('/')[1]; let r=await fetch(`https://api.frankfurter.app/latest?from=${from}&to=${to}`); let j=await r.json(); price=j.rates[to]; } let el=document.getElementById('livePrice'); el.className='live-price '+(price>=lastPrice?'price-up':'price-down'); el.innerText=currentPair+' '+price.toFixed(4); lastPrice=price; }catch(e){ let fake=(lastPrice||1.0854)+(Math.random()-0.5)*0.001; document.getElementById('livePrice').innerText=currentPair+' '+fake.toFixed(4); lastPrice=fake; } },2000); }
-function tradeFx(type){ alert(type+' '+currentPair+' at '+document.getElementById('livePrice').innerText+'\nDemo trade placed'); }
+async function startLivePrice(){ setInterval(async()=>{ try{ let price=0; if(currentPair==="BTC/USD"){ let r=await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'); let j=await r.json(); price=parseFloat(j.price); }else if(currentPair==="XAU/USD"){ let r=await fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT'); let j=await r.json(); price=parseFloat(j.price); }else{ let from=currentPair.split('/')[0]; let to=currentPair.split('/')[1]; let r=await fetch(`https://api.frankfurter.app/latest?from=${from}&to=${to}`); let j=await r.json(); price=j.rates[to]; } let el=document.getElementById('livePrice'); el.className='live-price '+(price>=lastPrice?'price-up':'price-down'); el.innerText=currentPair+' '+price.toFixed(4); lastPrice=price; }catch(e){ let fake=(lastPrice||1.0866)+(Math.random()-0.5)*0.001; document.getElementById('livePrice').innerText=currentPair+' '+fake.toFixed(4); lastPrice=fake; } },2000); }
+function getFxTrades(){ try{return JSON.parse(localStorage.getItem('bashiri_fx_trades')||'[]')}catch{return []} }
+function saveFxTrades(t){ localStorage.setItem('bashiri_fx_trades',JSON.stringify(t)); }
+async function tradeFx(type){
+let amt=parseInt(document.getElementById('fxAmount').value)||20;
+if(amt<20) return alert('Min 20 bob');
+if(USER_BAL<amt) return alert('Low balance! You have KES '+USER_BAL+' need '+amt);
+let entryPrice=lastPrice;
+USER_BAL-=amt; updateBal();
+await sb.from('profiles').update({balance:USER_BAL}).eq('id',USER_ID);
+let trade={id:crypto.randomUUID(),pair:currentPair,type,amount:amt,entry:entryPrice,expiry:Date.now()+2*60*60*1000,status:'active'};
+let trades=getFxTrades(); trades.unshift(trade); saveFxTrades(trades);
+document.getElementById('fxResult').innerHTML=`<div style="background:#222;padding:10px;border-radius:8px">✅ ${type} ${currentPair} @ ${entryPrice.toFixed(4)} KES ${amt}<br><b>Session 2 hours — closes ${new Date(trade.expiry).toLocaleTimeString()}</b></div>`;
+renderFxTrades();
+}
+async function renderFxTrades(){
+let trades=getFxTrades();
+if(!trades.length){ document.getElementById('fxTrades').innerHTML=''; return; }
+let now=Date.now();
+let html='<b>Active Sessions (2H)</b><br>';
+let changed=false;
+for(let t of trades){
+if(t.status!=='active') continue;
+let diff=t.expiry-now;
+if(diff<=0){
+let exitPrice=lastPrice;
+let win=false;
+if(t.type==='BUY' && exitPrice>t.entry) win=true;
+if(t.type==='SELL' && exitPrice<t.entry) win=true;
+if(win){
+let payout=Math.floor(t.amount*1.6);
+USER_BAL+=payout; t.status='won'; t.payout=payout; t.exit=exitPrice; changed=true;
+await sb.from('profiles').update({balance:USER_BAL}).eq('id',USER_ID);
+updateBal();
+}else{
+t.status='lost'; t.exit=exitPrice; changed=true;
+}
+}else{
+let hrs=Math.floor(diff/3600000);
+let mins=Math.floor((diff%3600000)/60000);
+let secs=Math.floor((diff%60000)/1000);
+html+=`<div class="card" style="background:#1a1a1a;padding:10px;margin-top:6px"><small>${t.type} ${t.pair} ${t.amount} bob @ ${t.entry.toFixed(4)}</small><br><b style="color:#00ff88">⏳ ${hrs}h ${mins}m ${secs}s left</b><br><small>Entry: ${t.entry.toFixed(4)} | Now: ${lastPrice.toFixed(4)}</small></div>`;
+}
+}
+let finished=trades.filter(t=>t.status!=='active').slice(0,5);
+for(let t of finished){
+if(t.status==='won') html+=`<div class="card" style="background:#00ff8822;padding:8px">✅ WIN ${t.type} ${t.pair} ${t.entry.toFixed(4)}→${t.exit.toFixed(4)} +${t.payout} KES</div>`;
+else html+=`<div class="card" style="background:#ff174422;padding:8px">❌ LOSS ${t.type} ${t.pair} ${t.entry.toFixed(4)}→${t.exit?.toFixed(4)} -${t.amount}</div>`;
+}
+document.getElementById('fxTrades').innerHTML=html;
+if(changed){ saveFxTrades(trades); updateBal(); }
+}
 init();
 </script>
 </body></html>
