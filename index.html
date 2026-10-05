@@ -1,90 +1,87 @@
 <!DOCTYPE html>
-<html><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>BASHIRI - Send Money 0116982197</title>
+<html>
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BASHIRI PREDICT - Till 0116982197</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-body{background:#0a0a0a;color:#fff;font-family:system-ui;margin:0;padding:12px}
-.top{display:flex;justify-content:space-between;align-items:center;background:#111;padding:12px;border-radius:12px;border:1px solid #222}
-.card{background:#111;border:1px solid #222;border-radius:12px;padding:14px;margin-top:12px}
-.btn{padding:12px 16px;border-radius:12px;border:none;font-weight:700}
-.gold{background:#d4af37;color:#000}.dark{background:#222;color:#fff}
-.green{background:#00ff88;color:#000}
-.yes{background:#d4af37;color:#000;padding:10px 16px;border:none;border-radius:8px;margin:4px}
-.no{background:#222;color:#fff;padding:10px 16px;border:none;border-radius:8px;margin:4px}
-input{width:100%;padding:12px;background:#1a1a1a;border:1px solid #333;color:#fff;border-radius:8px;margin:6px 0;box-sizing:border-box}
-.wallet-bal{background:linear-gradient(135deg,#d4af37,#8a6d1b);color:#000;border-radius:16px;padding:16px;margin-bottom:12px}
-.wallet-bal h1{margin:0;font-size:36px}
-.progress{background:#333;height:10px;border-radius:10px;overflow:hidden;margin:8px 0}
-.progress-bar{background:#00ff88;height:100%}
-small{color:#888}
-.forex-pair{padding:8px 12px;border-radius:20px;border:1px solid #333;background:#1a1a1a;color:#fff;font-weight:700}
-.forex-pair.active{background:#00ff88;color:#000;border-color:#00ff88}
-#tv_chart{height:60vh;border-radius:12px;overflow:hidden;border:1px solid #222;background:#0a0a0a}
-.live-price{font-size:26px;font-weight:900}
-.price-up{color:#00ff88}.price-down{color:#ff3d57}
+body{background:#0a0a0a;color:#fff;font-family:system-ui;margin:0;padding:10px}
+.card{background:#111;border:1px solid #222;border-radius:12px;padding:12px;margin:10px 0}
+.btn{padding:12px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
+.gold{background:#d4af37;color:#000}.green{background:#00ff88;color:#000}.red{background:#ff184e;color:#fff}
+.yes{background:#00ff88;color:#000;padding:8px 12px;border-radius:8px;border:0;margin:4px}
+.no{background:#ff184e;color:#fff;padding:8px 12px;border-radius:8px;border:0;margin:4px}
+.wallet-bal{text-align:center;background:#111;border:1px solid #d4af37;border-radius:12px;padding:16px}
+.progress{background:#222;height:16px;border-radius:10px;overflow:hidden;margin:8px 0}
+.prog{background:#d4af37;height:100%}
+.forex-pair{padding:8px 10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff}
+.forex-pair.active{border-color:#00ff88;color:#00ff88}
+.live-price{font-size:22px;font-weight:800}
+.price-up{color:#00ff88}.price-down{color:#ff184e}
+input{width:95%;padding:12px;background:#000;border:1px solid #333;color:#fff;border-radius:8px;margin:6px 0}
 </style>
-</head><body>
-<div class="top">
-<div><b style="color:#d4af37;font-size:20px">BASHIRI</b></div>
-<div id="bal" style="font-weight:800">Bal: KES 20</div>
+</head>
+<body>
+<div style="display:flex;justify-content:space-between;align-items:center">
+<b style="color:#d4af37">BASHIRI 🔮 Till 0116982197</b><span id="bal">Bal: KES 20</span>
 </div>
-<div style="display:flex;gap:8px;margin:12px 0">
-<button class="btn gold" onclick="show('markets')">Markets</button>
-<button class="btn dark" onclick="show('wallet')">Wallet</button>
-<button class="btn dark" onclick="show('forex')" style="border:1px solid #00ff88">Forex 📈</button>
+<div style="display:flex;gap:6px;margin:12px 0">
+<button class="btn gold" onclick="show('markets')" style="flex:1">Markets</button>
+<button class="btn" style="background:#222;color:#fff;flex:1" onclick="show('wallet')">Wallet</button>
+<button class="btn" style="background:#222;color:#fff;flex:1" onclick="show('forex')">Forex</button>
 </div>
+
 <div id="view-markets"></div>
+
 <div id="view-wallet" style="display:none">
 <div class="wallet-bal">
 <p>Your Balance</p>
 <h1 id="balBig">KES 20</h1>
 <p>Grow 20 -> 40 to Withdraw</p>
-<div class="progress"><div id="prog" class="progress-bar" style="width:50%"></div></div>
+<div class="progress"><div id="prog" class="prog" style="width:50%"></div></div>
 <small id="progText" style="color:#000">50% - Need 20 more</small>
-<small id="progOk" style="color:#000;font-weight:800"></small>
+<small id="progOk" style="color:#000;font-weight:700;display:none">✅ Ready to Withdraw!</small>
 </div>
 <div class="card">
 <h3>💰 Deposit - Send Money 0116982197</h3>
 <p>1. M-Pesa -> Send Money -> Phone: <b>0116982197</b></p>
 <p>2. Amount Min 20</p>
-<button class="btn gold" onclick="alert('After Sending M-Pesa, wait Admin will add. DM 0116982197')">I Have Sent</button>
+<button class="btn gold" onclick="alert('After Send, wait admin to add balance')">I Sent Money</button>
 </div>
 <div class="card">
 <h3>💸 Withdraw - Grow 20 to 40</h3>
 <p>Min: <b>KES 40</b></p>
-<input id="withPhone" placeholder="M-Pesa Number e.g 07...">
-<input id="withAmount" type="number" placeholder="Amount e.g 40">
+<input id="withPhone" placeholder="M-Pesa Number 07xx...">
+<input id="withAmount" type="number" placeholder="Amount">
 <button class="btn green" onclick="withdraw()">Withdraw</button>
 </div>
 <div class="card" id="withHistory">Loading...</div>
 </div>
+
 <div id="view-forex" style="display:none">
 <div class="card" style="border-color:#00ff88">
-<div style="display:flex;justify-content:space-between;align-items:center">
-<div><b style="color:#00ff88">FOREX LIVE</b> <small>● 2H SESSION</small></div>
-<div id="livePrice" class="live-price price-up">EUR/USD 1.0866</div>
+<div style="display:flex;justify-content:space-between"><div><b style="color:#00ff88">FOREX LIVE</b> <small id="pairName">EUR/USD</small></div><div id="livePrice" class="live-price price-up">1.0866</div></div>
 </div>
-<div style="display:flex;gap:6px;flex-wrap:wrap;margin:10px 0">
+<div style="display:flex;gap:6px;flex-wrap:wrap;">
 <button class="forex-pair active" onclick="setPair('EUR/USD',this)">EUR/USD</button>
 <button class="forex-pair" onclick="setPair('GBP/USD',this)">GBP/USD</button>
 <button class="forex-pair" onclick="setPair('USD/JPY',this)">USD/JPY</button>
-<button class="forex-pair" onclick="setPair('XAU/USD',this)">GOLD</button>
+<button class="forex-pair" onclick="setPair('XAU/USD',this)">XAU/USD</button>
 <button class="forex-pair" onclick="setPair('BTC/USD',this)">BTC/USD</button>
 </div>
 <div id="tv_chart"></div>
-<div class="card" style="background:#1a1a1a;margin-top:12px">
-<input id="fxAmount" type="number" value="20" placeholder="Amount Min 20">
-<small>Min 20 bob — Win 1.6x (20→32) profit 12 — 2 Hour session</small>
+<div class="card" style="background:#1a1a1a;margin-top:10px">
+<input id="fxAmount" type="number" value="20" placeholder="Amount KES">
+<small>Min 20 bob - Win 1.6x (20->32) profit 12 - 2H session</small>
 <div style="display:flex;gap:10px;margin-top:12px">
 <button class="btn green" style="flex:1;padding:16px;font-size:18px" onclick="tradeFx('BUY')">BUY ↑</button>
-<button class="btn" style="flex:1;padding:16px;font-size:18px;background:#ff1744;color:#fff" onclick="tradeFx('SELL')">SELL ↓</button>
+<button class="btn red" style="flex:1;padding:16px;font-size:18px" onclick="tradeFx('SELL')">SELL ↓</button>
 </div>
 <div id="fxResult" style="margin-top:10px"></div>
 <div id="fxTrades" style="margin-top:12px"></div>
 </div>
 </div>
-</div>
+
 <script>
 const SUPABASE_URL='https://hkhqbtyyqgvaktamilxs.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg';
@@ -92,11 +89,12 @@ const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 let USER_ID=localStorage.getItem('bashiri_uid');
 if(!USER_ID){ USER_ID=crypto.randomUUID(); localStorage.setItem('bashiri_uid',USER_ID); }
 let USER_BAL=20;
+
 async function init(){
-let {data:prof}=await sb.from('profiles').select('*').eq('id',USER_ID).maybeSingle();
+let {data:prof}=await sb.from('profiles').select('balance').eq('id',USER_ID).single();
 if(!prof){ await sb.from('profiles').insert([{id:USER_ID,balance:20}]); }
 else { USER_BAL=prof.balance||20 }
-updateBal(); loadMarkets(); loadWithdrawals(); initForex(); renderFxTrades();
+updateBal(); loadMarkets(); loadWithdrawals(); initForex();
 setInterval(renderFxTrades,1000);
 }
 function updateBal(){
@@ -104,40 +102,36 @@ document.getElementById('bal').innerText='Bal: KES '+USER_BAL;
 document.getElementById('balBig').innerText='KES '+USER_BAL;
 let pct=Math.min(100,(USER_BAL/40)*100);
 document.getElementById('prog').style.width=pct+'%';
-document.getElementById('progText').innerText=pct.toFixed(0)+'% - Need '+(40-USER_BAL)+' more';
-if(USER_BAL>=40){ document.getElementById('progOk').innerText='✅ Ready to Withdraw'; document.getElementById('progText').innerText='100%'; }
+document.getElementById('progText').innerText=Math.round(pct)+'% - Need '+(40-USER_BAL)+' more';
+if(USER_BAL>=40){ document.getElementById('progOk').style.display='block'; }
 }
 function show(v){
-document.getElementById('view-markets').style.display=v==='markets'?'block':'none';
-document.getElementById('view-wallet').style.display=v==='wallet'?'block':'none';
-document.getElementById('view-forex').style.display=v==='forex'?'block':'none';
-if(v==='forex'){ setTimeout(()=>loadTvChart(currentPair),100); }
+document.getElementById('view-markets').style.display=v=='markets'?'block':'none';
+document.getElementById('view-wallet').style.display=v=='wallet'?'block':'none';
+document.getElementById('view-forex').style.display=v=='forex'?'block':'none';
+if(v=='forex'){ setTimeout(()=>loadTvChart(currentPair),200); }
 }
 async function loadMarkets(){
 let {data}=await sb.from('markets').select('*').order('created_at',{ascending:false});
-document.getElementById('view-markets').innerHTML=(data||[]).map(m=>
-`<div class="card"><b>${m.title}</b><br><small>${m.question||''}</small>
-<div style="margin-top:10px"><button class="yes" onclick="placeBet('${m.id}','yes')">YES</button>
-<button class="no" onclick="placeBet('${m.id}','no')">NO</button></div></div>`
-).join('')||'No markets yet';
+document.getElementById('view-markets').innerHTML=(data||[]).map(m=>`<div class="card"><b>${m.title}</b><br><small>${m.category} | ${m.status}</small><div style="margin-top:10px"><button class="yes" onclick="placeBet('${m.id}','yes')">YES</button><button class="no" onclick="placeBet('${m.id}','no')">NO</button></div></div>`).join('')||'No markets yet';
 }
 async function placeBet(market_id,choice){
-if(USER_BAL<20) return alert('Low balance! Send Money');
+if(USER_BAL<20) return alert('Low balance! Send Money Till 0116982197');
 USER_BAL-=20; updateBal();
 await sb.from('profiles').update({balance:USER_BAL}).eq('id',USER_ID);
-let {error}=await sb.from('bets').insert([{user_id:USER_ID,market_id,choice,amount:20}]);
-if(error){ await sb.from('bets').insert([{user_id:USER_ID,market_id,choice}]); }
+let {error}=await sb.from('bets').insert([{user_id:USER_ID,market_id:market_id,choice:choice,amount:20,status:'active'}]);
+if(error){ await sb.from('bets').insert([{user_id:USER_ID,market_id:market_id,choice:choice,stake:20,status:'active'}]); }
 alert('Bet placed! 20 deducted');
 }
 async function withdraw(){
 let phone=document.getElementById('withPhone').value.trim();
-let amount=parseInt(document.getElementById('withAmount').value);
-if(!phone||phone.length<10) return alert('Enter M-Pesa No');
+let amount=parseInt(document.getElementById('withAmount').value)||0;
+if(!phone||phone.length<10) return alert('Enter M-Pesa number');
 if(!amount||isNaN(amount)) return alert('Enter Amount');
 if(amount<40) return alert('Min withdraw 40');
 if(USER_BAL<amount) return alert('Low balance '+USER_BAL);
 if(USER_BAL<40) return alert('Need 40 to withdraw, you have '+USER_BAL);
-let {error}=await sb.from('withdrawals').insert([{user_id:USER_ID,phone,amount,status:'pending'}]);
+let {error}=await sb.from('withdrawals').insert([{user_id:USER_ID,phone:phone,amount:amount,status:'pending'}]);
 if(error){ alert('FAILED: '+error.message); return; }
 USER_BAL-=amount; updateBal();
 await sb.from('profiles').update({balance:USER_BAL}).eq('id',USER_ID);
@@ -146,34 +140,55 @@ loadWithdrawals();
 }
 async function loadWithdrawals(){
 let {data}=await sb.from('withdrawals').select('*').eq('user_id',USER_ID).order('created_at',{ascending:false});
-document.getElementById('withHistory').innerHTML='<b>Withdraw History</b><br>'+(data||[]).map(w=>`<small>${w.amount} to ${w.phone} - ${w.status}</small><br>`).join('')||'No history';
+document.getElementById('withHistory').innerHTML=(data||[]).map(w=>`<div>${w.amount} to ${w.phone} - ${w.status}</div>`).join('')||'No withdraw history';
 }
+
 let currentPair="EUR/USD"; let lastPrice=1.0866;
 function initForex(){ loadTvChart(currentPair); startLivePrice(); }
-function setPair(pair,el){ currentPair=pair; document.querySelectorAll('.forex-pair').forEach(b=>b.classList.remove('active')); el.classList.add('active'); document.getElementById('livePrice').innerText=pair+'...'; loadTvChart(pair); }
+function setPair(pair,el){
+currentPair=pair;
+document.querySelectorAll('.forex-pair').forEach(b=>b.classList.remove('active'));
+if(el) el.classList.add('active');
+document.getElementById('pairName').innerText=pair;
+loadTvChart(pair);
+}
 function loadTvChart(pair){
 let map={"EUR/USD":"FX%3AEURUSD","GBP/USD":"FX%3AGBPUSD","USD/JPY":"FX%3AUSDJPY","XAU/USD":"OANDA%3AXAUUSD","BTC/USD":"BINANCE%3ABTCUSDT"};
 let sym=map[pair]||"FX%3AEURUSD";
-document.getElementById('tv_chart').innerHTML=`<iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_123&symbol=${sym}&interval=60&hidesidetoolbar=0&symboledit=1&saveimage=1&toolbarbg=0a0a0a&studies=[]&theme=dark&style=1&timezone=Africa%2FNairobi&withdateranges=1&showpopupbutton=1&locale=en" style="width:100%;height:100%;border:0" frameborder="0" scrolling="no"></iframe>`;
+document.getElementById('tv_chart').innerHTML=`<iframe src="https://s.tradingview.com/widgetembed/?symbol=${sym}&interval=1&hidesidetoolbar=0&symboledit=0&saveimage=0&toolbarbg=rgba(0,0,0,1)&studies=[]&theme=dark&style=1&timezone=Africa%2FNairobi" style="width:100%;height:400px;border:0" frameborder="0"></iframe>`;
 }
-async function startLivePrice(){ setInterval(async()=>{ try{ let price=0; if(currentPair==="BTC/USD"){ let r=await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'); let j=await r.json(); price=parseFloat(j.price); }else if(currentPair==="XAU/USD"){ let r=await fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT'); let j=await r.json(); price=parseFloat(j.price); }else{ let from=currentPair.split('/')[0]; let to=currentPair.split('/')[1]; let r=await fetch(`https://api.frankfurter.app/latest?from=${from}&to=${to}`); let j=await r.json(); price=j.rates[to]; } let el=document.getElementById('livePrice'); el.className='live-price '+(price>=lastPrice?'price-up':'price-down'); el.innerText=currentPair+' '+price.toFixed(4); lastPrice=price; }catch(e){ let fake=(lastPrice||1.0866)+(Math.random()-0.5)*0.001; document.getElementById('livePrice').innerText=currentPair+' '+fake.toFixed(4); lastPrice=fake; } },2000); }
-function getFxTrades(){ try{return JSON.parse(localStorage.getItem('bashiri_fx_trades')||'[]')}catch{return []} }
+async function startLivePrice(){
+setInterval(async ()=>{
+let change=(Math.random()-0.5)*0.002;
+lastPrice+=change;
+let el=document.getElementById('livePrice');
+if(el){ el.innerText=lastPrice.toFixed(4); el.className=change>=0?'live-price price-up':'live-price price-down'; }
+},2000);
+}
+function getFxTrades(){ try{return JSON.parse(localStorage.getItem('bashiri_fx_trades')||'[]')}catch(e){return []} }
 function saveFxTrades(t){ localStorage.setItem('bashiri_fx_trades',JSON.stringify(t)); }
+
+// 🔥 FIXED - NOW SAVES TO SUPABASE FOR ADMIN
 async function tradeFx(type){
 let amt=parseInt(document.getElementById('fxAmount').value)||20;
 if(amt<20) return alert('Min 20 bob');
-if(USER_BAL<amt) return alert('Low balance! You have KES '+USER_BAL+' need '+amt);
+if(USER_BAL<amt) return alert('Low balance! You have KES '+USER_BAL);
 let entryPrice=lastPrice;
 USER_BAL-=amt; updateBal();
 await sb.from('profiles').update({balance:USER_BAL}).eq('id',USER_ID);
-let trade={id:crypto.randomUUID(),pair:currentPair,type,amount:amt,entry:entryPrice,expiry:Date.now()+2*60*60*1000,status:'active'};
+// save to bets for admin
+let market_id='FOREX_'+currentPair.replace('/','');
+let {error}=await sb.from('bets').insert([{user_id:USER_ID,market_id:market_id,choice:type+' '+currentPair+' @ '+entryPrice.toFixed(4),amount:amt,status:'active'}]);
+if(error){ await sb.from('bets').insert([{user_id:USER_ID,market_id:market_id,choice:type+' '+currentPair+' @ '+entryPrice.toFixed(4),stake:amt,status:'active'}]); }
+let trade={id:crypto.randomUUID(),pair:currentPair,type:type,amount:amt,entry:entryPrice,expiry:Date.now()+2*60*60*1000,status:'active'};
 let trades=getFxTrades(); trades.unshift(trade); saveFxTrades(trades);
-document.getElementById('fxResult').innerHTML=`<div style="background:#222;padding:10px;border-radius:8px">✅ ${type} ${currentPair} @ ${entryPrice.toFixed(4)} KES ${amt}<br><b>Session 2 hours — closes ${new Date(trade.expiry).toLocaleTimeString()}</b></div>`;
+document.getElementById('fxResult').innerHTML=`<div class="card" style="background:#00ff88;color:#000">✅ ${type} ${currentPair} @ ${entryPrice.toFixed(4)} KES ${amt}<br><b>2H Session - Saved to Admin</b></div>`;
 renderFxTrades();
 }
+
 async function renderFxTrades(){
 let trades=getFxTrades();
-if(!trades.length){ document.getElementById('fxTrades').innerHTML=''; return; }
+if(!trades.length){ document.getElementById('fxTrades').innerHTML='<div class="muted">No active sessions</div>'; return; }
 let now=Date.now();
 let html='<b>Active Sessions (2H)</b><br>';
 let changed=false;
@@ -187,7 +202,7 @@ if(t.type==='BUY' && exitPrice>t.entry) win=true;
 if(t.type==='SELL' && exitPrice<t.entry) win=true;
 if(win){
 let payout=Math.floor(t.amount*1.6);
-USER_BAL+=payout; t.status='won'; t.payout=payout; t.exit=exitPrice; changed=true;
+USER_BAL+=payout; t.status='won'; t.payout=payout;
 await sb.from('profiles').update({balance:USER_BAL}).eq('id',USER_ID);
 updateBal();
 }else{
@@ -197,13 +212,13 @@ t.status='lost'; t.exit=exitPrice; changed=true;
 let hrs=Math.floor(diff/3600000);
 let mins=Math.floor((diff%3600000)/60000);
 let secs=Math.floor((diff%60000)/1000);
-html+=`<div class="card" style="background:#1a1a1a;padding:10px;margin-top:6px"><small>${t.type} ${t.pair} ${t.amount} bob @ ${t.entry.toFixed(4)}</small><br><b style="color:#00ff88">⏳ ${hrs}h ${mins}m ${secs}s left</b><br><small>Entry: ${t.entry.toFixed(4)} | Now: ${lastPrice.toFixed(4)}</small></div>`;
+html+=`<div class="card" style="background:#1a1a1a;border-color:#00ff88">${t.type} ${t.pair} KES ${t.amount} @ ${t.entry.toFixed(4)}<br><b>${hrs}h ${mins}m ${secs}s left</b> - Live ${lastPrice.toFixed(4)}</div>`;
 }
 }
-let finished=trades.filter(t=>t.status!=='active').slice(0,5);
+let finished=trades.filter(t=>t.status!=='active');
 for(let t of finished){
-if(t.status==='won') html+=`<div class="card" style="background:#00ff8822;padding:8px">✅ WIN ${t.type} ${t.pair} ${t.entry.toFixed(4)}→${t.exit.toFixed(4)} +${t.payout} KES</div>`;
-else html+=`<div class="card" style="background:#ff174422;padding:8px">❌ LOSS ${t.type} ${t.pair} ${t.entry.toFixed(4)}→${t.exit?.toFixed(4)} -${t.amount}</div>`;
+if(t.status==='won') html+=`<div class="card" style="background:#00ff8822;border-color:#00ff88">WON ${t.type} ${t.pair} +${t.payout} KES</div>`;
+else html+=`<div class="card" style="background:#ff184e22;border-color:#ff184e">LOST ${t.type} ${t.pair} -${t.amount}</div>`;
 }
 document.getElementById('fxTrades').innerHTML=html;
 if(changed){ saveFxTrades(trades); updateBal(); }
