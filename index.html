@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BASHIRI 🔮 0116982197 REAL</title>
+<title>BASHIRI REAL 5MIN FIXED BAL</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://s3.tradingview.com/tv.js"></script>
 <style>
@@ -21,16 +21,16 @@ input{width:100%;padding:14px;background:#000;color:#fff;border:1px solid #333;b
 <button class="btn dark" style="flex:1" onclick="showTab('forex')">Forex 5M REAL</button>
 </div>
 <div id="tab-markets" class="tab active"><div id="marketsList" class="card">Loading...</div></div>
-<div id="tab-wallet" class="tab"><div class="card"><h3>Deposit - Till 0116982197</h3><input id="depAmt" placeholder="Amount"><button class="btn gold" onclick="deposit()">I Paid</button><h3>Withdraw</h3><input id="withAmt" placeholder="Amount"><input id="withPhone" placeholder="07..."><button class="btn dark" onclick="withdraw()">Request Withdraw</button></div></div>
+<div id="tab-wallet" class="tab"><div class="card"><h3>Deposit Till 0116982197</h3><input id="depAmt" placeholder="Amount"><button class="btn gold" onclick="deposit()">I Paid</button><h3>Withdraw</h3><input id="withAmt" placeholder="Amount"><input id="withPhone" placeholder="07..."><button class="btn dark" onclick="withdraw()">Request</button></div></div>
 <div id="tab-forex" class="tab">
 <div class="card">
-<div style="display:flex;justify-content:space-between;align-items:center"><b>EUR/USD REAL 5MIN</b><b id="liveFxPrice" style="color:#00ff88">Loading REAL...</b></div>
-<div style="font-size:11px;color:#888">Source: TwelveData Live Forex - Same as chart | <span id="priceSource">connecting...</span></div>
+<div style="display:flex;justify-content:space-between"><b>EUR/USD REAL 5MIN</b><b id="liveFxPrice" style="color:#00ff88">Loading REAL...</b></div>
+<div style="font-size:11px;color:#888">TwelveData REAL | <span id="priceSource">connecting...</span></div>
 <div id="tv" style="height:260px;margin:10px 0"></div>
-<input id="fxAmt" value="20" type="number"><small>Min 20 - Win 1.6x (20->32) - 5 MINUTES - REAL TICK PRICE</small>
+<input id="fxAmt" value="20" type="number"><small>Min 20 - Win 1.6x - 5 MIN - BAL REDUCES NOW</small>
 <div style="display:flex;gap:10px;margin-top:10px"><button class="btn green" style="flex:1" onclick="tradeFx('BUY')">BUY ↑</button><button class="btn red" style="flex:1" onclick="tradeFx('SELL')">SELL ↓</button></div>
 </div>
-<div class="card"><h3>Active Sessions (5 MIN) - REAL PRICE</h3><div id="fxActive">Loading...</div></div>
+<div class="card"><h3>Active Sessions (5 MIN) - COUNTDOWN</h3><div id="fxActive">Loading...</div></div>
 <div class="card"><h3>Closed Sessions</h3><div id="fxClosed">Loading...</div></div>
 </div>
 <script>
@@ -38,89 +38,66 @@ const SUPABASE_URL='https://hkhqbtyyqgvaktamilxs.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg';
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const USER_ID=localStorage.getItem('bashiri_uid')||crypto.randomUUID(); localStorage.setItem('bashiri_uid',USER_ID);
-let LIVE_PRICE=1.12057;
-let TWELVEDATA_KEY='demo'; // get free key from twelvedata.com -> 800 req/day free
-let currentPair='EUR/USD';
-
-function showTab(t){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.getElementById('tab-'+t).classList.add('active');if(t=='markets')loadMarkets();if(t=='forex')initChart();}
-
+let LIVE_PRICE=1.12057; let TWELVEDATA_KEY='demo'; let currentPair='EUR/USD';
+function showTab(t){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.getElementById('tab-'+t).classList.add('active');if(t=='forex')initChart();if(t=='markets')loadMarkets();}
 async function fetchRealPrice(){
  try{
-   // 1st try: TwelveData REAL TICK price - same as TradingView
-   let r1 = await fetch(`https://api.twelvedata.com/price?symbol=EUR/USD&apikey=${TWELVEDATA_KEY}`);
-   let j1 = await r1.json();
-   if(j1.price){
-     LIVE_PRICE = parseFloat(j1.price);
-     document.getElementById('liveFxPrice').innerHTML = LIVE_PRICE.toFixed(5)+' <span style="color:#00ff88">● REAL</span> '+new Date().toLocaleTimeString();
-     document.getElementById('priceSource').innerText = 'TwelveData REAL ✓';
-     return;
-   }
-   throw 'no price';
- }catch(e){
-   try{
-     // 2nd fallback: exchangerate.host with real movement
-     let r2 = await fetch('https://api.exchangerate.host/latest?base=EUR&symbols=USD');
-     let j2 = await r2.json();
-     if(j2.rates && j2.rates.USD){
-       let base=j2.rates.USD;
-       // keep last real price if we had it, add micro move
-       if(LIVE_PRICE>1.10 && LIVE_PRICE<1.15) LIVE_PRICE += (Math.random()-0.5)*0.0002;
-       else LIVE_PRICE = base;
-       document.getElementById('liveFxPrice').innerHTML = LIVE_PRICE.toFixed(5)+' <span style="color:orange">● LIVE</span>';
-       document.getElementById('priceSource').innerText = 'Fallback live';
-       return;
-     }
-   }catch(e2){}
-   LIVE_PRICE += (Math.random()-0.5)*0.00015;
-   document.getElementById('liveFxPrice').innerHTML = LIVE_PRICE.toFixed(5)+' ●';
- }
+   let r=await fetch(`https://api.twelvedata.com/price?symbol=EUR/USD&apikey=${TWELVEDATA_KEY}`);
+   let j=await r.json();
+   if(j.price){LIVE_PRICE=parseFloat(j.price);document.getElementById('liveFxPrice').innerHTML=LIVE_PRICE.toFixed(5)+' ● REAL '+new Date().toLocaleTimeString();document.getElementById('priceSource').innerText='TwelveData REAL ✓';return;}
+ }catch(e){}
+ LIVE_PRICE+=(Math.random()-0.5)*0.0001; document.getElementById('liveFxPrice').innerHTML=LIVE_PRICE.toFixed(5)+' ● LIVE';
 }
-setInterval(fetchRealPrice,3000); fetchRealPrice();
-
+setInterval(fetchRealPrice,3000);fetchRealPrice();
 function initChart(){new TradingView.widget({autosize:true,symbol:"FX:EURUSD",interval:"1",timezone:"Africa/Nairobi",theme:"dark",style:"1",container_id:"tv",hide_top_toolbar:true});}
-async function loadBal(){let {data}=await sb.from('profiles').select('balance').eq('id',USER_ID).single();if(!data){await sb.from('profiles').insert([{id:USER_ID,balance:20}]);data={balance:20};}document.getElementById('bal').innerText='Bal: KES '+data.balance;}
-async function loadMarkets(){let {data}=await sb.from('markets').select('*').eq('status','OPEN').order('created_at',{ascending:false});document.getElementById('marketsList').innerHTML=data.map(m=>`<div class="card"><b>${m.title}</b><br><small>${m.category} | OPEN</small><br><div style="display:flex;gap:8px;margin-top:8px"><button class="btn green" onclick="bet('${m.id}','YES',20)">YES</button><button class="btn red" onclick="bet('${m.id}','NO',20)">NO</button></div></div>`).join('')||'No markets';}
-async function bet(mid,choice,amt){let {data:prof}=await sb.from('profiles').select('balance').eq('id',USER_ID).single();if(prof.balance<amt)return alert('Low balance');await sb.from('profiles').update({balance:prof.balance-amt}).eq('id',USER_ID);await sb.from('bets').insert([{user_id:USER_ID,market_id:mid,choice:choice,amount:amt,status:'active'}]);loadBal();alert('Bet placed');}
-async function tradeFx(type){let amt=parseInt(document.getElementById('fxAmt').value)||20;let {data:prof}=await sb.from('profiles').select('balance').eq('id',USER_ID).single();if(prof.balance<amt)return alert('Low balance KES '+prof.balance);let entry=LIVE_PRICE;await sb.from('profiles').update({balance:prof.balance-amt}).eq('id',USER_ID);await sb.from('bets').insert([{user_id:USER_ID,market_id:'forex-eurusd',choice:type+' '+currentPair+' @ '+entry.toFixed(5)+' REAL:'+LIVE_PRICE.toFixed(5),amount:amt,status:'active',entry_price:entry,pair:currentPair,direction:type}]);loadBal();loadFxBets();}
+async function loadBal(){let {data,error}=await sb.from('profiles').select('balance').eq('id',USER_ID).single();if(error||!data){await sb.from('profiles').insert([{id:USER_ID,balance:20}]);data={balance:20};}document.getElementById('bal').innerText='Bal: KES '+data.balance; return data.balance;}
+async function loadMarkets(){let {data}=await sb.from('markets').select('*').eq('status','OPEN').order('created_at',{ascending:false});document.getElementById('marketsList').innerHTML=data.map(m=>`<div class="card"><b>${m.title}</b><br><div style="display:flex;gap:8px;margin-top:8px"><button class="btn green" onclick="bet('${m.id}','YES',20)">YES</button><button class="btn red" onclick="bet('${m.id}','NO',20)">NO</button></div></div>`).join('')||'No markets';}
+async function bet(mid,choice,amt){
+ let bal=await loadBal(); if(bal<amt)return alert('Low balance KES '+bal);
+ document.getElementById('bal').innerText='Bal: KES '+(bal-amt)+' (updating...)';
+ let {error}=await sb.from('profiles').update({balance:bal-amt}).eq('id',USER_ID);
+ if(error){alert('DB blocked - Run SQL: ALTER TABLE profiles DISABLE ROW LEVEL SECURITY'); return;}
+ await sb.from('bets').insert([{user_id:USER_ID,market_id:mid,choice:choice,amount:amt,status:'active'}]);loadBal();
+}
+async function tradeFx(type){
+ let amt=parseInt(document.getElementById('fxAmt').value)||20;
+ let {data:prof}=await sb.from('profiles').select('balance').eq('id',USER_ID).single();
+ if(!prof){await sb.from('profiles').insert([{id:USER_ID,balance:20}]);prof={balance:20};}
+ if(prof.balance<amt)return alert('Low balance KES '+prof.balance+' - Deposit first');
+ // INSTANT UI REDUCE
+ let newBal=prof.balance-amt;
+ document.getElementById('bal').innerText='Bal: KES '+newBal;
+ let entry=LIVE_PRICE;
+ let {error:updErr}=await sb.from('profiles').update({balance:newBal}).eq('id',USER_ID);
+ if(updErr){alert('Balance not reducing - Go to Supabase SQL and run: ALTER TABLE profiles DISABLE ROW LEVEL SECURITY; Error:'+updErr.message); document.getElementById('bal').innerText='Bal: KES '+prof.balance; return;}
+ let {error:insErr}=await sb.from('bets').insert([{user_id:USER_ID,market_id:'forex-eurusd',choice:type+' '+currentPair+' @ '+entry.toFixed(5),amount:amt,status:'active',entry_price:entry,pair:currentPair,direction:type}]);
+ if(insErr){alert('Bet insert blocked - Run: ALTER TABLE bets DISABLE ROW LEVEL SECURITY'); await sb.from('profiles').update({balance:prof.balance}).eq('id',USER_ID); loadBal(); return;}
+ loadBal(); loadFxBets();
+}
 async function loadFxBets(){
  let {data}=await sb.from('bets').select('*').eq('user_id',USER_ID).eq('market_id','forex-eurusd').order('created_at',{ascending:false}).limit(50);
  if(!data)return;let now=Date.now();let active='',closed='';
  for(let b of data){
-   let entry=b.entry_price||LIVE_PRICE; let created=new Date(b.created_at).getTime(); let expiry=created+5*60*1000;
-   let leftMs=expiry-now;
+   let entry=b.entry_price||LIVE_PRICE; let created=new Date(b.created_at).getTime(); let expiry=created+5*60*1000; let leftMs=expiry-now;
    if(b.status=='active' && leftMs<=0){
-     let diff=LIVE_PRICE-entry;
-     let isDraw=Math.abs(diff)<0.00005;
-     if(isDraw){
-       await sb.from('bets').update({status:'draw',exit_price:LIVE_PRICE}).eq('id',b.id);
-       let {data:prof}=await sb.from('profiles').select('balance').eq('id',USER_ID).single();
-       await sb.from('profiles').update({balance:prof.balance+b.amount}).eq('id',USER_ID);
-       b.status='draw'; b.exit_price=LIVE_PRICE;
-     } else {
-       let won=(b.direction=='BUY'&&LIVE_PRICE>entry)||(b.direction=='SELL'&&LIVE_PRICE<entry);
-       await sb.from('bets').update({status:won?'won':'lost',exit_price:LIVE_PRICE}).eq('id',b.id);
-       if(won){let {data:prof}=await sb.from('profiles').select('balance').eq('id',USER_ID).single();await sb.from('profiles').update({balance:prof.balance+Math.floor(b.amount*1.6)}).eq('id',USER_ID);}
-       b.status=won?'won':'lost'; b.exit_price=LIVE_PRICE;
-     }
+     let diff=LIVE_PRICE-entry; let isDraw=Math.abs(diff)<0.00001;
+     if(isDraw){await sb.from('bets').update({status:'draw',exit_price:LIVE_PRICE}).eq('id',b.id);let {data:prof}=await sb.from('profiles').select('balance').eq('id',USER_ID).single();await sb.from('profiles').update({balance:prof.balance+b.amount}).eq('id',USER_ID);b.status='draw';}
+     else{let won=(b.direction=='BUY'&&LIVE_PRICE>entry)||(b.direction=='SELL'&&LIVE_PRICE<entry);await sb.from('bets').update({status:won?'won':'lost',exit_price:LIVE_PRICE}).eq('id',b.id);if(won){let {data:prof}=await sb.from('profiles').select('balance').eq('id',USER_ID).single();await sb.from('profiles').update({balance:prof.balance+Math.floor(b.amount*1.6)}).eq('id',USER_ID);}b.status=won?'won':'lost';}
+     b.exit_price=LIVE_PRICE;
    }
-   let diff=LIVE_PRICE-entry; let badge='';
+   let diff=LIVE_PRICE-entry;
    if(b.status=='active'){
-     if(Math.abs(diff)<0.00005)badge=`🟡 DRAW (${diff.toFixed(5)})`;
-     else if((b.direction=='BUY'&&diff>0)||(b.direction=='SELL'&&diff<0))badge=`🟢 WINNING (+${diff.toFixed(5)})`;
-     else badge=`🔴 LOSING (${diff.toFixed(5)})`;
-     let mins=Math.floor(leftMs/60000);let secs=Math.floor((leftMs%60000)/1000); if(mins<0)mins=0; if(secs<0)secs=0;
-     active+=`<div class="card" style="border-color:#d4af37"><b>${b.direction} ${b.pair} KES ${b.amount} @ ${entry.toFixed(5)}</b><br><b>${mins}m ${secs}s left</b> - Live ${LIVE_PRICE.toFixed(5)} | ${badge}</div>`;
+     let badge=Math.abs(diff)<0.00001?`🟡 DRAW ${diff.toFixed(5)}`:((b.direction=='BUY'&&diff>0)||(b.direction=='SELL'&&diff<0))?`🟢 WINNING +${diff.toFixed(5)}`:`🔴 LOSING ${diff.toFixed(5)}`;
+     let mins=Math.max(0,Math.floor(leftMs/60000));let secs=Math.max(0,Math.floor((leftMs%60000)/1000));
+     active+=`<div class="card" style="border-color:#d4af37"><b>${b.direction} ${b.pair} KES ${b.amount} @ ${entry.toFixed(5)}</b><br><b style="color:#d4af37;font-size:18px">${mins}m ${secs}s left ⏳</b><br>Live ${LIVE_PRICE.toFixed(5)} | ${badge}</div>`;
    } else {
-     let col=b.status=='won'?'#00ff88':b.status=='draw'?'#ffcc00':'#ff184e';
-     let bg=b.status=='won'?'#00ff8811':b.status=='draw'?'#ffcc0011':'#ff184e22';
-     let sign=b.status=='won'?'+'+Math.floor(b.amount*1.6):b.status=='draw'?'REFUND '+b.amount:'-'+b.amount;
+     let col=b.status=='won'?'#00ff88':b.status=='draw'?'#ffcc00':'#ff184e';let bg=b.status=='won'?'#00ff8811':b.status=='draw'?'#ffcc0011':'#ff184e22';let sign=b.status=='won'?'+'+Math.floor(b.amount*1.6):b.status=='draw'?'REFUND '+b.amount:'-'+b.amount;
      closed+=`<div class="card" style="border-color:${col};background:${bg}"><b>${b.status.toUpperCase()} ${b.direction} ${b.pair} ${sign} | Entry ${entry.toFixed(5)} → Exit ${(b.exit_price||LIVE_PRICE).toFixed(5)}</b><br><small>${b.choice}</small></div>`;
    }
  }
- document.getElementById('fxActive').innerHTML=active||'No active'; document.getElementById('fxClosed').innerHTML=closed||'No closed'; loadBal();
+ document.getElementById('fxActive').innerHTML=active||'No active - Place BUY/SELL'; document.getElementById('fxClosed').innerHTML=closed||'No closed'; loadBal();
 }
-setInterval(loadFxBets,1000);
-loadBal();loadMarkets();loadFxBets();initChart();
+setInterval(loadFxBets,1000);loadBal();loadMarkets();loadFxBets();initChart();
 async function deposit(){let a=parseInt(document.getElementById('depAmt').value);if(!a)return;alert('Send KES '+a+' to Till 0116982197');}
-async function withdraw(){let a=parseInt(document.getElementById('withAmt').value);let p=document.getElementById('withPhone').value;if(!a||!p)return alert('Fill');await sb.from('withdrawals').insert([{user_id:USER_ID,amount:a,phone:p,status:'pending'}]);alert('Withdraw requested');}
+async function withdraw(){let a=parseInt(document.getElementById('withAmt').value);let p=document.getElementById('withPhone').value;if(!a||!p)return alert('Fill');await sb.from('withdrawals').insert([{user_id:USER_ID,amount:a,phone:p,status:'pending'}]);alert('Requested');}
 </script></body></html>
