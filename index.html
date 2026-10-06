@@ -34,60 +34,50 @@ input{padding:12px;background:#0f141e;border:1px solid #2a3a4a;color:#fff;border
 .result-loss{background:#221015;border-left:4px solid #ff1744;padding:8px 10px;margin:6px 0;border-radius:8px;display:flex;justify-content:space-between}
 </style>
 </head><body>
-<div class="top"><div style="display:flex;align-items:center;gap:8px"><div style="background:#00c853;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center">🐼</div><div><b>Panda Pesa</b><br><small class="small">FOREX + EVEN/ODD + BOTS</small></div></div><div id="balTop" style="font-weight:800">KES 500</div></div>
-<div class="bal-card"><div><small class="small"><span class="live-dot"></span> Balance • KES • <span id="botRunning">Bots Idle</span></small><h1 id="balBig">KES 500.00</h1><small class="small" id="progText">Ready</small></div><button class="btn-gold" style="width:auto" onclick="show('wallet')">WITHDRAW</button></div>
-
+<div class="top"><div style="display:flex;align-items:center;gap:8px"><div style="background:#00c853;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center">🐼</div><div><b>Panda Pesa</b><br><small class="small">FOREX + EVEN/ODD + BOTS</small></div></div><div id="balTop">KES 500</div></div>
+<div class="bal-card"><div><small class="small"><span class="live-dot"></span> Balance • <span id="botRunning">Bots Idle</span></small><h1 id="balBig">KES 500.00</h1></div><button class="btn-gold" style="width:auto" onclick="show('wallet')">WITHDRAW</button></div>
 <div id="view-home">
-<div class="card"><div style="display:flex;justify-content:space-between"><b id="chartTitle">EUR/USD • 1H</b><small class="small">REAL • LIVE</small></div><div id="tv_chart"></div><div style="text-align:center;margin-top:8px"><small class="small" id="livePrice">Loading chart...</small></div></div>
-
+<div class="card"><b id="chartTitle">EUR/USD • 1H</b><div id="tv_chart"></div><small class="small" id="livePrice">Live</small></div>
 <div class="stake-box">
 <div style="display:flex;align-items:center;gap:8px"><b>Stake:</b><input id="stakeInput" class="stake-input" type="number" value="50" min="10" oninput="updateWin()"></div>
 <div style="display:flex;gap:6px"><button class="quick" onclick="setStake(20)">20</button><button class="quick active" onclick="setStake(50)">50</button><button class="quick" onclick="setStake(100)">100</button><button class="quick" onclick="setStake(200)">200</button></div>
-<div><small class="small">Win 1.9x</small><br><b style="color:#00c853;font-size:18px" id="winPreview">KES 95</b></div>
+<div><small class="small">Win 1.9x</small><br><b style="color:#00c853" id="winPreview">KES 95</b></div>
 </div>
-
 <div class="card" style="border:1.5px solid #2979ff">
-<b style="color:#2979ff">| EVEN / ODD DIGIT GAME</b> <small class="small">• 1.9x</small>
+<b style="color:#2979ff">| EVEN / ODD DIGIT GAME</b>
 <div style="display:flex;justify-content:space-around;margin-top:12px">
-<div style="text-align:center"><small class="small">LAST DIGIT</small><div id="lastDigit" class="digit-big" style="color:#2979ff">8</div><b id="lastDigitType">EVEN</b></div>
-<div style="text-align:center"><small class="small">PRICE TICK</small><div id="digitTick" style="font-weight:800;margin-top:14px">1.12278</div><small class="small"><span class="live-dot"></span> LIVE 1s</small></div>
+<div style="text-align:center"><small class="small">LAST DIGIT</small><div id="lastDigit" class="digit-big">8</div><b id="lastDigitType">EVEN</b></div>
+<div style="text-align:center"><small class="small">TICK</small><div id="digitTick" style="font-weight:800;margin-top:14px">1.12278</div><small class="small"><span class="live-dot"></span> LIVE</small></div>
 </div>
 <div style="display:flex;gap:10px;margin-top:14px">
 <button class="btn-even" onclick="tradeDigit('EVEN', false)">EVEN 1.9x</button>
 <button class="btn-odd" onclick="tradeDigit('ODD', false)">ODD 1.9x</button>
 </div>
 </div>
-
 <div class="card" style="border-color:#f5c518">
-<b style="color:#f5c518">| EVEN/ODD BOTS</b> <small class="small">• Auto - Low Win</small>
-<div class="bot-card"><div><b>🤖 Safe Bot</b><br><small class="small">Always EVEN • 48% Win</small></div><div style="text-align:center"><small id="safeStatus" class="bot-off">OFF</small><br><button class="quick" onclick="toggleBot('safe')">ON/OFF</button></div></div>
-<div class="bot-card"><div><b>⚡ Martingale Bot</b><br><small class="small">Double after loss • 42% Win</small></div><div style="text-align:center"><small id="martStatus" class="bot-off">OFF</small><br><button class="quick" onclick="toggleBot('mart')">ON/OFF</button></div></div>
-<div class="bot-card"><div><b>🔥 Aggressive Bot</b><br><small class="small">Random • 35% Win</small></div><div style="text-align:center"><small id="aggStatus" class="bot-off">OFF</small><br><button class="quick" onclick="toggleBot('agg')">ON/OFF</button></div></div>
-<small class="small">Bots auto trade without popup. Results show below.</small>
+<b style="color:#f5c518">| EVEN/ODD BOTS - Low Win Rate</b>
+<div class="bot-card"><div><b>🤖 Safe Bot</b><br><small class="small">48% Win</small></div><div style="text-align:center"><small id="safeStatus" class="bot-off">OFF</small><br><button class="quick" onclick="toggleBot('safe')">ON/OFF</button></div></div>
+<div class="bot-card"><div><b>⚡ Martingale Bot</b><br><small class="small">42% Win</small></div><div style="text-align:center"><small id="martStatus" class="bot-off">OFF</small><br><button class="quick" onclick="toggleBot('mart')">ON/OFF</button></div></div>
+<div class="bot-card"><div><b>🔥 Aggressive Bot</b><br><small class="small">35% Win</small></div><div style="text-align:center"><small id="aggStatus" class="bot-off">OFF</small><br><button class="quick" onclick="toggleBot('agg')">ON/OFF</button></div></div>
 </div>
-
-<div class="card"><b style="color:#00c853">| FOREX MARKETS • REAL • LIVE</b><div id="forexList"></div></div>
-
+<div class="card"><b style="color:#00c853">| FOREX MARKETS</b><div id="forexList"></div></div>
 <div class="card" style="border-color:#00c853">
 <div style="display:flex;justify-content:space-between;align-items:center">
-<div><b style="color:#00c853">| MY RESULTS • WIN / LOSS</b></div>
-<button onclick="clearResults()" style="background:#221015;border:1px solid #ff1744;color:#ff1744;padding:6px 12px;border-radius:8px;font-weight:800;font-size:12px">🗑️ CLEAR</button>
+<b style="color:#00c853">| MY RESULTS • WIN / LOSS</b>
+<button onclick="clearResults()" style="background:#221015;border:1px solid #ff1744;color:#ff1744;padding:6px 12px;border-radius:8px;font-weight:800">🗑️ CLEAR</button>
 </div>
 <div id="resultsList" style="margin-top:10px">Loading...</div>
 </div>
 </div>
-
-<div id="view-wallet" style="display:none"><div class="card"><h3>💰 Deposit 0116982197</h3><button class="btn-gold">I Have Sent</button></div><div class="card"><h3>💸 Withdraw</h3><input id="withPhone" placeholder="07..." style="width:100%"><input id="withAmount" type="number" placeholder="Amount" style="width:100%;margin-top:6px"><button class="btn-gold" onclick="withdraw()" style="margin-top:8px">Withdraw</button><div id="withHistory"></div></div></div>
-<div id="view-trade" style="display:none"><div class="card"><b>All Trades</b><div id="tradeHistory"></div></div></div>
+<div id="view-wallet" style="display:none"><div class="card"><h3>Withdraw</h3><input id="withPhone" placeholder="07..." style="width:100%"><input id="withAmount" type="number" placeholder="Amount" style="width:100%;margin-top:6px"><button class="btn-gold" onclick="withdraw()" style="margin-top:8px">Withdraw</button><div id="withHistory"></div></div></div>
+<div id="view-trade" style="display:none"><div class="card"><div id="tradeHistory"></div></div></div>
 <div id="view-profile" style="display:none"><div class="card"><small id="uidTxt"></small><br><br><button class="btn-gold" onclick="give500()">Give 500</button></div></div>
-
 <div class="nav">
 <div onclick="show('home')" style="text-align:center">🏠<br><small class="small">Home</small></div>
 <div onclick="show('wallet')" style="text-align:center">💼<br><small class="small">Wallet</small></div>
 <div onclick="show('trade')" style="text-align:center">📈<br><small class="small">Trades</small></div>
 <div onclick="show('profile')" style="text-align:center">👤<br><small class="small">Profile</small></div>
 </div>
-
 <script>
 const SUPABASE_URL='https://hkhqbtyyqgvaktamilxs.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg';
@@ -102,12 +92,10 @@ let pairs=[
 {symbol:"USD/JPY",tv:"FX:USDJPY",price:149.82,change:"+0.00%"}
 ];
 let lastDigit=8; let bots={safe:false,mart:false,agg:false}; let botIntervals={};
-
 async function init(){
 document.getElementById('uidTxt').innerText='UID: '+USER_ID;
 let {data:prof}=await sb.from('profiles').select('*').eq('id',USER_ID).maybeSingle();
-if(!prof){await sb.from('profiles').insert([{id:USER_ID,balance:500}]); USER_BAL=500;}
-else USER_BAL=prof.balance||500;
+if(!prof){await sb.from('profiles').insert([{id:USER_ID,balance:500}]); USER_BAL=500;}else USER_BAL=prof.balance||500;
 if(USER_BAL<20){USER_BAL=500; await sb.from('profiles').update({balance:500}).eq('id',USER_ID);}
 updateBal(); render(); loadTv("FX:EURUSD"); startTick(); loadAll(); updateWin();
 }
@@ -116,31 +104,25 @@ function setStake(v){document.getElementById('stakeInput').value=v; updateWin();
 function updateWin(){let s=parseInt(document.getElementById('stakeInput').value)||0; document.getElementById('winPreview').innerText='KES '+(s*1.9).toFixed(0);}
 function startTick(){
 setInterval(()=>{
-for(let p of pairs){p.price+= (Math.random()-0.5)*0.0008; p.change=((Math.random()-0.5)*0.4).toFixed(2)+'%';}
+for(let p of pairs){p.price+=(Math.random()-0.5)*0.0008; p.change=((Math.random()-0.5)*0.4).toFixed(2)+'%';}
 let str=pairs[0].price.toFixed(5); lastDigit=parseInt(str.slice(-1));
 document.getElementById('lastDigit').innerText=lastDigit;
 document.getElementById('lastDigitType').innerText=lastDigit%2==0?'EVEN':'ODD';
 document.getElementById('digitTick').innerText=str;
-document.getElementById('livePrice').innerText=`${pairs[0].symbol} ${str} ${pairs[0].change} • ${new Date().toLocaleTimeString()}`;
+document.getElementById('livePrice').innerText=`${pairs[0].symbol} ${str} ${pairs[0].change}`;
 render();
 },1200);
 }
 function render(){
 document.getElementById('forexList').innerHTML=pairs.map(p=>{
 let up=parseFloat(p.change)>=0; let price=p.symbol==='GOLD'?p.price.toFixed(2):p.price.toFixed(5);
-return `<div class="pair-row"><div style="flex:1"><b>${p.symbol}</b></div><div style="text-align:right;min-width:90px"><div class="${up?'price-up':'price-down'}" style="font-weight:900">${price}</div><small class="${up?'price-up':'price-down'}">${p.change}</small></div><div style="display:flex;gap:6px"><button class="btn-up" onclick="trade('${p.symbol}','UP', false)">↑ UP</button><button class="btn-down" onclick="trade('${p.symbol}','DOWN', false)">↓ DOWN</button></div></div>`;
+return `<div class="pair-row"><div style="flex:1"><b>${p.symbol}</b></div><div style="text-align:right"><div class="${up?'price-up':'price-down'}" style="font-weight:900">${price}</div><small class="${up?'price-up':'price-down'}">${p.change}</small></div><div style="display:flex;gap:6px"><button class="btn-up" onclick="trade('${p.symbol}','UP', false)">↑ UP</button><button class="btn-down" onclick="trade('${p.symbol}','DOWN', false)">↓ DOWN</button></div></div>`;
 }).join('');
 }
 function loadTv(sym){
 document.getElementById('tv_chart').innerHTML='';
-try{
-new TradingView.widget({autosize:true,symbol:sym,interval:"60",timezone:"Africa/Nairobi",theme:"dark",style:"1",locale:"en",toolbar_bg:"#0a0e14",enable_publishing:false,backgroundColor:"#0a0e14",gridColor:"#1e2a3a",container_id:"tv_chart"});
-}catch(e){
-document.getElementById('tv_chart').innerHTML='<div style="padding:100px;text-align:center;color:#7a8a9a">Chart offline - Price tick live above<br>EUR/USD '+pairs[0].price.toFixed(5)+'</div>';
-console.log('TV error',e);
+try{new TradingView.widget({autosize:true,symbol:sym,interval:"60",timezone:"Africa/Nairobi",theme:"dark",style:"1",locale:"en",toolbar_bg:"#0a0e14",enable_publishing:false,backgroundColor:"#0a0e14",gridColor:"#1e2a3a",container_id:"tv_chart"});}catch(e){document.getElementById('tv_chart').innerHTML='<div style="padding:80px;text-align:center">Chart offline<br>Live tick: '+pairs[0].price.toFixed(5)+'</div>';}
 }
-}
-
 async function trade(symbol,dir,isBot=false){
 let stake=parseInt(document.getElementById('stakeInput').value);
 if(stake>USER_BAL){if(!isBot)alert('Low bal'); return;}
@@ -149,14 +131,12 @@ USER_BAL-=stake; updateBal();
 let win=Math.random()>0.52; let profit=win?Math.round(stake*0.8):-stake;
 if(win) USER_BAL+=stake*1.8;
 await sb.from('profiles').update({balance:USER_BAL}).eq('id',USER_ID);
-let {error}=await sb.from('bets').insert([{user_id:USER_ID,market_id:symbol,choice:dir,amount:stake,result:win?'WIN':'LOSS',profit:profit,digit:lastDigit}]);
-if(error){console.log(error); alert('DB error: '+error.message); USER_BAL+=stake; updateBal(); return;}
+await sb.from('bets').insert([{user_id:USER_ID,market_id:symbol,choice:dir,amount:stake,result:win?'WIN':'LOSS',profit:profit}]);
 loadAll();
 }
-
 async function tradeDigit(type,isBot=false){
 let stake=parseInt(document.getElementById('stakeInput').value);
-if(stake>USER_BAL){if(isBot){toggleBot(Object.keys(bots).find(k=>bots[k])); alert('Bot stopped low bal');} else alert('Low bal'); return;}
+if(stake>USER_BAL){if(isBot){toggleBot('safe');} else alert('Low bal'); return;}
 if(!isBot &&!confirm(`EVEN/ODD ${type} Now ${lastDigit} Stake ${stake}?`)) return;
 let resultDigit=Math.floor(Math.random()*10);
 let resultType=resultDigit%2==0?'EVEN':'ODD';
@@ -166,12 +146,10 @@ let profit=win?Math.round(stake*0.9):-stake;
 if(win) USER_BAL+=stake*1.9;
 updateBal();
 await sb.from('profiles').update({balance:USER_BAL}).eq('id',USER_ID);
-// FIXED: no entry_digit column - only digit
-let {error}=await sb.from('bets').insert([{user_id:USER_ID,market_id:'EVEN_ODD',choice:type,amount:stake,result:win?'WIN':'LOSS',profit:profit,digit:resultDigit}]);
-if(error){console.log('insert error',error); alert('DB error '+error.message+' - go to Supabase SQL and run: ALTER TABLE bets ADD COLUMN entry_digit int;'); USER_BAL+=stake; if(win) USER_BAL-=stake*1.9; updateBal(); return;}
+let {error}=await sb.from('bets').insert([{user_id:USER_ID,market_id:'EVEN_ODD',choice:type,amount:stake,result:win?'WIN':'LOSS',profit:profit}]);
+if(error){console.log(error); alert('DB error: '+error.message); USER_BAL+=stake; if(win) USER_BAL-=stake*1.9; updateBal(); return;}
 loadAll();
 }
-
 function toggleBot(name){
 bots[name]=!bots[name];
 let el=document.getElementById(name==='safe'?'safeStatus':name==='mart'?'martStatus':'aggStatus');
@@ -182,30 +160,22 @@ botIntervals[name]=setInterval(()=>{let type=name==='safe'?'EVEN':(Math.random()
 }else{clearInterval(botIntervals[name]);}
 updateBal();
 }
-
 async function loadAll(){
 try{
 let {data,error}=await sb.from('bets').select('*').eq('user_id',USER_ID).order('created_at',{ascending:false}).limit(50);
-if(error){document.getElementById('resultsList').innerHTML='DB Error: '+error.message+'<br><small class="small">Run in Supabase SQL: ALTER TABLE bets ADD COLUMN entry_digit int;</small>'; return;}
+if(error){document.getElementById('resultsList').innerHTML='Error: '+error.message; return;}
 let html='';
 (data||[]).forEach(t=>{
 let isWin=t.result==='WIN'; let cls=isWin?'result-win':'result-loss'; let icon=isWin?'✅ WIN':'❌ LOSS';
 let stake=t.amount||0; let profit=t.profit||0;
 let profitText=isWin?`+KES ${Math.abs(profit)}`:`-KES ${Math.abs(stake)}`;
-html+=`<div class="${cls}"><div><b>${t.market_id} ${t.choice}</b><br><small class="small">Digit: ${t.digit} • Stake KES ${stake} • ${new Date(t.created_at).toLocaleTimeString()}</small></div><div style="text-align:right"><b style="color:${isWin?'#00c853':'#ff1744'}">${icon}</b><br><small style="font-weight:900;color:${isWin?'#00c853':'#ff1744'}">${profitText}</small></div></div>`;
+html+=`<div class="${cls}"><div><b>${t.market_id} ${t.choice}</b><br><small class="small">Stake KES ${stake} • ${new Date(t.created_at).toLocaleTimeString()}</small></div><div style="text-align:right"><b style="color:${isWin?'#00c853':'#ff1744'}">${icon}</b><br><small style="font-weight:900;color:${isWin?'#00c853':'#ff1744'}">${profitText}</small></div></div>`;
 });
-document.getElementById('resultsList').innerHTML=html||'<small class="small">No trades yet - Turn ON a bot above and wait 6 sec</small>';
+document.getElementById('resultsList').innerHTML=html||'<small class="small">No trades yet - Turn ON Safe Bot, wait 6 sec, results will show here</small>';
 document.getElementById('tradeHistory').innerHTML=html||'No trades';
-let {data:w}=await sb.from('withdrawals').select('*').eq('user_id',USER_ID).order('created_at',{ascending:false}).limit(10);
-document.getElementById('withHistory').innerHTML=(w||[]).map(x=>`<small>${x.amount} to ${x.phone} - ${x.status}</small><br>`).join('')||'';
-}catch(e){document.getElementById('resultsList').innerHTML='Error loading: '+e.message;}
+}catch(e){document.getElementById('resultsList').innerHTML='Load error: '+e.message;}
 }
-
-async function clearResults(){
-if(!confirm('Clear all history?')) return;
-await sb.from('bets').delete().eq('user_id',USER_ID);
-loadAll();
-}
+async function clearResults(){if(!confirm('Clear history?')) return; await sb.from('bets').delete().eq('user_id',USER_ID); loadAll();}
 async function give500(){USER_BAL=500; await sb.from('profiles').update({balance:500}).eq('id',USER_ID); updateBal();}
 async function withdraw(){let phone=document.getElementById('withPhone').value.trim(); let amount=parseInt(document.getElementById('withAmount').value); if(!phone||!amount)return alert('Fill'); if(amount>USER_BAL)return alert('Low'); await sb.from('withdrawals').insert([{user_id:USER_ID,phone,amount,status:'pending'}]); USER_BAL-=amount; await sb.from('profiles').update({balance:USER_BAL}).eq('id',USER_ID); updateBal(); loadAll();}
 function show(v){document.getElementById('view-home').style.display=v==='home'?'block':'none'; document.getElementById('view-wallet').style.display=v==='wallet'?'block':'none'; document.getElementById('view-trade').style.display=v==='trade'?'block':'none'; document.getElementById('view-profile').style.display=v==='profile'?'block':'none';}
