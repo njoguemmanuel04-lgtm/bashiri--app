@@ -1,183 +1,84 @@
 <!DOCTYPE html>
-<html><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Panda Pesa</title>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://s3.tradingview.com/tv.js"></script>
 <style>
-body{background:#0a0e14;color:#fff;font-family:system-ui;margin:0;padding:0 0 95px 0}
-.top{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:#0f141e;border-bottom:1px solid #1e2a3a}
-.bal-card{margin:12px;background:linear-gradient(135deg,#102214,#1a3320);border:1px solid #2a4a2a;border-radius:16px;padding:16px;display:flex;justify-content:space-between;align-items:center}
-.bal-card h1{margin:4px 0;font-size:30px}
-.btn-up{background:#00c853;color:#fff;border:none;padding:10px 12px;border-radius:10px;font-weight:800;font-size:12px}
-.btn-down{background:#ff1744;color:#fff;border:none;padding:10px 12px;border-radius:10px;font-weight:800;font-size:12px}
-.btn-even{background:#2979ff;color:#fff;border:none;padding:14px;border-radius:12px;font-weight:900;font-size:15px;flex:1}
-.btn-odd{background:#ff9100;color:#fff;border:none;padding:14px;border-radius:12px;font-weight:900;font-size:15px;flex:1}
-.card{background:#111822;border:1px solid #1e2a3a;border-radius:14px;padding:12px;margin:10px 12px}
-.pair-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid #1a2332;gap:8px}
-#tv_chart{height:380px;border-radius:12px;border:1px solid #1e2a3a;background:#000}
-.nav{position:fixed;bottom:0;left:0;right:0;background:#0f141e;border-top:1px solid #1e2a3a;display:flex;justify-content:space-around;padding:10px 0;z-index:999}
-.small{color:#7a8a9a;font-size:11px}
-.price-up{color:#00c853}.price-down{color:#ff1744}
-input{padding:12px;background:#0f141e;border:1px solid #2a3a4a;color:#fff;border-radius:10px;box-sizing:border-box}
-.btn-gold{background:#f5c518;color:#000;padding:12px;border-radius:10px;border:none;font-weight:800;width:100%}
-.live-dot{width:8px;height:8px;background:#00c853;border-radius:50%;display:inline-block;animation:blink 1s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
-.stake-box{background:#0f1a0f;border:1.5px solid #00c853;border-radius:14px;padding:12px;margin:10px 12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
-.stake-input{width:110px;font-weight:900;font-size:18px;text-align:center;border:1.5px solid #00c853!important}
-.quick{padding:6px 10px;border-radius:8px;background:#1a2a1a;border:1px solid #2a4a2a;color:#00c853;font-weight:800}
-.quick.active{background:#00c853;color:#000}
-.digit-big{font-size:48px;font-weight:900;text-align:center;margin:6px 0}
-.bot-card{background:#151d2a;border:1px solid #243246;border-radius:12px;padding:10px;margin:8px 0;display:flex;justify-content:space-between;align-items:center}
-.bot-on{color:#00c853;font-weight:900}.bot-off{color:#7a8a9a}
-.result-win{background:#0f2215;border-left:4px solid #00c853;padding:8px 10px;margin:6px 0;border-radius:8px;display:flex;justify-content:space-between}
-.result-loss{background:#221015;border-left:4px solid #ff1744;padding:8px 10px;margin:6px 0;border-radius:8px;display:flex;justify-content:space-between}
+body{font-family:Arial;background:#0f0f0f;color:#fff;margin:0;padding:10px}
+.card{background:#1e1e1e;border:1px solid #333;border-radius:12px;padding:12px;margin-bottom:12px}
+.bot-card{display:flex;justify-content:space-between;align-items:center;background:#2a2a2a;border-radius:8px;padding:8px;margin:6px 0}
+.bot-on{color:#00e676;font-weight:bold}.bot-off{color:#888}
+.quick{background:#333;color:#fff;border:0;padding:6px 12px;border-radius:6px}
+.small{color:#aaa;font-size:11px}
+.result-win{color:#00e676}.result-loss{color:#ff5252}
 </style>
-</head><body>
-<div class="top"><div style="display:flex;align-items:center;gap:8px"><div style="background:#00c853;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center">🐼</div><div><b>Panda Pesa</b><br><small class="small">FOREX + EVEN/ODD + BOTS</small></div></div><div id="balTop">KES 500</div></div>
-<div class="bal-card"><div><small class="small"><span class="live-dot"></span> Balance • <span id="botRunning">Bots Idle</span></small><h1 id="balBig">KES 500.00</h1></div><button class="btn-gold" style="width:auto" onclick="show('wallet')">WITHDRAW</button></div>
-<div id="view-home">
-<div class="card"><b id="chartTitle">EUR/USD • 1H</b><div id="tv_chart"></div><small class="small" id="livePrice">Live</small></div>
-<div class="stake-box">
-<div style="display:flex;align-items:center;gap:8px"><b>Stake:</b><input id="stakeInput" class="stake-input" type="number" value="50" min="10" oninput="updateWin()"></div>
-<div style="display:flex;gap:6px"><button class="quick" onclick="setStake(20)">20</button><button class="quick active" onclick="setStake(50)">50</button><button class="quick" onclick="setStake(100)">100</button><button class="quick" onclick="setStake(200)">200</button></div>
-<div><small class="small">Win 1.9x</small><br><b style="color:#00c853" id="winPreview">KES 95</b></div>
+</head>
+<body>
+
+<div class="card">
+<b>💰 KES <span id="bal">1000</span></b> | Stake: <input id="stakeInput" type="number" value="50" style="width:70px"> | Last: <span id="lastDigit">5</span>
 </div>
-<div class="card" style="border:1.5px solid #2979ff">
-<b style="color:#2979ff">| EVEN / ODD DIGIT GAME</b>
-<div style="display:flex;justify-content:space-around;margin-top:12px">
-<div style="text-align:center"><small class="small">LAST DIGIT</small><div id="lastDigit" class="digit-big">8</div><b id="lastDigitType">EVEN</b></div>
-<div style="text-align:center"><small class="small">TICK</small><div id="digitTick" style="font-weight:800;margin-top:14px">1.12278</div><small class="small"><span class="live-dot"></span> LIVE</small></div>
+
+<div class="card">
+<button onclick="tradeDigit('EVEN')">EVEN 1.9x</button>
+<button onclick="tradeDigit('ODD')">ODD 1.9x</button>
+<button onclick="tradeOverUnder('OVER',1)">OVER 1 - 1.12x</button>
+<button onclick="tradeOverUnder('UNDER',8)">UNDER 8 - 1.12x</button>
 </div>
-<div style="display:flex;gap:10px;margin-top:14px">
-<button class="btn-even" onclick="tradeDigit('EVEN', false)">EVEN 1.9x</button>
-<button class="btn-odd" onclick="tradeDigit('ODD', false)">ODD 1.9x</button>
+
+<div class="card" style="border-color:#ff9800">
+<b style="color:#ff9800">| EVEN/ODD BOTS</b>
+<div class="bot-card"><div><b>🛡️ Safe Bot</b><br><small class="small">Low Risk</small></div><div style="text-align:center"><small id="safeStatus" class="bot-off">OFF</small><br><button class="quick" onclick="toggleBot('safe')">ON/OFF</button></div></div>
+<div class="bot-card"><div><b>⚡ Martingale</b><br><small class="small">Medium Risk</small></div><div style="text-align:center"><small id="martStatus" class="bot-off">OFF</small><br><button class="quick" onclick="toggleBot('mart')">ON/OFF</button></div></div>
+<div class="bot-card"><div><b>🔥 Aggressive</b><br><small class="small">High Risk</small></div><div style="text-align:center"><small id="aggStatus" class="bot-off">OFF</small><br><button class="quick" onclick="toggleBot('agg')">ON/OFF</button></div></div>
 </div>
+
+<div class="card" style="border-color:#00b0ff">
+<b style="color:#00b0ff">| OVER 1 / UNDER 8 BOTS</b>
+<div class="bot-card"><div><b>🛡️ Safe Bot</b><br><small class="small">Low Risk</small></div><div style="text-align:center"><small id="over1Status" class="bot-off">OFF</small><br><button class="quick" onclick="toggleOverBot('over1')">ON/OFF</button></div></div>
+<div class="bot-card"><div><b>⚡ Martingale</b><br><small class="small">Medium Risk</small></div><div style="text-align:center"><small id="over2Status" class="bot-off">OFF</small><br><button class="quick" onclick="toggleOverBot('over2')">ON/OFF</button></div></div>
+<div class="bot-card"><div><b>🔥 Aggressive</b><br><small class="small">High Risk</small></div><div style="text-align:center"><small id="over3Status" class="bot-off">OFF</small><br><button class="quick" onclick="toggleOverBot('over3')">ON/OFF</button></div></div>
 </div>
-<div class="card" style="border-color:#f5c518">
-<b style="color:#f5c518">| EVEN/ODD BOTS - Low Win Rate</b>
-<div class="bot-card"><div><b>🤖 Safe Bot</b><br><small class="small">48% Win</small></div><div style="text-align:center"><small id="safeStatus" class="bot-off">OFF</small><br><button class="quick" onclick="toggleBot('safe')">ON/OFF</button></div></div>
-<div class="bot-card"><div><b>⚡ Martingale Bot</b><br><small class="small">42% Win</small></div><div style="text-align:center"><small id="martStatus" class="bot-off">OFF</small><br><button class="quick" onclick="toggleBot('mart')">ON/OFF</button></div></div>
-<div class="bot-card"><div><b>🔥 Aggressive Bot</b><br><small class="small">35% Win</small></div><div style="text-align:center"><small id="aggStatus" class="bot-off">OFF</small><br><button class="quick" onclick="toggleBot('agg')">ON/OFF</button></div></div>
-</div>
-<div class="card"><b style="color:#00c853">| FOREX MARKETS</b><div id="forexList"></div></div>
-<div class="card" style="border-color:#00c853">
-<div style="display:flex;justify-content:space-between;align-items:center">
-<b style="color:#00c853">| MY RESULTS • WIN / LOSS</b>
-<button onclick="clearResults()" style="background:#221015;border:1px solid #ff1744;color:#ff1744;padding:6px 12px;border-radius:8px;font-weight:800">🗑️ CLEAR</button>
-</div>
-<div id="resultsList" style="margin-top:10px">Loading...</div>
-</div>
-</div>
-<div id="view-wallet" style="display:none"><div class="card"><h3>Withdraw</h3><input id="withPhone" placeholder="07..." style="width:100%"><input id="withAmount" type="number" placeholder="Amount" style="width:100%;margin-top:6px"><button class="btn-gold" onclick="withdraw()" style="margin-top:8px">Withdraw</button><div id="withHistory"></div></div></div>
-<div id="view-trade" style="display:none"><div class="card"><div id="tradeHistory"></div></div></div>
-<div id="view-profile" style="display:none"><div class="card"><small id="uidTxt"></small><br><br><button class="btn-gold" onclick="give500()">Give 500</button></div></div>
-<div class="nav">
-<div onclick="show('home')" style="text-align:center">🏠<br><small class="small">Home</small></div>
-<div onclick="show('wallet')" style="text-align:center">💼<br><small class="small">Wallet</small></div>
-<div onclick="show('trade')" style="text-align:center">📈<br><small class="small">Trades</small></div>
-<div onclick="show('profile')" style="text-align:center">👤<br><small class="small">Profile</small></div>
-</div>
+
+<div class="card"><b>RESULTS</b> <button onclick="clearResults()" style="float:right">CLEAR</button><div id="results"></div></div>
+
 <script>
-const SUPABASE_URL='https://hkhqbtyyqgvaktamilxs.supabase.co';
-const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg';
-const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-let USER_ID=localStorage.getItem('bashiri_uid'); if(!USER_ID){USER_ID=crypto.randomUUID(); localStorage.setItem('bashiri_uid',USER_ID);}
-let USER_BAL=500;
-let pairs=[
-{symbol:"EUR/USD",tv:"FX:EURUSD",price:1.12278,change:"+0.00%"},
-{symbol:"USD/KES",tv:"FX_IDC:USDKES",price:129.25,change:"+0.00%"},
-{symbol:"GBP/USD",tv:"FX:GBPUSD",price:1.2673,change:"+0.00%"},
-{symbol:"GOLD",tv:"OANDA:XAUUSD",price:2034.56,change:"+0.00%"},
-{symbol:"USD/JPY",tv:"FX:USDJPY",price:149.82,change:"+0.00%"}
-];
-let lastDigit=8; let bots={safe:false,mart:false,agg:false}; let botIntervals={};
-async function init(){
-document.getElementById('uidTxt').innerText='UID: '+USER_ID;
-let {data:prof}=await sb.from('profiles').select('*').eq('id',USER_ID).maybeSingle();
-if(!prof){await sb.from('profiles').insert([{id:USER_ID,balance:500}]); USER_BAL=500;}else USER_BAL=prof.balance||500;
-if(USER_BAL<20){USER_BAL=500; await sb.from('profiles').update({balance:500}).eq('id',USER_ID);}
-updateBal(); render(); loadTv("FX:EURUSD"); startTick(); loadAll(); updateWin();
+const sb=supabase.createClient('YOUR_URL','YOUR_KEY');
+let USER_BAL=1000, lastDigit=5;
+let bots={safe:false,mart:false,agg:false}, intervals={};
+let overBots={over1:false,over2:false,over3:false}, overIntervals={};
+
+function updateBal(){document.getElementById('bal').innerText=USER_BAL; document.getElementById('lastDigit').innerText=lastDigit}
+function saveLocal(b){let a=JSON.parse(localStorage.getItem('bets')||'[]');a.unshift(b);localStorage.setItem('bets',JSON.stringify(a.slice(0,50)))}
+function loadAll(){let bets=JSON.parse(localStorage.getItem('bets')||'[]'); document.getElementById('results').innerHTML=bets.map(b=>`<div>${b.market_id} ${b.choice} ${b.result==='WIN'?'<span class="result-win">✅ WIN +'+b.profit+'</span>':'<span class="result-loss">❌ LOSS '+b.profit+'</span>'} - ${b.amount} - D:${b.digit}</div>`).join('');}
+function clearResults(){localStorage.removeItem('bets');loadAll()}
+function getPayout(type, th){ if(th===1||th===8) return 1.12; return 1.9; }
+
+function toggleBot(n){bots[n]=!bots[n]; document.getElementById(n+'Status').innerText=bots[n]?'ON':'OFF'; document.getElementById(n+'Status').className=bots[n]?'bot-on':'bot-off';
+ if(bots[n]){intervals[n]=setInterval(()=>{tradeDigit(Math.random()>0.5?'EVEN':'ODD',true,n)}, n==='agg'?2000:n==='mart'?4000:6000);} else clearInterval(intervals[n]);}
+
+function toggleOverBot(n){overBots[n]=!overBots[n]; document.getElementById(n+'Status').innerText=overBots[n]?'ON':'OFF'; document.getElementById(n+'Status').className=overBots[n]?'bot-on':'bot-off';
+ if(overBots[n]){overIntervals[n]=setInterval(()=>{let t=n==='over1'?'OVER':'UNDER'; let th=t==='OVER'?1:8; if(n==='over3'){t=Math.random()>0.5?'OVER':'UNDER'; th=t==='OVER'?1:8;} tradeOverUnder(t,th,true,n)}, n==='over3'?2000:n==='over2'?4000:6000);} else clearInterval(overIntervals[n]);}
+
+async function tradeDigit(type,isBot=false,botName=''){
+ let stake=parseInt(document.getElementById('stakeInput').value); if(stake>USER_BAL){if(isBot)toggleBot(botName);return;}
+ let d=Math.floor(Math.random()*10); lastDigit=d;
+ let win=(type==='EVEN'&&d%2===0)||(type==='ODD'&&d%2===1);
+ let payout=1.9; USER_BAL-=stake; if(win)USER_BAL+=stake*payout; updateBal();
+ saveLocal({market_id:'EVEN_ODD',choice:type,amount:stake,result:win?'WIN':'LOSS',profit:win?Math.round(stake*(payout-1)):-stake,digit:d}); loadAll();
 }
-function updateBal(){document.getElementById('balTop').innerText='KES '+USER_BAL; document.getElementById('balBig').innerText='KES '+USER_BAL+'.00'; document.getElementById('botRunning').innerText=(bots.safe||bots.mart||bots.agg?'Bots Running':'Bots Idle');}
-function setStake(v){document.getElementById('stakeInput').value=v; updateWin();}
-function updateWin(){let s=parseInt(document.getElementById('stakeInput').value)||0; document.getElementById('winPreview').innerText='KES '+(s*1.9).toFixed(0);}
-function startTick(){
-setInterval(()=>{
-for(let p of pairs){p.price+=(Math.random()-0.5)*0.0008; p.change=((Math.random()-0.5)*0.4).toFixed(2)+'%';}
-let str=pairs[0].price.toFixed(5); lastDigit=parseInt(str.slice(-1));
-document.getElementById('lastDigit').innerText=lastDigit;
-document.getElementById('lastDigitType').innerText=lastDigit%2==0?'EVEN':'ODD';
-document.getElementById('digitTick').innerText=str;
-document.getElementById('livePrice').innerText=`${pairs[0].symbol} ${str} ${pairs[0].change}`;
-render();
-},1200);
+
+async function tradeOverUnder(type,threshold,isBot=false,botName=''){
+ let stake=parseInt(document.getElementById('stakeInput').value); if(stake>USER_BAL){if(isBot)toggleOverBot(botName);return;}
+ let d=Math.floor(Math.random()*10); lastDigit=d;
+ let win=type==='OVER'?d>threshold:d<threshold;
+ let payout=getPayout(type,threshold);
+ USER_BAL-=stake; if(win)USER_BAL+=stake*payout; updateBal();
+ saveLocal({market_id:'OVER_UNDER',choice:`${type} ${threshold} ${payout}x`,amount:stake,result:win?'WIN':'LOSS',profit:win?Math.round(stake*(payout-1)):-stake,digit:d}); loadAll();
 }
-function render(){
-document.getElementById('forexList').innerHTML=pairs.map(p=>{
-let up=parseFloat(p.change)>=0; let price=p.symbol==='GOLD'?p.price.toFixed(2):p.price.toFixed(5);
-return `<div class="pair-row"><div style="flex:1"><b>${p.symbol}</b></div><div style="text-align:right"><div class="${up?'price-up':'price-down'}" style="font-weight:900">${price}</div><small class="${up?'price-up':'price-down'}">${p.change}</small></div><div style="display:flex;gap:6px"><button class="btn-up" onclick="trade('${p.symbol}','UP', false)">↑ UP</button><button class="btn-down" onclick="trade('${p.symbol}','DOWN', false)">↓ DOWN</button></div></div>`;
-}).join('');
-}
-function loadTv(sym){
-document.getElementById('tv_chart').innerHTML='';
-try{new TradingView.widget({autosize:true,symbol:sym,interval:"60",timezone:"Africa/Nairobi",theme:"dark",style:"1",locale:"en",toolbar_bg:"#0a0e14",enable_publishing:false,backgroundColor:"#0a0e14",gridColor:"#1e2a3a",container_id:"tv_chart"});}catch(e){document.getElementById('tv_chart').innerHTML='<div style="padding:80px;text-align:center">Chart offline<br>Live tick: '+pairs[0].price.toFixed(5)+'</div>';}
-}
-async function trade(symbol,dir,isBot=false){
-let stake=parseInt(document.getElementById('stakeInput').value);
-if(stake>USER_BAL){if(!isBot)alert('Low bal'); return;}
-if(!isBot &&!confirm(`${symbol} ${dir} KES ${stake}?`)) return;
-USER_BAL-=stake; updateBal();
-let win=Math.random()>0.52; let profit=win?Math.round(stake*0.8):-stake;
-if(win) USER_BAL+=stake*1.8;
-await sb.from('profiles').update({balance:USER_BAL}).eq('id',USER_ID);
-await sb.from('bets').insert([{user_id:USER_ID,market_id:symbol,choice:dir,amount:stake,result:win?'WIN':'LOSS',profit:profit}]);
-loadAll();
-}
-async function tradeDigit(type,isBot=false){
-let stake=parseInt(document.getElementById('stakeInput').value);
-if(stake>USER_BAL){if(isBot){toggleBot('safe');} else alert('Low bal'); return;}
-if(!isBot &&!confirm(`EVEN/ODD ${type} Now ${lastDigit} Stake ${stake}?`)) return;
-let resultDigit=Math.floor(Math.random()*10);
-let resultType=resultDigit%2==0?'EVEN':'ODD';
-let win=resultType===type;
-USER_BAL-=stake;
-let profit=win?Math.round(stake*0.9):-stake;
-if(win) USER_BAL+=stake*1.9;
-updateBal();
-await sb.from('profiles').update({balance:USER_BAL}).eq('id',USER_ID);
-let {error}=await sb.from('bets').insert([{user_id:USER_ID,market_id:'EVEN_ODD',choice:type,amount:stake,result:win?'WIN':'LOSS',profit:profit}]);
-if(error){console.log(error); alert('DB error: '+error.message); USER_BAL+=stake; if(win) USER_BAL-=stake*1.9; updateBal(); return;}
-loadAll();
-}
-function toggleBot(name){
-bots[name]=!bots[name];
-let el=document.getElementById(name==='safe'?'safeStatus':name==='mart'?'martStatus':'aggStatus');
-el.innerText=bots[name]?'ON • Trading':'OFF'; el.className=bots[name]?'bot-on':'bot-off';
-if(bots[name]){
-let interval=name==='agg'?2500:name==='mart'?4000:6000;
-botIntervals[name]=setInterval(()=>{let type=name==='safe'?'EVEN':(Math.random()>0.5?'EVEN':'ODD'); tradeDigit(type,true);}, interval);
-}else{clearInterval(botIntervals[name]);}
-updateBal();
-}
-async function loadAll(){
-try{
-let {data,error}=await sb.from('bets').select('*').eq('user_id',USER_ID).order('created_at',{ascending:false}).limit(50);
-if(error){document.getElementById('resultsList').innerHTML='Error: '+error.message; return;}
-let html='';
-(data||[]).forEach(t=>{
-let isWin=t.result==='WIN'; let cls=isWin?'result-win':'result-loss'; let icon=isWin?'✅ WIN':'❌ LOSS';
-let stake=t.amount||0; let profit=t.profit||0;
-let profitText=isWin?`+KES ${Math.abs(profit)}`:`-KES ${Math.abs(stake)}`;
-html+=`<div class="${cls}"><div><b>${t.market_id} ${t.choice}</b><br><small class="small">Stake KES ${stake} • ${new Date(t.created_at).toLocaleTimeString()}</small></div><div style="text-align:right"><b style="color:${isWin?'#00c853':'#ff1744'}">${icon}</b><br><small style="font-weight:900;color:${isWin?'#00c853':'#ff1744'}">${profitText}</small></div></div>`;
-});
-document.getElementById('resultsList').innerHTML=html||'<small class="small">No trades yet - Turn ON Safe Bot, wait 6 sec, results will show here</small>';
-document.getElementById('tradeHistory').innerHTML=html||'No trades';
-}catch(e){document.getElementById('resultsList').innerHTML='Load error: '+e.message;}
-}
-async function clearResults(){if(!confirm('Clear history?')) return; await sb.from('bets').delete().eq('user_id',USER_ID); loadAll();}
-async function give500(){USER_BAL=500; await sb.from('profiles').update({balance:500}).eq('id',USER_ID); updateBal();}
-async function withdraw(){let phone=document.getElementById('withPhone').value.trim(); let amount=parseInt(document.getElementById('withAmount').value); if(!phone||!amount)return alert('Fill'); if(amount>USER_BAL)return alert('Low'); await sb.from('withdrawals').insert([{user_id:USER_ID,phone,amount,status:'pending'}]); USER_BAL-=amount; await sb.from('profiles').update({balance:USER_BAL}).eq('id',USER_ID); updateBal(); loadAll();}
-function show(v){document.getElementById('view-home').style.display=v==='home'?'block':'none'; document.getElementById('view-wallet').style.display=v==='wallet'?'block':'none'; document.getElementById('view-trade').style.display=v==='trade'?'block':'none'; document.getElementById('view-profile').style.display=v==='profile'?'block':'none';}
-init();
-</script></body></html>
+
+setInterval(()=>{lastDigit=Math.floor(Math.random()*10); updateBal();},1500);
+updateBal(); loadAll();
+</script>
+</body>
+</html>
