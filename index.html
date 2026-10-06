@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>BASHIRI - SAFE WINS MORE</title>
+<title>BASHIRI - 1.30x SAFE</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Space Grotesk,sans-serif}
 body{background:#04120f;color:#fff;padding:10px;padding-bottom:90px}
@@ -34,39 +34,30 @@ body{background:#04120f;color:#fff;padding:10px;padding-bottom:90px}
 <body>
 <div class="top"><div class="bal">💰 KES <span id="bal">1000</span> | Stake: <input id="stake" class="inp" value="50" type="number"></div><div class="last" id="lastD">5</div></div>
 <div class="card">
-<div class="live-box"><div><small style="color:#5fbd9f;font-weight:700">SAFE WINS MORE</small><br><b style="font-size:11px">Safe 70% | Mart 55% | Agg 40%</b></div><div style="text-align:right"><small style="color:#5fbd9f;font-size:10px">LIVE TICK</small><br><b id="liveTick">9436.30</b></div></div>
+<div class="live-box"><div><small style="color:#00e676;font-weight:700">HOUSE SAFE: 1.30x FIXED</small><br><b style="font-size:11px">20→+6 | 50→+15 | 70%/55%/40% WR</b></div><div style="text-align:right"><small style="color:#5fbd9f;font-size:10px">LIVE TICK</small><br><b id="liveTick">9436.30</b></div></div>
 <div class="ticker"><div id="cursor">▼</div><div class="digits" id="digitBar"></div></div>
 <canvas id="chart"></canvas>
 <div class="grid">
 <button class="btn be" onclick="manual('EVEN')">EVEN 1.90x</button>
 <button class="btn bo" onclick="manual('ODD')">ODD 1.90x</button>
-<button class="btn bov" onclick="manualOver('OVER',1)">OVER 1 1.12x</button>
-<button class="btn bu" onclick="manualOver('UNDER',8)">UNDER 8 1.12x</button>
+<button class="btn bov" onclick="manualOver('OVER',1)">OVER 1 1.30x</button>
+<button class="btn bu" onclick="manualOver('UNDER',8)">UNDER 8 1.30x</button>
 </div>
 </div>
-
 <div class="sec">
-<div style="color:#ffb300;font-weight:800;font-size:13px;margin-bottom:10px">| EVEN / ODD - 30% WR - 1.90x</div>
-<div class="bot"><div><b>🛡️ Safe Bot</b><br><small style="color:#888">30% WR • 1.90x</small></div><div style="text-align:right"><span class="off" id="s1">OFF</span><br><button class="tog" id="b1" onclick="toggleBot('safe')">ON/OFF</button></div></div>
-<div class="bot"><div><b>🔥 Aggressive</b><br><small style="color:#888">30% WR • 1.90x</small></div><div style="text-align:right"><span class="off" id="s3">OFF</span><br><button class="tog" id="b3" onclick="toggleBot('agg')">ON/OFF</button></div></div>
+<div style="color:#ffb300;font-weight:800;font-size:13px;margin-bottom:10px">| EVEN / ODD - 30% WR - 1.90x FIXED</div>
+<div class="bot"><div><b>🛡️ Safe Bot</b><br><small style="color:#888">30% WR • 1.90x • 50→+45 | 20→+18</small></div><div style="text-align:right"><span class="off" id="s1">OFF</span><br><button class="tog" id="b1" onclick="toggleBot('safe')">ON/OFF</button></div></div>
+<div class="bot"><div><b>🔥 Aggressive</b><br><small style="color:#888">30% WR • 1.90x • 50→+45 | 20→+18</small></div><div style="text-align:right"><span class="off" id="s3">OFF</span><br><button class="tog" id="b3" onclick="toggleBot('agg')">ON/OFF</button></div></div>
 </div>
-
 <div class="sec" style="border-color:#29b6f622">
-<div style="color:#29b6f6;font-weight:800;font-size:13px;margin-bottom:10px">| OVER 1 / UNDER 8 - SAFE WINS MORE</div>
-<div class="bot"><div><b>🛡️ Safe Bot</b><br><small style="color:#00e676;font-weight:700">70% WIN • 1.08x LOW - 50→+4 | 20→+2</small></div><div style="text-align:right"><span class="off" id="os1">OFF</span><br><button class="tog" id="ob1" onclick="toggleOBot('over1')">ON/OFF</button></div></div>
-<div class="bot"><div><b>⚡ Martingale</b><br><small style="color:#888">55% WIN • 1.12x - 50→+6 | 20→+2</small></div><div style="text-align:right"><span class="off" id="os2">OFF</span><br><button class="tog" id="ob2" onclick="toggleOBot('over2')">ON/OFF</button></div></div>
-<div class="bot"><div><b>🔥 Aggressive</b><br><small style="color:#ff9500;font-weight:700">40% WIN • 1.60x HIGH - 50→+30 | 20→+12</small></div><div style="text-align:right"><span class="off" id="os3">OFF</span><br><button class="tog" id="ob3" onclick="toggleOBot('over3')">ON/OFF</button></div></div>
+<div style="color:#29b6f6;font-weight:800;font-size:13px;margin-bottom:10px">| OVER / UNDER - 1.30x SAFE FOR HOUSE</div>
+<div class="bot"><div><b>🛡️ Safe Bot</b><br><small style="color:#00e676;font-weight:700">70% WIN • 20→+6 | 50→+15 • House -9%</small></div><div style="text-align:right"><span class="off" id="os1">OFF</span><br><button class="tog" id="ob1" onclick="toggleOBot('over1')">ON/OFF</button></div></div>
+<div class="bot"><div><b>⚡ Martingale</b><br><small style="color:#888">55% WIN • 20→+6 | 50→+15 • House -28%</small></div><div style="text-align:right"><span class="off" id="os2">OFF</span><br><button class="tog" id="ob2" onclick="toggleOBot('over2')">ON/OFF</button></div></div>
+<div class="bot"><div><b>🔥 Aggressive</b><br><small style="color:#ff9500;font-weight:700">40% WIN • 20→+6 | 50→+15 • House -48%</small></div><div style="text-align:right"><span class="off" id="os3">OFF</span><br><button class="tog" id="ob3" onclick="toggleOBot('over3')">ON/OFF</button></div></div>
 </div>
-
 <div style="background:#121212;border:1px solid #222;border-radius:16px;padding:12px"><div style="display:flex;justify-content:space-between"><b>RESULTS <span id="cnt" style="color:#00e676;font-size:12px"></span></b><button onclick="localStorage.clear();location.reload()" style="background:#222;color:#fff;border:0;padding:6px 14px;border-radius:8px">CLEAR</button></div><div id="res" style="margin-top:8px"></div></div>
-
 <script>
-// WIN RATE + PAYOUT - SAFE WINS MORE
-const CONFIG_OVER = {
-  over1: { wr: 0.70, payout: 1.08 }, // Safe: wins 70% but low payout
-  over2: { wr: 0.55, payout: 1.12 }, // Mart: 55%
-  over3: { wr: 0.40, payout: 1.60 } // Agg: wins only 40% but high payout
-};
+const CONFIG_OVER = { over1: { wr: 0.70, payout: 1.30 }, over2: { wr: 0.55, payout: 1.30 }, over3: { wr: 0.40, payout: 1.30 } };
 const BOT_WR_EVEN=0.30;
 let BAL=parseInt(localStorage.getItem('bal')||'1000'), last=5, tick=9436.30, hist=[], prices=[9436.3];
 let bots={}, obots={}, iv={}, oiv={};
@@ -82,9 +73,8 @@ function getDigitByWR(winRate, type){
  return Math.floor(Math.random()*10);
 }
 function upd(){let c=Array(10).fill(0); hist.slice(-100).forEach(d=>c[d]++); let tot=hist.length||1; for(let i=0;i<=9;i++){document.getElementById('p-'+i).innerText=((c[i]/tot*100)||0).toFixed(0)+'%'; document.getElementById('d-'+i).classList.remove('active');} document.getElementById('d-'+last)?.classList.add('active'); document.getElementById('cursor').style.left=`calc(${(last/9)*100}% - 8px)`; document.getElementById('lastD').innerText=last; document.getElementById('liveTick').innerText=tick.toFixed(2); document.getElementById('bal').innerText=BAL; localStorage.setItem('bal',BAL);}
-function load(){let bets=JSON.parse(localStorage.getItem('bets')||'[]'); document.getElementById('cnt').innerText=bets.length?`(${bets.length})`:''; document.getElementById('res').innerHTML=bets.map(b=>`<div class="ri ${b.r=='WIN'?'win':'loss'}"><span>[${b.botName}] ${b.c} D:${b.d} <small style="color:#666">${b.mult}x ${b.wr*100|0}%</small></span><span style="color:${b.r=='WIN'?'#00e676':'#ff3d57'};font-weight:800">${b.r=='WIN'?'+'+b.p:b.p}</span></div>`).join('')||'<small style="color:#555">No trades</small>';}
+function load(){let bets=JSON.parse(localStorage.getItem('bets')||'[]'); document.getElementById('cnt').innerText=bets.length?`(${bets.length})`:''; document.getElementById('res').innerHTML=bets.map(b=>`<div class="ri ${b.r=='WIN'?'win':'loss'}"><span>[${b.botName}] ${b.c} D:${b.d} <small style="color:#666">${b.mult}x</small></span><span style="color:${b.r=='WIN'?'#00e676':'#ff3d57'};font-weight:800">${b.r=='WIN'?'+'+b.p:b.p}</span></div>`).join('')||'<small style="color:#555">No trades</small>';}
 function save(b){let a=JSON.parse(localStorage.getItem('bets')||'[]'); a.unshift(b); localStorage.setItem('bets',JSON.stringify(a.slice(0,80)))}
-
 function doTrade(choice,stake,isBot){
  if(BAL<stake) return;
  let mult=1.90; let wr=BOT_WR_EVEN;
@@ -95,8 +85,7 @@ function doTrade(choice,stake,isBot){
 }
 function doOver(type,th,stake,isBot,name){
  if(BAL<stake){if(isBot)toggleOBot(name); return;}
- let cfg = CONFIG_OVER[name];
- let mult=cfg.payout; let wr=cfg.wr;
+ let cfg = CONFIG_OVER[name]; let mult=cfg.payout; let wr=cfg.wr;
  let d=getDigitByWR(wr, type); last=d; let win=type=='OVER'?d>th:d<th;
  BAL-=stake; if(win) BAL+=stake*mult;
  save({c:`${type} ${th}`,d:d,r:win?'WIN':'LOSS',p:win?Math.round(stake*(mult-1)):-stake,mult:mult,wr:wr,botName:name});
@@ -104,7 +93,6 @@ function doOver(type,th,stake,isBot,name){
 }
 function manual(c){doTrade(c,parseInt(document.getElementById('stake').value),false)}
 function manualOver(t,th){doOver(t,th,parseInt(document.getElementById('stake').value),false,'over2')}
-
 function toggleBot(n){bots[n]=!bots[n]; document.getElementById(n=='safe'?'s1':'s3').innerText=bots[n]?'BUYING':'OFF'; document.getElementById(n=='safe'?'s1':'s3').className=bots[n]?'on':'off'; document.getElementById(n=='safe'?'b1':'b3').className=bots[n]?'tog active':'tog'; if(bots[n]) iv[n]=setInterval(()=>{let c=Math.random()>0.5?'EVEN':'ODD'; let stake=n=='agg'?Math.floor(Math.random()*80)+30:parseInt(document.getElementById('stake').value); doTrade(c,stake,true)}, n=='agg'?1500:3000); else clearInterval(iv[n]);}
 function toggleOBot(n){obots[n]=!obots[n]; document.getElementById(n=='over1'?'os1':n=='over2'?'os2':'os3').innerText=obots[n]?'BUYING':'OFF'; document.getElementById(n=='over1'?'os1':n=='over2'?'os2':'os3').className=obots[n]?'on':'off'; document.getElementById(n=='over1'?'ob1':n=='over2'?'ob2':'ob3').className=obots[n]?'tog active':'tog'; if(obots[n]) oiv[n]=setInterval(()=>{let t=Math.random()>0.5?'OVER':'UNDER'; let stake=n=='over3'?Math.floor(Math.random()*80)+30:parseInt(document.getElementById('stake').value); doOver(t,t=='OVER'?1:8,stake,true,n)}, n=='over3'?1500:n=='over2'?2500:3000); else clearInterval(oiv[n]);}
 setInterval(()=>{tick+=(Math.random()-0.5)*1.5; hist.push(Math.floor(Math.random()*10)); if(hist.length>200)hist.shift(); upd();},1000);
