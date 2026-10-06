@@ -1,115 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>HOUSE ADMIN - BASHIRI CLOUD</title>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ADMIN V2</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Space Grotesk,sans-serif}
-body{background:#050f0d;color:#fff;padding:12px}
-.h{background:#0a1628;border:2px solid #29b6f6;border-radius:16px;padding:16px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-.card{background:#0e2a24;border:1px solid #1a4a3e;border-radius:14px;padding:14px;text-align:center}
-.card.profit{background:#001a0f;border-color:#00e676}
-.card.loss{background:#1a0005;border-color:#ff3d57}
-.card big{font-size:24px;font-weight:800;display:block;margin:6px 0}
-.table{background:#121212;border:1px solid #222;border-radius:16px;padding:12px}
-.row{display:flex;justify-content:space-between;padding:10px 8px;border-bottom:1px solid #222;font-size:12px}
-.row.win{border-left:3px solid #00e676}.row.loss{border-left:3px solid #ff3d57}
-.btn{background:#29b6f6;color:#000;border:0;padding:10px 16px;border-radius:10px;font-weight:800;cursor:pointer;margin-right:8px}
-</style>
-</head>
-<body>
-<div class="h">
-<div><b style="color:#29b6f6;font-size:18px">🏦 BASHIRI HOUSE ADMIN</b><br><small style="color:#888">Live from Supabase Cloud • 70% Safe 1.30x</small></div>
-<div><button class="btn" onclick="loadData()">🔄 REFRESH</button><small id="status" style="color:#00e676">● LIVE</small></div>
-</div>
-
-<div class="grid">
-<div class="card profit"><small>HOUSE PROFIT (ALL TIME)</small><big id="houseProfit" style="color:#00e676">KES 0</big><small id="edge">0% edge</small></div>
-<div class="card loss"><small>PLAYER NET LOSS</small><big id="playerNet" style="color:#ff3d57">KES 0</big><small id="tradeCount">0 trades</small></div>
-<div class="card"><small>TOTAL VOLUME</small><big id="volume">KES 0</big><small id="avgStake">avg 0</small></div>
-<div class="card"><small>REAL WIN RATE</small><big id="winRate">0%</big><small>target 70% Safe</small></div>
-</div>
-
-<div class="grid" style="grid-template-columns:1fr 1fr 1fr">
-<div class="card"><small>🛡️ SAFE 70%</small><big id="safeP">0</big><small id="safeS">0 trades</small></div>
-<div class="card"><small>⚡ MART 55%</small><big id="martP">0</big><small id="martS">0 trades</small></div>
-<div class="card"><small>🔥 AGG 40%</small><big id="aggP">0</big><small id="aggS">0 trades</small></div>
-</div>
-
-<div class="grid">
-<div class="card"><small>TODAY HOUSE</small><big id="todayProfit" style="color:#00e676">KES 0</big><small id="todayTrades">0 trades today</small></div>
-<div class="card"><small>THIS HOUR</small><big id="hourProfit">KES 0</big><small id="hourTrades">0 trades</small></div>
-</div>
-
-<div class="table">
-<div style="display:flex;justify-content:space-between;margin-bottom:10px"><b>RECENT 200 BETS (LIVE CLOUD)</b><span style="color:#888;font-size:11px">Auto-refresh 3s</span></div>
-<div id="rows">Loading...</div>
-</div>
-
+<style>body{background:#050f0d;color:#fff;padding:12px;font-family:monospace} .b{border:1px solid #29b6f6;border-radius:12px;padding:12px;margin-bottom:10px} .err{color:#ff3d57;background:#1a0005;padding:10px;border-radius:8px;margin:10px 0} .ok{color:#00e676}</style></head><body>
+<div class="b"><b>BASHIRI ADMIN V2 - DEBUG</b><br><button onclick="test()" style="padding:10px 20px;background:#29b6f6;border:0;border-radius:8px;font-weight:800">TEST CLOUD CONNECTION</button> <span id="st"></span></div>
+<div id="log"></div>
 <script>
-const SUPABASE_URL = "https://khhqbt yyqgvaktamilxs.supabase.co".replace(/\s/g,'');
-const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg";
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-
-async function loadData(){
-  document.getElementById('status').innerText = "● LOADING...";
-  const { data, error } = await supabaseClient.from('bets').select('*').order('created_at',{ascending:false}).limit(200);
-  if(error){ document.getElementById('rows').innerText = "Error: "+error.message; document.getElementById('status').innerText="● ERROR"; return; }
-  if(!data || data.length==0){ document.getElementById('rows').innerHTML="<small style='color:#666'>No bets yet - make a test bet on main site</small>"; return; }
-  
-  let totalVol=0, playerNet=0, wins=0;
-  let safeP=0,martP=0,aggP=0,safeT=0,martT=0,aggT=0,safeW=0,martW=0,aggW=0;
-  let todayP=0,todayT=0,hourP=0,hourT=0;
-  const today = new Date().toDateString();
-  const now = Date.now();
-  
-  data.forEach(b=>{
-    totalVol+= b.stake||0;
-    playerNet+= b.player_profit||0;
-    if(b.result=='WIN') wins++;
-    if(new Date(b.created_at).toDateString()==today){ todayP+=b.player_profit; todayT++; }
-    if(now - new Date(b.created_at).getTime() < 3600000){ hourP+=b.player_profit; hourT++; }
-    if(b.bot_name=='over1'){safeP+=b.player_profit; safeT++; if(b.result=='WIN') safeW++}
-    if(b.bot_name=='over2'){martP+=b.player_profit; martT++; if(b.result=='WIN') martW++}
-    if(b.bot_name=='over3'){aggP+=b.player_profit; aggT++; if(b.result=='WIN') aggW++}
-  });
-  
-  let house = -playerNet;
-  document.getElementById('houseProfit').innerText = `KES ${house}`;
-  document.getElementById('houseProfit').style.color = house>=0?'#00e676':'#ff3d57';
-  document.getElementById('playerNet').innerText = `KES ${playerNet}`;
-  document.getElementById('volume').innerText = `KES ${totalVol}`;
-  document.getElementById('avgStake').innerText = `avg ${(totalVol/data.length).toFixed(0)} • ${data.length} bets`;
-  document.getElementById('tradeCount').innerText = `${data.length} total (cloud)`;
-  document.getElementById('winRate').innerText = `${((wins/data.length)*100).toFixed(1)}%`;
-  document.getElementById('edge').innerText = `${totalVol>0?((house/totalVol)*100).toFixed(1):0}% house edge`;
-  
-  document.getElementById('safeP').innerText = `KES ${-safeP}`;
-  document.getElementById('safeS').innerText = `${safeT>0?(safeW/safeT*100).toFixed(0):0}% WR • ${safeT} trades`;
-  document.getElementById('martP').innerText = `KES ${-martP}`;
-  document.getElementById('martS').innerText = `${martT>0?(martW/martT*100).toFixed(0):0}% WR • ${martT} trades`;
-  document.getElementById('aggP').innerText = `KES ${-aggP}`;
-  document.getElementById('aggS').innerText = `${aggT>0?(aggW/aggT*100).toFixed(0):0}% WR • ${aggT} trades`;
-  
-  document.getElementById('todayProfit').innerText = `KES ${-todayP}`;
-  document.getElementById('todayTrades').innerText = `${todayT} trades today`;
-  document.getElementById('hourProfit').innerText = `KES ${-hourP}`;
-  document.getElementById('hourTrades').innerText = `${hourT} trades this hour`;
-  
-  document.getElementById('rows').innerHTML = data.map(b=>`
-    <div class="row ${b.result=='WIN'?'win':'loss'}">
-      <span><b>${b.bot_name}</b> ${b.choice} D:${b.digit} <small style="color:#666">${new Date(b.created_at).toLocaleTimeString()}</small></span>
-      <span style="color:${b.result=='WIN'?'#00e676':'#ff3d57'};font-weight:800">${b.result=='WIN'?'+'+b.player_profit:b.player_profit} <small style="color:#888">${b.stake} stake</small></span>
-    </div>
-  `).join('');
-  document.getElementById('status').innerText = `● LIVE - ${data.length} bets`;
+const URL="https://hkhqbtyyqgvaktamilxs.supabase.co";
+const KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg";
+const sb=window.supabase.createClient(URL,KEY);
+async function test(){
+ document.getElementById('log').innerHTML='Testing...';
+ document.getElementById('st').innerText='⏳';
+ try{
+  const r=await fetch(URL+'/rest/v1/bets?select=*&limit=1',{headers:{'apikey':KEY,'Authorization':'Bearer '+KEY}});
+  const txt=await r.text();
+  document.getElementById('log').innerHTML=`<div class="b">REST STATUS: ${r.status}<br><br>${txt.slice(0,1000)}</div>`;
+  if(r.ok){
+   document.getElementById('st').innerHTML='<span class="ok">● CLOUD OK</span>';
+   load();
+  } else {
+   document.getElementById('st').innerHTML='<span class="err">● ERROR '+r.status+'</span>';
+  }
+ }catch(e){
+  document.getElementById('log').innerHTML=`<div class="err">FETCH FAILED: ${e.message}<br><br>This is Supabase outage - check status.supabase.com<br>Your URL: ${URL}<br>Try switch to WiFi / VPN, some KE ISPs block Supabase</div>`;
+  document.getElementById('st').innerHTML='● OFFLINE';
+ }
 }
-
-loadData();
-setInterval(loadData, 3000);
-</script>
-</body>
-</html>
+async function load(){
+ const {data,error}=await sb.from('bets').select('*').order('created_at',{ascending:false}).limit(20);
+ if(error){document.getElementById('log').innerHTML+=`<div class="err">SB Error: ${error.message}</div>`; return;}
+ document.getElementById('log').innerHTML+=`<div class="b"><b>${data.length} bets in cloud</b><br>${data.map(b=>`${b.bot_name} ${b.choice} ${b.result} ${b.player_profit}<br>`).join('')}</div>`;
+}
+test();
+</script></body></html>
