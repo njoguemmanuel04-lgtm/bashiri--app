@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>BASHIRI - 1.30x SAFE</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BASHIRI - 1.30x SAFE CLOUD</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Space Grotesk,sans-serif}
 body{background:#04120f;color:#fff;padding:10px;padding-bottom:90px}
@@ -32,9 +33,9 @@ body{background:#04120f;color:#fff;padding:10px;padding-bottom:90px}
 </style>
 </head>
 <body>
-<div class="top"><div class="bal">💰 KES <span id="bal">1000</span> | Stake: <input id="stake" class="inp" value="50" type="number"></div><div class="last" id="lastD">5</div></div>
+<div class="top"><div class="bal">💰 KES <span id="bal">1000</span> | Stake: <input id="stake" class="inp" value="50" type="number"></div><div class="last" id="lastD">5</div><small id="cloud" style="color:#29b6f6;font-size:9px">CLOUD</small></div>
 <div class="card">
-<div class="live-box"><div><small style="color:#00e676;font-weight:700">HOUSE SAFE: 1.30x FIXED</small><br><b style="font-size:11px">20→+6 | 50→+15 | 70%/55%/40% WR</b></div><div style="text-align:right"><small style="color:#5fbd9f;font-size:10px">LIVE TICK</small><br><b id="liveTick">9436.30</b></div></div>
+<div class="live-box"><div><small style="color:#00e676;font-weight:700">70% SAFE 1.30x CLOUD</small><br><b style="font-size:11px">20→+6 | 50→+15 • House +9%</b></div><div style="text-align:right"><small style="color:#5fbd9f;font-size:10px">LIVE</small><br><b id="liveTick">9436.30</b></div></div>
 <div class="ticker"><div id="cursor">▼</div><div class="digits" id="digitBar"></div></div>
 <canvas id="chart"></canvas>
 <div class="grid">
@@ -45,52 +46,35 @@ body{background:#04120f;color:#fff;padding:10px;padding-bottom:90px}
 </div>
 </div>
 <div class="sec">
-<div style="color:#ffb300;font-weight:800;font-size:13px;margin-bottom:10px">| EVEN / ODD - 30% WR - 1.90x FIXED</div>
-<div class="bot"><div><b>🛡️ Safe Bot</b><br><small style="color:#888">30% WR • 1.90x • 50→+45 | 20→+18</small></div><div style="text-align:right"><span class="off" id="s1">OFF</span><br><button class="tog" id="b1" onclick="toggleBot('safe')">ON/OFF</button></div></div>
-<div class="bot"><div><b>🔥 Aggressive</b><br><small style="color:#888">30% WR • 1.90x • 50→+45 | 20→+18</small></div><div style="text-align:right"><span class="off" id="s3">OFF</span><br><button class="tog" id="b3" onclick="toggleBot('agg')">ON/OFF</button></div></div>
+<div style="color:#ffb300;font-weight:800;font-size:13px;margin-bottom:10px">| EVEN / ODD - 30% WR</div>
+<div class="bot"><div><b>🛡️ Safe Bot</b><br><small style="color:#888">30% WR • 1.90x</small></div><div style="text-align:right"><span class="off" id="s1">OFF</span><br><button class="tog" id="b1" onclick="toggleBot('safe')">ON/OFF</button></div></div>
+<div class="bot"><div><b>🔥 Aggressive</b><br><small style="color:#888">30% WR • 1.90x</small></div><div style="text-align:right"><span class="off" id="s3">OFF</span><br><button class="tog" id="b3" onclick="toggleBot('agg')">ON/OFF</button></div></div>
 </div>
 <div class="sec" style="border-color:#29b6f622">
-<div style="color:#29b6f6;font-weight:800;font-size:13px;margin-bottom:10px">| OVER / UNDER - 1.30x SAFE FOR HOUSE</div>
-<div class="bot"><div><b>🛡️ Safe Bot</b><br><small style="color:#00e676;font-weight:700">70% WIN • 20→+6 | 50→+15 • House -9%</small></div><div style="text-align:right"><span class="off" id="os1">OFF</span><br><button class="tog" id="ob1" onclick="toggleOBot('over1')">ON/OFF</button></div></div>
-<div class="bot"><div><b>⚡ Martingale</b><br><small style="color:#888">55% WIN • 20→+6 | 50→+15 • House -28%</small></div><div style="text-align:right"><span class="off" id="os2">OFF</span><br><button class="tog" id="ob2" onclick="toggleOBot('over2')">ON/OFF</button></div></div>
-<div class="bot"><div><b>🔥 Aggressive</b><br><small style="color:#ff9500;font-weight:700">40% WIN • 20→+6 | 50→+15 • House -48%</small></div><div style="text-align:right"><span class="off" id="os3">OFF</span><br><button class="tog" id="ob3" onclick="toggleOBot('over3')">ON/OFF</button></div></div>
+<div style="color:#29b6f6;font-weight:800;font-size:13px;margin-bottom:10px">| OVER / UNDER - 70% SAFE CLOUD</div>
+<div class="bot"><div><b>🛡️ Safe - 70%</b><br><small style="color:#00e676">20→+6 | 50→+15 • Best retention</small></div><div style="text-align:right"><span class="off" id="os1">OFF</span><br><button class="tog" id="ob1" onclick="toggleOBot('over1')">ON/OFF</button></div></div>
+<div class="bot"><div><b>⚡ Martingale - 55%</b><br><small style="color:#888">20→+6 | 50→+15</small></div><div style="text-align:right"><span class="off" id="os2">OFF</span><br><button class="tog" id="ob2" onclick="toggleOBot('over2')">ON/OFF</button></div></div>
+<div class="bot"><div><b>🔥 Aggressive - 40%</b><br><small style="color:#ff9500">20→+6 | 50→+15</small></div><div style="text-align:right"><span class="off" id="os3">OFF</span><br><button class="tog" id="ob3" onclick="toggleOBot('over3')">ON/OFF</button></div></div>
 </div>
 <div style="background:#121212;border:1px solid #222;border-radius:16px;padding:12px"><div style="display:flex;justify-content:space-between"><b>RESULTS <span id="cnt" style="color:#00e676;font-size:12px"></span></b><button onclick="localStorage.clear();location.reload()" style="background:#222;color:#fff;border:0;padding:6px 14px;border-radius:8px">CLEAR</button></div><div id="res" style="margin-top:8px"></div></div>
 <script>
-const CONFIG_OVER = { over1: { wr: 0.70, payout: 1.30 }, over2: { wr: 0.55, payout: 1.30 }, over3: { wr: 0.40, payout: 1.30 } };
+const SUPABASE_URL="https://hkhqbtyyqgvaktamilxs.supabase.co";
+const SUPABASE_ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg";
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON);
+const CONFIG_OVER={over1:{wr:0.70,payout:1.30},over2:{wr:0.55,payout:1.30},over3:{wr:0.40,payout:1.30}};
 const BOT_WR_EVEN=0.30;
-let BAL=parseInt(localStorage.getItem('bal')||'1000'), last=5, tick=9436.30, hist=[], prices=[9436.3];
-let bots={}, obots={}, iv={}, oiv={};
+let BAL=parseInt(localStorage.getItem('bal')||'1000'),last=5,tick=9436.30,hist=[],prices=[9436.3];
+let bots={},obots={},iv={},oiv={};
 const bar=document.getElementById('digitBar'); bar.innerHTML=''; for(let i=0;i<=9;i++) bar.innerHTML+=`<div style="text-align:center;flex:1"><div class="d-c" id="d-${i}">${i}</div><div class="d-p" id="p-${i}">0%</div></div>`;
-const cv=document.getElementById('chart'), ctx=cv.getContext('2d'); cv.width=cv.clientWidth*2; cv.height=190;
+const cv=document.getElementById('chart'),ctx=cv.getContext('2d'); cv.width=cv.clientWidth*2; cv.height=190;
 function draw(){ctx.clearRect(0,0,cv.width,cv.height); if(prices.length<2)return; let min=Math.min(...prices),max=Math.max(...prices),range=(max-min)||1; ctx.beginPath(); ctx.lineWidth=4; ctx.strokeStyle=prices[prices.length-1]>=prices[prices.length-2]?'#00e676':'#ff3d57'; prices.forEach((p,i)=>{let x=(i/(prices.length-1))*cv.width; let y=cv.height-((p-min)/range)*cv.height*0.7-cv.height*0.15; if(i==0)ctx.moveTo(x,y); else ctx.lineTo(x,y)}); ctx.stroke();}
-function getDigitByWR(winRate, type){
- let mustWin=Math.random()<winRate;
- if(type==='OVER') return mustWin?[2,3,4,5,6,7,8,9][Math.floor(Math.random()*8)]:[0,1][Math.floor(Math.random()*2)];
- if(type==='UNDER') return mustWin?[0,1,2,3,4,5,6,7][Math.floor(Math.random()*8)]:[8,9][Math.floor(Math.random()*2)];
- if(type==='EVEN') return mustWin?[0,2,4,6,8][Math.floor(Math.random()*5)]:[1,3,5,7,9][Math.floor(Math.random()*5)];
- if(type==='ODD') return mustWin?[1,3,5,7,9][Math.floor(Math.random()*5)]:[0,2,4,6,8][Math.floor(Math.random()*5)];
- return Math.floor(Math.random()*10);
-}
+function getDigitByWR(winRate,type){let mustWin=Math.random()<winRate; if(type==='OVER') return mustWin?[2,3,4,5,6,7,8,9][Math.floor(Math.random()*8)]:[0,1][Math.floor(Math.random()*2)]; if(type==='UNDER') return mustWin?[0,1,2,3,4,5,6,7][Math.floor(Math.random()*8)]:[8,9][Math.floor(Math.random()*2)]; if(type==='EVEN') return mustWin?[0,2,4,6,8][Math.floor(Math.random()*5)]:[1,3,5,7,9][Math.floor(Math.random()*5)]; if(type==='ODD') return mustWin?[1,3,5,7,9][Math.floor(Math.random()*5)]:[0,2,4,6,8][Math.floor(Math.random()*5)]; return Math.floor(Math.random()*10);}
 function upd(){let c=Array(10).fill(0); hist.slice(-100).forEach(d=>c[d]++); let tot=hist.length||1; for(let i=0;i<=9;i++){document.getElementById('p-'+i).innerText=((c[i]/tot*100)||0).toFixed(0)+'%'; document.getElementById('d-'+i).classList.remove('active');} document.getElementById('d-'+last)?.classList.add('active'); document.getElementById('cursor').style.left=`calc(${(last/9)*100}% - 8px)`; document.getElementById('lastD').innerText=last; document.getElementById('liveTick').innerText=tick.toFixed(2); document.getElementById('bal').innerText=BAL; localStorage.setItem('bal',BAL);}
 function load(){let bets=JSON.parse(localStorage.getItem('bets')||'[]'); document.getElementById('cnt').innerText=bets.length?`(${bets.length})`:''; document.getElementById('res').innerHTML=bets.map(b=>`<div class="ri ${b.r=='WIN'?'win':'loss'}"><span>[${b.botName}] ${b.c} D:${b.d} <small style="color:#666">${b.mult}x</small></span><span style="color:${b.r=='WIN'?'#00e676':'#ff3d57'};font-weight:800">${b.r=='WIN'?'+'+b.p:b.p}</span></div>`).join('')||'<small style="color:#555">No trades</small>';}
-function save(b){let a=JSON.parse(localStorage.getItem('bets')||'[]'); a.unshift(b); localStorage.setItem('bets',JSON.stringify(a.slice(0,80)))}
-function doTrade(choice,stake,isBot){
- if(BAL<stake) return;
- let mult=1.90; let wr=BOT_WR_EVEN;
- let d=getDigitByWR(wr, choice); last=d; let win=(choice=='EVEN'&&d%2==0)||(choice=='ODD'&&d%2==1);
- BAL-=stake; if(win) BAL+=stake*mult;
- save({c:choice,d:d,r:win?'WIN':'LOSS',p:win?Math.round(stake*(mult-1)):-stake,mult:mult,wr:wr,botName:'EVEN/ODD'});
- upd(); load(); tick+=(Math.random()-0.5)*2; prices.push(tick); if(prices.length>60)prices.shift(); draw();
-}
-function doOver(type,th,stake,isBot,name){
- if(BAL<stake){if(isBot)toggleOBot(name); return;}
- let cfg = CONFIG_OVER[name]; let mult=cfg.payout; let wr=cfg.wr;
- let d=getDigitByWR(wr, type); last=d; let win=type=='OVER'?d>th:d<th;
- BAL-=stake; if(win) BAL+=stake*mult;
- save({c:`${type} ${th}`,d:d,r:win?'WIN':'LOSS',p:win?Math.round(stake*(mult-1)):-stake,mult:mult,wr:wr,botName:name});
- upd(); load(); tick+=(Math.random()-0.5)*2; prices.push(tick); if(prices.length>60)prices.shift(); draw();
-}
+function saveLocal(b){let a=JSON.parse(localStorage.getItem('bets')||'[]'); a.unshift(b); localStorage.setItem('bets',JSON.stringify(a.slice(0,200)))}
+async function save(b){saveLocal(b); try{let stake=b.r=='WIN'?Math.round(b.p/(b.mult-1)):Math.abs(b.p); await supabaseClient.from('bets').insert({bot_name:b.botName,choice:b.c,digit:b.d,result:b.r,player_profit:b.p,stake:stake,payout:b.mult,win_rate:b.wr}); document.getElementById('cloud').innerText='CLOUD SAVED'; document.getElementById('cloud').style.color='#00e676';}catch(e){document.getElementById('cloud').innerText='OFFLINE';}}
+function doTrade(choice,stake,isBot){if(BAL<stake) return; let mult=1.90; let wr=BOT_WR_EVEN; let d=getDigitByWR(wr,choice); last=d; let win=(choice=='EVEN'&&d%2==0)||(choice=='ODD'&&d%2==1); BAL-=stake; if(win) BAL+=stake*mult; save({c:choice,d:d,r:win?'WIN':'LOSS',p:win?Math.round(stake*(mult-1)):-stake,mult:mult,wr:wr,botName:'EVEN/ODD'}); upd(); load(); tick+=(Math.random()-0.5)*2; prices.push(tick); if(prices.length>60)prices.shift(); draw();}
+function doOver(type,th,stake,isBot,name){if(BAL<stake){if(isBot)toggleOBot(name); return;} let cfg=CONFIG_OVER[name]; let mult=cfg.payout; let wr=cfg.wr; let d=getDigitByWR(wr,type); last=d; let win=type=='OVER'?d>th:d<th; BAL-=stake; if(win) BAL+=stake*mult; save({c:`${type} ${th}`,d:d,r:win?'WIN':'LOSS',p:win?Math.round(stake*(mult-1)):-stake,mult:mult,wr:wr,botName:name}); upd(); load(); tick+=(Math.random()-0.5)*2; prices.push(tick); if(prices.length>60)prices.shift(); draw();}
 function manual(c){doTrade(c,parseInt(document.getElementById('stake').value),false)}
 function manualOver(t,th){doOver(t,th,parseInt(document.getElementById('stake').value),false,'over2')}
 function toggleBot(n){bots[n]=!bots[n]; document.getElementById(n=='safe'?'s1':'s3').innerText=bots[n]?'BUYING':'OFF'; document.getElementById(n=='safe'?'s1':'s3').className=bots[n]?'on':'off'; document.getElementById(n=='safe'?'b1':'b3').className=bots[n]?'tog active':'tog'; if(bots[n]) iv[n]=setInterval(()=>{let c=Math.random()>0.5?'EVEN':'ODD'; let stake=n=='agg'?Math.floor(Math.random()*80)+30:parseInt(document.getElementById('stake').value); doTrade(c,stake,true)}, n=='agg'?1500:3000); else clearInterval(iv[n]);}
