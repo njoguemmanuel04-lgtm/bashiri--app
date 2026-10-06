@@ -1,34 +1,40 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ADMIN V2</title>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BASHIRI ADMIN - PROFIT</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>body{background:#050f0d;color:#fff;padding:12px;font-family:monospace} .b{border:1px solid #29b6f6;border-radius:12px;padding:12px;margin-bottom:10px} .err{color:#ff3d57;background:#1a0005;padding:10px;border-radius:8px;margin:10px 0} .ok{color:#00e676}</style></head><body>
-<div class="b"><b>BASHIRI ADMIN V2 - DEBUG</b><br><button onclick="test()" style="padding:10px 20px;background:#29b6f6;border:0;border-radius:8px;font-weight:800">TEST CLOUD CONNECTION</button> <span id="st"></span></div>
-<div id="log"></div>
+<style>body{background:#04120f;color:#fff;padding:12px;font-family:Space Grotesk,sans-serif} .card{background:#121212;border:1px solid #222;border-radius:14px;padding:14px;margin-bottom:12px} .big{font-size:26px;font-weight:800} .g{color:#00e676} .r{color:#ff3d57} .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px} .sm{font-size:12px;color:#888} .row{padding:8px;border-radius:8px;background:#0f0f0f;margin-bottom:6px;border-left:3px solid #333;font-size:12px;display:flex;justify-content:space-between} .win{border-left-color:#00e676} .loss{border-left-color:#ff3d57}</style></head><body>
+<div class="card"><b>🏦 BASHIRI HOUSE PROFIT</b> <small id="stat" style="color:#29b6f6">LIVE CLOUD</small><br><br><div class="grid"><div><small class="sm">HOUSE PROFIT (You Earned)</small><div class="big g" id="profit">KES 0</div><small class="sm">All time</small></div><div><small class="sm">TODAY</small><div class="big" id="today">KES 0</div><small class="sm" id="trades">0 trades</small></div></div><br><div class="grid"><div class="card" style="margin:0"><small class="sm">TOTAL VOLUME</small><br><b id="vol">0</b></div><div class="card" style="margin:0"><small class="sm">REAL WIN RATE</small><br><b id="wr">0%</b> <small class="sm">vs 70% set</small></div></div></div>
+<div class="grid"><div class="card"><small class="sm">SAFE 70% 1.30x</small><br><b id="p1" class="g">0</b><br><small class="sm" id="c1">0 trades</small></div><div class="card"><small class="sm">MART 55% 1.30x</small><br><b id="p2">0</b><br><small class="sm" id="c2">0 trades</small></div><div class="card"><small class="sm">AGG 40% 1.30x</small><br><b id="p3">0</b><br><small class="sm" id="c3">0 trades</small></div><div class="card"><small class="sm">EVEN/ODD 30%</small><br><b id="p4">0</b><br><small class="sm" id="c4">0 trades</small></div></div>
+<div class="card"><div style="display:flex;justify-content:space-between"><b>LIVE BETS</b><button onclick="load()" style="background:#222;color:#fff;border:0;padding:6px 12px;border-radius:8px">REFRESH</button></div><div id="bets" style="margin-top:10px"></div></div>
 <script>
 const URL="https://hkhqbtyyqgvaktamilxs.supabase.co";
 const KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg";
 const sb=window.supabase.createClient(URL,KEY);
-async function test(){
- document.getElementById('log').innerHTML='Testing...';
- document.getElementById('st').innerText='⏳';
- try{
-  const r=await fetch(URL+'/rest/v1/bets?select=*&limit=1',{headers:{'apikey':KEY,'Authorization':'Bearer '+KEY}});
-  const txt=await r.text();
-  document.getElementById('log').innerHTML=`<div class="b">REST STATUS: ${r.status}<br><br>${txt.slice(0,1000)}</div>`;
-  if(r.ok){
-   document.getElementById('st').innerHTML='<span class="ok">● CLOUD OK</span>';
-   load();
-  } else {
-   document.getElementById('st').innerHTML='<span class="err">● ERROR '+r.status+'</span>';
-  }
- }catch(e){
-  document.getElementById('log').innerHTML=`<div class="err">FETCH FAILED: ${e.message}<br><br>This is Supabase outage - check status.supabase.com<br>Your URL: ${URL}<br>Try switch to WiFi / VPN, some KE ISPs block Supabase</div>`;
-  document.getElementById('st').innerHTML='● OFFLINE';
- }
-}
 async function load(){
- const {data,error}=await sb.from('bets').select('*').order('created_at',{ascending:false}).limit(20);
- if(error){document.getElementById('log').innerHTML+=`<div class="err">SB Error: ${error.message}</div>`; return;}
- document.getElementById('log').innerHTML+=`<div class="b"><b>${data.length} bets in cloud</b><br>${data.map(b=>`${b.bot_name} ${b.choice} ${b.result} ${b.player_profit}<br>`).join('')}</div>`;
+ const {data,error}=await sb.from('bets').select('*').order('created_at',{ascending:false}).limit(100);
+ if(error){document.getElementById('bets').innerHTML='<span style="color:#ff3d57">'+error.message+'</span>'; return;}
+ let profit=0, vol=0, wins=0, todayP=0;
+ let now=new Date().toDateString();
+ let g={over1:0,over2:0,over3:0,evenodd:0}; let gc={over1:0,over2:0,over3:0,evenodd:0};
+ data.forEach(b=>{
+  let pp=b.player_profit||0;
+  profit+=-pp; vol+=b.stake||0; if(b.result=='WIN') wins++;
+  if(new Date(b.created_at).toDateString()==now) todayP+=-pp;
+  let k=b.bot_name;
+  if(k=='over1'){g.over1+=-pp; gc.over1++}
+  else if(k=='over2'){g.over2+=-pp; gc.over2++}
+  else if(k=='over3'){g.over3+=-pp; gc.over3++}
+  else {g.evenodd+=-pp; gc.evenodd++}
+ });
+ document.getElementById('profit').innerText='KES '+profit;
+ document.getElementById('today').innerText='KES '+todayP;
+ document.getElementById('vol').innerText='KES '+vol;
+ document.getElementById('trades').innerText=data.length+' trades';
+ document.getElementById('wr').innerText=data.length?((wins/data.length*100).toFixed(1)+'%'):'0%';
+ document.getElementById('p1').innerText='KES '+g.over1; document.getElementById('c1').innerText=gc.over1+' trades';
+ document.getElementById('p2').innerText='KES '+g.over2; document.getElementById('c2').innerText=gc.over2+' trades';
+ document.getElementById('p3').innerText='KES '+g.over3; document.getElementById('c3').innerText=gc.over3+' trades';
+ document.getElementById('p4').innerText='KES '+g.evenodd; document.getElementById('c4').innerText=gc.evenodd+' trades';
+ document.getElementById('bets').innerHTML=data.map(b=>`<div class="row ${b.result=='WIN'?'win':'loss'}"><span>${b.bot_name} ${b.choice} D:${b.digit} ${b.result}</span><span style="color:${b.result=='WIN'?'#00e676':'#ff3d57'}">${b.player_profit>0?'+'+b.player_profit:b.player_profit}</span></div>`).join('')||'No bets yet - make 1 bet on main site';
+ document.getElementById('stat').innerText='● LIVE '+data.length+' bets';
 }
-test();
+load(); setInterval(load,3000);
 </script></body></html>
