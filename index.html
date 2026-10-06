@@ -4,189 +4,200 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>BASHIRI PRO</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Space Grotesk',sans-serif}
-body{background:#04120f;color:#fff;padding:10px;padding-bottom:90px}
-.topbar{display:flex;justify-content:space-between;align-items:center;background:#121212;border:1px solid #222;border-radius:14px;padding:10px 12px;margin-bottom:10px}
-.input{width:70px;background:#000;border:1px solid #333;color:#fff;border-radius:8px;padding:5px 8px}
-.last{width:42px;height:42px;background:#1a1a1a;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;border:2px solid #333}
-
-.market-card{background:#0e2a24;border:1px solid #1a4a3e;border-radius:16px;padding:12px;margin-bottom:10px}
-.market-row{display:flex;gap:8px;margin-bottom:8px}
-.market-select{flex:1;background:#081a16;border:1px solid #1a4a3e;color:#fff;border-radius:10px;padding:10px;font-weight:700}
-.live{border:1px solid #1a4a3e;border-radius:10px;padding:6px 12px;text-align:center;min-width:95px}
-.live small{color:#5fbd9f;font-size:10px;font-weight:700}
-.live b{font-size:18px;display:block}
-
-.ticker{position:relative;padding-top:18px;margin-bottom:6px}
-.cursor-tri{position:absolute;top:0;transition:left.4s cubic-bezier(.34,1.56,.64,1);color:#ff9500;font-size:12px}
+body{background:#04120f;color:#fff;padding:10px;padding-bottom:80px}
+.top{background:#121212;border:1px solid #222;border-radius:14px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.inp{width:80px;background:#000;border:1px solid #333;color:#fff;border-radius:8px;padding:6px 8px;font-weight:700}
+.last{width:44px;height:44px;background:#1a1a1a;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;border:2px solid #333}
+.card{background:#0e2a24;border:1px solid #1a4a3e;border-radius:16px;padding:12px;margin-bottom:12px}
+.live-box{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;background:#081a16;border:1px solid #1a4a3e;border-radius:12px;padding:10px 12px}
+.ticker{position:relative;padding-top:16px;margin-bottom:8px}
+#cursor{position:absolute;top:0;left:0;transition:left.4s;color:#ff9500;font-size:14px}
 .digits{display:flex;justify-content:space-between}
-.d-item{text-align:center;flex:1}
-.d-circle{width:34px;height:34px;border-radius:50%;border:2px solid #2a4a42;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;font-weight:700;font-size:13px;background:#0a1f1a;transition:.3s}
-.d-circle.active{background:#00d09c;color:#000;border-color:#00d09c;box-shadow:0 0 12px #00d09c;transform:scale(1.15)}
-.d-pct{font-size:9px;color:#7fbba7}
-
-#chart{width:100%;height:90px;background:#081a16;border-radius:10px;border:1px solid #1a4a3e;margin:8px 0}
-
-.trade-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
-.btn{border-radius:12px;padding:12px;border:1px solid;font-weight:800;font-size:13px;cursor:pointer}
-.btn-even{background:#c8fff0;color:#003d2f;border-color:#00d09c}
-.btn-odd{background:#ffd0dd;color:#4a0015;border-color:#ff5a7f}
-.btn-over{background:#c2e8ff;color:#002a4a;border-color:#3aa0ff}
-.btn-under{background:#ffe9b5;color:#4a3300;border-color:#ffb300}
-
-.bot-sec{border-radius:16px;padding:12px;margin-bottom:10px;border:1px solid}
-.even-sec{border-color:#ffb30033;background:#12120a}
-.over-sec{border-color:#29b6f633;background:#0a141a}
-.bot-card{background:#1e1e1e;border-radius:12px;padding:10px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.status{font-size:10px;font-weight:700}.off{color:#666}.on{color:#00e676}
-.toggle{border:1px solid #333;background:#2a2a2a;color:#fff;border-radius:8px;padding:6px 12px;font-weight:700;font-size:11px}
-.toggle.active{background:#00e676;color:#000}
+.d-it{text-align:center;flex:1}
+.d-c{width:32px;height:32px;border-radius:50%;border:2px solid #2a4a42;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;font-weight:700;background:#0a1f1a;transition:.3s;font-size:13px}
+.d-c.active{background:#00d09c;color:#000;border-color:#00d09c;transform:scale(1.15);box-shadow:0 0 10px #00d09c}
+.d-p{font-size:9px;color:#7fbba7}
+#chart{width:100%;height:100px;display:block;background:#081a16;border:1px solid #1a4a3e;border-radius:10px;margin:10px 0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn{border-radius:12px;padding:14px 6px;border:1px solid;font-weight:800;font-size:13px;cursor:pointer}
+.be{background:#c8fff0;color:#003d2f;border-color:#00d09c}
+.bo{background:#ffd0dd;color:#4a0015;border-color:#ff5a7f}
+.bov{background:#c2e8ff;color:#002a4a;border-color:#3aa0ff}
+.bu{background:#ffe9b5;color:#4a3300;border-color:#ffb300}
+.sec{border-radius:16px;padding:12px;margin-bottom:12px;border:1px solid;background:#121212}
+.bot{background:#1e1e1e;border-radius:12px;padding:12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.off{color:#666;font-size:10px;font-weight:700}.on{color:#00e676;font-size:10px;font-weight:700}
+.tog{border:1px solid #333;background:#2a2a2a;color:#fff;border-radius:8px;padding:6px 12px;font-weight:700}
+.tog.on{background:#00e676;color:#000}
 .results{background:#121212;border:1px solid #222;border-radius:14px;padding:10px}
-.r-item{display:flex;justify-content:space-between;font-size:12px;padding:8px;border-radius:8px;margin-bottom:4px;background:#0f0f0f;border-left:3px solid #333}
-.r-item.win{border-left-color:#00e676}.r-item.loss{border-left-color:#ff3d57}
+.ri{display:flex;justify-content:space-between;padding:8px;border-radius:8px;margin-bottom:4px;background:#0f0f0f;border-left:3px solid #333;font-size:12px}
+.ri.win{border-left-color:#00e676}.ri.loss{border-left-color:#ff3d57}
+.pulse{animation:flash.3s}
+@keyframes flash{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
 </style>
 </head>
 <body>
 
-<div class="topbar">
-<div>💰 KES <span id="bal">1000</span> | Stake: <input id="stakeInput" class="input" type="number" value="50"></div>
-<div class="last" id="lastDigit">5</div>
+<div class="top">
+<div>💰 KES <span id="bal">1000</span> | Stake: <input id="stake" class="inp" type="number" value="50"></div>
+<div class="last" id="lastD">5</div>
 </div>
 
-<div class="market-card">
-<div class="market-row">
-<select class="market-select"><option>Volatility 10 (1s) Index</option></select>
-<div class="live"><small>LIVE TICK</small><b id="liveTick">9436.30</b></div>
+<div class="card">
+<div class="live-box">
+<div><small style="color:#5fbd9f;font-weight:700">DIGIT ANALYSIS</small><br><b style="font-size:11px">Last 100 Ticks</b></div>
+<div style="text-align:right"><small style="color:#5fbd9f">LIVE TICK</small><br><b id="liveTick" style="font-size:18px">9436.30</b></div>
 </div>
-
-<div class="ticker">
-<div class="cursor-tri" id="cursor">▼</div>
-<div class="digits" id="digitBar"></div>
-</div>
-
+<div class="ticker"><div id="cursor">▼</div><div class="digits" id="digitBar"></div></div>
 <canvas id="chart"></canvas>
-
-<div class="trade-grid">
-<button class="btn btn-even" onclick="tradeDigit('EVEN')">EVEN<br><small>1.90x</small></button>
-<button class="btn btn-odd" onclick="tradeDigit('ODD')">ODD<br><small>1.90x</small></button>
-<button class="btn btn-over" onclick="tradeOverUnder('OVER',1)">OVER 1<br><small>1.12x</small></button>
-<button class="btn btn-under" onclick="tradeOverUnder('UNDER',8)">UNDER 8<br><small>1.12x</small></button>
+<div class="grid">
+<button class="btn be" onclick="manual('EVEN')">EVEN<br>1.90x</button>
+<button class="btn bo" onclick="manual('ODD')">ODD<br>1.90x</button>
+<button class="btn bov" onclick="manualOver('OVER',1)">OVER 1<br>1.12x</button>
+<button class="btn bu" onclick="manualOver('UNDER',8)">UNDER 8<br>1.12x</button>
 </div>
 </div>
 
-<div class="bot-sec even-sec">
-<div style="font-weight:800;font-size:13px;margin-bottom:8px">| EVEN/ODD BOTS</div>
-<div class="bot-card"><div><b>🛡️ Safe Bot</b></div><div style="text-align:right"><span class="status off" id="safeStatus">OFF</span><br><button class="toggle" id="safeBtn" onclick="toggleBot('safe')">ON/OFF</button></div></div>
-<div class="bot-card"><div><b>⚡ Martingale</b></div><div style="text-align:right"><span class="status off" id="martStatus">OFF</span><br><button class="toggle" id="martBtn" onclick="toggleBot('mart')">ON/OFF</button></div></div>
-<div class="bot-card"><div><b>🔥 Aggressive</b></div><div style="text-align:right"><span class="status off" id="aggStatus">OFF</span><br><button class="toggle" id="aggBtn" onclick="toggleBot('agg')">ON/OFF</button></div></div>
+<div class="sec">
+<div style="font-weight:800;font-size:13px;margin-bottom:8px;color:#ffb300">| EVEN/ODD BOTS - PURCHASING</div>
+<div class="bot"><div><b>🛡️ Safe Bot</b><small style="display:block;color:#777;font-size:10px">Buys EVEN/ODD every 3s</small></div><div><span class="off" id="s1">OFF</span><br><button class="tog" id="b1" onclick="toggleBot('safe')">ON/OFF</button></div></div>
+<div class="bot"><div><b>⚡ Martingale</b><small style="display:block;color:#777;font-size:10px">Doubles stake on loss</small></div><div><span class="off" id="s2">OFF</span><br><button class="tog" id="b2" onclick="toggleBot('mart')">ON/OFF</button></div></div>
+<div class="bot"><div><b>🔥 Aggressive</b><small style="display:block;color:#777;font-size:10px">Random 50-150 stake 1.5s</small></div><div><span class="off" id="s3">OFF</span><br><button class="tog" id="b3" onclick="toggleBot('agg')">ON/OFF</button></div></div>
 </div>
 
-<div class="bot-sec over-sec">
-<div style="font-weight:800;font-size:13px;margin-bottom:8px">| OVER 1 / UNDER 8 BOTS</div>
-<div class="bot-card"><div><b>🛡️ Safe Bot</b></div><div style="text-align:right"><span class="status off" id="over1Status">OFF</span><br><button class="toggle" id="over1Btn" onclick="toggleOverBot('over1')">ON/OFF</button></div></div>
-<div class="bot-card"><div><b>⚡ Martingale</b></div><div style="text-align:right"><span class="status off" id="over2Status">OFF</span><br><button class="toggle" id="over2Btn" onclick="toggleOverBot('over2')">ON/OFF</button></div></div>
-<div class="bot-card"><div><b>🔥 Aggressive</b></div><div style="text-align:right"><span class="status off" id="over3Status">OFF</span><br><button class="toggle" id="over3Btn" onclick="toggleOverBot('over3')">ON/OFF</button></div></div>
+<div class="sec">
+<div style="font-weight:800;font-size:13px;margin-bottom:8px;color:#29b6f6">| OVER 1 / UNDER 8 BOTS - PURCHASING</div>
+<div class="bot"><div><b>🛡️ Safe Bot</b><small style="display:block;color:#777;font-size:10px">Buys OVER1/UNDER8 every 3s</small></div><div><span class="off" id="os1">OFF</span><br><button class="tog" id="ob1" onclick="toggleOBot('over1')">ON/OFF</button></div></div>
+<div class="bot"><div><b>⚡ Martingale</b><small style="display:block;color:#777;font-size:10px">Doubles stake on loss</small></div><div><span class="off" id="os2">OFF</span><br><button class="tog" id="ob2" onclick="toggleOBot('over2')">ON/OFF</button></div></div>
+<div class="bot"><div><b>🔥 Aggressive</b><small style="display:block;color:#777;font-size:10px">Fast 1.5s trades</small></div><div><span class="off" id="os3">OFF</span><br><button class="tog" id="ob3" onclick="toggleOBot('over3')">ON/OFF</button></div></div>
 </div>
 
-<div class="results"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><b>RESULTS</b><button onclick="localStorage.removeItem('bets');document.getElementById('results').innerHTML=''" style="background:#222;color:#fff;border:0;padding:5px 10px;border-radius:6px">CLEAR</button></div><div id="results"></div></div>
+<div class="results"><div style="display:flex;justify-content:space-between"><b>RESULTS <small id="buyCount" style="color:#00e676"></small></b><button onclick="localStorage.clear();location.reload()" style="background:#222;color:#fff;border:0;padding:5px 10px;border-radius:6px">CLEAR</button></div><div id="res" style="margin-top:8px"></div></div>
 
 <script>
-const sb=supabase.createClient('YOUR_URL','YOUR_KEY');
-let USER_BAL=parseInt(localStorage.getItem('bal')||'1000');
-let lastDigit=5, tickPrice=9436.30, history=[], prices=[9436.3];
-let bots={safe:false,mart:false,agg:false}, intervals={};
-let overBots={over1:false,over2:false,over3:false}, overIntervals={};
+let BAL=parseInt(localStorage.getItem('bal')||'1000');
+let last=5, tick=9436.30, hist=[], prices=[9436.3];
+let bots={}, obots={}, iv={}, oiv={}, botStakes={safe:50,mart:50,agg:50}, obotStakes={over1:50,over2:50,over3:50};
 
-const canvas=document.getElementById('chart'), ctx=canvas.getContext('2d');
-function resize(){canvas.width=canvas.offsetWidth*2; canvas.height=90*2;}
-resize();
+const bar=document.getElementById('digitBar');
+bar.innerHTML=''; for(let i=0;i<=9;i++) bar.innerHTML+=`<div class="d-it"><div class="d-c" id="d-${i}">${i}</div><div class="d-p" id="p-${i}">0%</div></div>`;
 
-function drawChart(){
- ctx.clearRect(0,0,canvas.width,canvas.height);
+const cv=document.getElementById('chart'), ctx=cv.getContext('2d');
+function resize(){cv.width=cv.clientWidth*2; cv.height=200;} resize();
+
+function draw(){
+ ctx.clearRect(0,0,cv.width,cv.height);
  if(prices.length<2) return;
  let min=Math.min(...prices), max=Math.max(...prices), range=(max-min)||1;
- ctx.beginPath();
- ctx.lineWidth=3;
+ ctx.beginPath(); ctx.lineWidth=4;
  let up=prices[prices.length-1]>=prices[prices.length-2];
  ctx.strokeStyle=up?'#00e676':'#ff3d57';
  prices.forEach((p,i)=>{
-  let x=(i/(prices.length-1))*canvas.width;
-  let y=canvas.height - ((p-min)/range)*canvas.height*0.8 - canvas.height*0.1;
-  if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
- });
- ctx.stroke();
- // glow dot
- let lastY=canvas.height - ((prices[prices.length-1]-min)/range)*canvas.height*0.8 - canvas.height*0.1;
- ctx.fillStyle=up?'#00e676':'#ff3d57';
- ctx.beginPath(); ctx.arc(canvas.width-4,lastY,6,0,Math.PI*2); ctx.fill();
+  let x=(i/(prices.length-1))*cv.width;
+  let y=cv.height - ((p-min)/range)*cv.height*0.7 - cv.height*0.15;
+  if(i==0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+ }); ctx.stroke();
 }
 
-function initDigits(){
- const bar=document.getElementById('digitBar'); bar.innerHTML='';
- for(let i=0;i<=9;i++) bar.innerHTML+=`<div class="d-item"><div class="d-circle" id="d-${i}">${i}</div><div class="d-pct" id="p-${i}">0%</div></div>`;
-}
-initDigits();
-
-function updateAnalysis(){
- let counts=Array(10).fill(0); history.slice(-100).forEach(d=>counts[d]++);
- let total=history.length||1;
+function upd(){
+ let c=Array(10).fill(0); hist.slice(-100).forEach(d=>c[d]++);
+ let tot=hist.length||1;
  for(let i=0;i<=9;i++){
-  document.getElementById(`p-${i}`).innerText=((counts[i]/total*100)||0).toFixed(1)+'%';
-  document.getElementById(`d-${i}`).classList.remove('active');
+  document.getElementById('p-'+i).innerText=((c[i]/tot*100)||0).toFixed(0)+'%';
+  document.getElementById('d-'+i).classList.remove('active');
  }
- document.getElementById(`d-${lastDigit}`)?.classList.add('active');
- document.getElementById('cursor').style.left=`calc(${(lastDigit/9)*100}% - 6px)`;
+ document.getElementById('d-'+last)?.classList.add('active');
+ document.getElementById('cursor').style.left=`calc(${(last/9)*100}% - 8px)`;
+ document.getElementById('lastD').innerText=last;
+ document.getElementById('liveTick').innerText=tick.toFixed(2);
+ document.getElementById('bal').innerText=BAL;
+ localStorage.setItem('bal',BAL);
 }
 
-setInterval(()=>{
- tickPrice+=(Math.random()-0.5)*1.8;
- document.getElementById('liveTick').innerText=tickPrice.toFixed(2);
- lastDigit=Math.floor(Math.random()*10);
- document.getElementById('lastDigit').innerText=lastDigit;
- history.push(lastDigit); prices.push(tickPrice);
- if(history.length>200) history.shift();
- if(prices.length>60) prices.shift();
- updateAnalysis(); drawChart();
-},1000);
+function load(){
+ let bets=JSON.parse(localStorage.getItem('bets')||'[]');
+ document.getElementById('buyCount').innerText=bets.length?`(${bets.length} buys)`:'';
+ document.getElementById('res').innerHTML=bets.map(b=>`<div class="ri ${b.r=='WIN'?'win':'loss'}"><span>${b.bot?'<b style="color:#ff9500">[BOT]</b> ':''}${b.c} D:${b.d}</span><span style="color:${b.r=='WIN'?'#00e676':'#ff3d57'};font-weight:700">${b.r=='WIN'?'+'+b.p:b.p}</span></div>`).join('')||'<small style="color:#555">No trades yet - turn on a bot</small>';
+}
+function save(b){let a=JSON.parse(localStorage.getItem('bets')||'[]'); a.unshift(b); localStorage.setItem('bets',JSON.stringify(a.slice(0,80)))}
 
-function updateBal(){document.getElementById('bal').innerText=USER_BAL; localStorage.setItem('bal',USER_BAL)}
-function saveLocal(b){let a=JSON.parse(localStorage.getItem('bets')||'[]');a.unshift(b);localStorage.setItem('bets',JSON.stringify(a.slice(0,50)))}
-function loadAll(){let bets=JSON.parse(localStorage.getItem('bets')||'[]'); document.getElementById('results').innerHTML=bets.map(b=>`<div class="r-item ${b.result==='WIN'?'win':'loss'}"><span>${b.choice} D:${b.digit}</span><span style="color:${b.result==='WIN'?'#00e676':'#ff3d57'};font-weight:700">${b.result==='WIN'?'+'+b.profit:b.profit}</span></div>`).join('');}
-function getPayout(th){return (th===1||th===8)?1.12:1.9}
+function doTrade(type,stake,isBot,botName){
+ if(BAL<stake){ if(isBot){ toggleBot(botName); toggleOBot(botName);} return false;}
+ let d=last; let win=(type=='EVEN'&&d%2==0)||(type=='ODD'&&d%2==1);
+ let pay=1.9; BAL-=stake; if(win) BAL+=stake*pay;
+ let profit=win?Math.round(stake*(pay-1)):-stake;
+ save({c:type,d:d,r:win?'WIN':'LOSS',p:profit,bot:isBot});
+ // martingale logic
+ if(isBot && bots[botName]){
+  if(win) botStakes[botName]=parseInt(document.getElementById('stake').value);
+  else botStakes[botName]=Math.min(botStakes[botName]*2, BAL);
+ }
+ upd(); load(); pulse();
+ return win;
+}
+function doTradeOver(type,th,stake,isBot,botName){
+ if(BAL<stake){ if(isBot){toggleOBot(botName); toggleBot(botName);} return false;}
+ let d=last; let win=type=='OVER'?d>th:d<th; let pay=1.12;
+ BAL-=stake; if(win) BAL+=stake*pay;
+ let profit=win?Math.round(stake*(pay-1)):-stake;
+ save({c:`${type} ${th}`,d:d,r:win?'WIN':'LOSS',p:profit,bot:isBot});
+ if(isBot && obots[botName]){
+  if(win) obotStakes[botName]=parseInt(document.getElementById('stake').value);
+  else obotStakes[botName]=Math.min(obotStakes[botName]*2, BAL);
+ }
+ upd(); load(); pulse();
+ return win;
+}
+
+function pulse(){let el=document.getElementById('lastD'); el.classList.add('pulse'); setTimeout(()=>el.classList.remove('pulse'),300)}
+
+function manual(t){doTrade(t,parseInt(document.getElementById('stake').value),false)}
+function manualOver(t,th){doTradeOver(t,th,parseInt(document.getElementById('stake').value),false)}
 
 function toggleBot(n){
  bots[n]=!bots[n];
- document.getElementById(n+'Status').innerText=bots[n]?'ON':'OFF';
- document.getElementById(n+'Status').className=bots[n]?'status on':'status off';
- document.getElementById(n+'Btn').className=bots[n]?'toggle active':'toggle';
- if(bots[n]) intervals[n]=setInterval(()=>tradeDigit(Math.random()>0.5?'EVEN':'ODD',true,n), n==='agg'?2000:n==='mart'?4000:6000);
- else clearInterval(intervals[n]);
+ let s=document.getElementById(n=='safe'?'s1':n=='mart'?'s2':'s3');
+ let b=document.getElementById(n=='safe'?'b1':n=='mart'?'b2':'b3');
+ s.innerText=bots[n]?'BUYING...':'OFF'; s.className=bots[n]?'on':'off'; b.className=bots[n]?'tog on':'tog';
+ botStakes[n]=parseInt(document.getElementById('stake').value);
+ if(bots[n]){
+  iv[n]=setInterval(()=>{
+   let type=Math.random()>0.5?'EVEN':'ODD';
+   let stake=n=='agg'?Math.floor(Math.random()*100)+50:botStakes[n];
+   doTrade(type,stake,true,n);
+  }, n=='agg'?1500:n=='mart'?2500:3000);
+ } else clearInterval(iv[n]);
 }
-function toggleOverBot(n){
- overBots[n]=!overBots[n];
- document.getElementById(n+'Status').innerText=overBots[n]?'ON':'OFF';
- document.getElementById(n+'Status').className=overBots[n]?'status on':'status off';
- document.getElementById(n+'Btn').className=overBots[n]?'toggle active':'toggle';
- if(overBots[n]) overIntervals[n]=setInterval(()=>{let t=Math.random()>0.5?'OVER':'UNDER'; tradeOverUnder(t,t==='OVER'?1:8,true,n)}, n==='over3'?2000:n==='over2'?4000:6000);
- else clearInterval(overIntervals[n]);
+function toggleOBot(n){
+ obots[n]=!obots[n];
+ let s=document.getElementById(n=='over1'?'os1':n=='over2'?'os2':'os3');
+ let b=document.getElementById(n=='over1'?'ob1':n=='over2'?'ob2':'ob3');
+ s.innerText=obots[n]?'BUYING...':'OFF'; s.className=obots[n]?'on':'off'; b.className=obots[n]?'tog on':'tog';
+ obotStakes[n]=parseInt(document.getElementById('stake').value);
+ if(obots[n]){
+  oiv[n]=setInterval(()=>{
+   let type=Math.random()>0.5?'OVER':'UNDER';
+   let th=type=='OVER'?1:8;
+   let stake=n=='over3'?Math.floor(Math.random()*100)+50:obotStakes[n];
+   doTradeOver(type,th,stake,true,n);
+  }, n=='over3'?1500:n=='over2'?2500:3000);
+ } else clearInterval(oiv[n]);
 }
 
-async function tradeDigit(type,isBot=false,bn=''){
- let stake=parseInt(document.getElementById('stakeInput').value); if(stake>USER_BAL){if(isBot)toggleBot(bn);return;}
- let d=lastDigit; let win=(type==='EVEN'&&d%2===0)||(type==='ODD'&&d%2===1); let payout=1.9;
- USER_BAL-=stake; if(win) USER_BAL+=stake*payout; updateBal();
- saveLocal({choice:type,digit:d,result:win?'WIN':'LOSS',profit:win?Math.round(stake*0.9):-stake}); loadAll();
-}
-async function tradeOverUnder(type,th,isBot=false,bn=''){
- let stake=parseInt(document.getElementById('stakeInput').value); if(stake>USER_BAL){if(isBot)toggleOverBot(bn);return;}
- let d=lastDigit; let win=type==='OVER'?d>th:d<th; let payout=getPayout(th);
- USER_BAL-=stake; if(win) USER_BAL+=stake*payout; updateBal();
- saveLocal({choice:`${type} ${th}`,digit:d,result:win?'WIN':'LOSS',profit:win?Math.round(stake*(payout-1)):-stake}); loadAll();
-}
-updateBal(); loadAll(); drawChart();
+// live tick engine
+setInterval(()=>{
+ tick+=(Math.random()-0.5)*2.5;
+ last=Math.floor(Math.random()*10);
+ hist.push(last); prices.push(tick);
+ if(hist.length>200) hist.shift();
+ if(prices.length>60) prices.shift();
+ upd(); draw();
+},1000);
+
+upd(); load(); draw();
 </script>
 </body>
 </html>
