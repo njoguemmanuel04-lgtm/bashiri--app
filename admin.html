@@ -1,112 +1,183 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BASHIRI HQ - FULL ADMIN</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BASHIRI HQ v2 - UPGRADED</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>*{margin:0;padding:0;box-sizing:border-box;font-family:Space Grotesk,system-ui}body{background:#04120f;color:#fff;padding:10px}
-.top{background:#121212;border:1px solid #222;border-radius:16px;padding:14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.card{background:#121212;border:1px solid #222;border-radius:16px;padding:14px;margin-bottom:10px}
-.big{font-size:26px;font-weight:900}.g{color:#00e676}.r{color:#ff3d57}.y{color:#ffb300}.b{color:#29b6f6}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
-.sm{font-size:11px;color:#888}.row{padding:8px 10px;background:#0f0f0f;border-radius:8px;margin-bottom:5px;display:flex;justify-content:space-between;font-size:12px;border-left:3px solid #333}
-.win{border-left-color:#00e676}.loss{border-left-color:#ff3d57}.dep{border-left-color:#ffb300}.with{border-left-color:#29b6f6}
-.btn{background:#222;color:#fff;border:0;padding:8px 12px;border-radius:8px;font-weight:700;cursor:pointer}
-.btnP{background:#00e676;color:#000}.btnB{background:#29b6f6;color:#000}
-.tab{padding:10px 16px;border-radius:10px;border:1px solid #222;background:#121212;color:#888;font-weight:700;cursor:pointer}
-.tab.active{background:#fff;color:#000}
-input{background:#000;border:1px solid #333;color:#fff;padding:8px;border-radius:8px}
-</style></head><body>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
+body{background:#0a0a0a;color:#fff;padding:12px;padding-bottom:100px}
+.header{background:#151515;border:1px solid #222;border-radius:18px;padding:14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.card{border-radius:16px;padding:14px;background:#151515;border:1px solid #222}
+.card.house{border-color:#00e676;background:#0e1a12}
+.card.dep{border-color:#ffb300;background:#1a160a}
+.card.with{border-color:#00aaff;background:#0a141a}
+.val{font-size:30px;font-weight:900;margin:4px 0}
+.val.small{font-size:20px}
+.label{font-size:11px;color:#888;letter-spacing:0.5px}
+.sub{font-size:11px;color:#666;margin-top:4px}
+.btn{border-radius:12px;padding:10px 14px;border:1px solid #333;font-weight:800;cursor:pointer}
+.btn-white{background:#fff;color:#000}
+.btn-green{background:#00e676;color:#000;border:0}
+.btn-red{background:#ff3040;color:#fff;border:0}
+.tabs{background:#151515;border-radius:16px;padding:6px;display:flex;gap:6px;overflow-x:auto;margin-bottom:12px;border:1px solid #222}
+.tabs button{padding:10px 16px;border-radius:12px;border:0;background:transparent;color:#888;font-weight:700;white-space:nowrap;cursor:pointer}
+.tabs button.active{background:#fff;color:#000}
+.row{padding:10px;background:#1c1c1c;border-radius:10px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;font-size:12px;border-left:4px solid #333}
+.row.win{border-left-color:#00e676}.row.loss{border-left-color:#ff3040}
+.row.depRow{border-left-color:#ffb300}.row.withRow{border-left-color:#00aaff}
+.search{width:100%;background:#1e1e1e;border:1px solid #333;border-radius:12px;padding:12px;color:#fff;margin-bottom:10px}
+@media(max-width:700px){.grid3{grid-template-columns:1fr 1fr}.val{font-size:24px}}
+</style>
+</head>
+<body>
 
-<div class="top"><div><b style="font-size:18px">🏦 BASHIRI HQ</b><br><small id="status" class="b">● LIVE CLOUD</small> <small class="sm" id="time"></small></div><div style="text-align:right"><button class="btn" onclick="loadAll()">🔄 REFRESH</button><br><small class="sm">Embu • <span id="sup">Supabase OK</span></small></div></div>
+<div class="header">
+<div>
+<h2>🏦 BASHIRI HQ v2</h2>
+<div style="color:#00e676;font-size:12px;font-weight:700" id="live">● LIVE 0 bets</div>
+<div style="color:#888;font-size:11px" id="time">-</div>
+</div>
+<div style="display:flex;gap:6px">
+<button class="btn btn-white" onclick="load()">🔄 REFRESH</button>
+<button class="btn" onclick="location.href='/'">🎮 Game</button>
+</div>
+</div>
 
 <div class="grid3">
-<div class="card" style="background:linear-gradient(135deg,#0a2a1f,#121212);border-color:#00e67655"><small class="sm">HOUSE PROFIT (Your Money)</small><div class="big g" id="house">KES 0</div><small class="sm">-SUM(player_profit)</small><br><small class="sm" id="hSub">0 bets</small></div>
-<div class="card" style="background:linear-gradient(135deg,#2a1f0a,#121212);border-color:#ffb30055"><small class="sm">M-PESA DEPOSITS</small><div class="big y" id="deps">KES 0</div><small class="sm">Total in</small><br><small class="sm" id="dSub">0 deps</small></div>
-<div class="card" style="background:linear-gradient(135deg,#0f1a2a,#121212);border-color:#29b6f655"><small class="sm">WITHDRAWALS PENDING</small><div class="big b" id="withs">KES 0</div><small class="sm">To pay out</small><br><small class="sm" id="wSub">0 pending</small></div>
+<div class="card house">
+<div class="label">HOUSE PROFIT (Your Money)</div>
+<div class="val" style="color:#00e676" id="house">KES 0</div>
+<div class="sub" id="houseSub">-SUM(player_profit) • 0 bets</div>
 </div>
-
-<div class="grid">
-<div class="card"><small class="sm">TOTAL VOLUME</small><br><b id="vol">KES 0</b><br><small class="sm">Stake bet</small></div>
-<div class="card"><small class="sm">REAL WIN RATE</small><br><b id="wr">0%</b> <small class="sm">vs 70% set</small><br><small class="sm">Players winning?</small></div>
-<div class="card"><small class="sm">NET CASH</small><br><b id="net" class="g">KES 0</b><br><small class="sm">Deposits - Withdrawals + House</small></div>
-<div class="card"><small class="sm">ACTIVE USERS</small><br><b id="users">0</b><br><small class="sm">Profiles</small></div>
+<div class="card dep">
+<div class="label">M-PESA DEPOSITS</div>
+<div class="val" style="color:#ffb300" id="depTotal">KES 0</div>
+<div class="sub" id="depCount">Total in • 0 deposits</div>
 </div>
-
-<div class="card"><div style="display:flex;gap:6px;overflow:auto"><button class="tab active" onclick="showTab('bets')" id="t-bets">🎲 Bets</button><button class="tab" onclick="showTab('dep')" id="t-dep">💰 Deposits</button><button class="tab" onclick="showTab('with')" id="t-with">💸 Withdrawals</button><button class="tab" onclick="showTab('users')" id="t-users">👥 Users</button><button class="tab" onclick="showTab('bots')" id="t-bots">🤖 Bot Stats</button></div>
-
-<div id="view-bets" style="margin-top:12px"><div style="display:flex;justify-content:space-between;align-items:center"><b>LIVE BETS (200 latest)</b><small class="sm">Player profit + = player won</small></div><div id="betsList" style="margin-top:8px"></div></div>
-
-<div id="view-dep" style="display:none;margin-top:12px"><b>M-PESA DEPOSITS</b><div id="depList" style="margin-top:8px"></div></div>
-
-<div id="view-with" style="display:none;margin-top:12px"><div style="display:flex;justify-content:space-between"><b>WITHDRAWALS</b><button class="btn btnB" onclick="approveAll()">Approve Pending</button></div><div id="withList" style="margin-top:8px"></div></div>
-
-<div id="view-users" style="display:none;margin-top:12px"><b>USERS / PROFILES</b><div id="userList" style="margin-top:8px"></div></div>
-
-<div id="view-bots" style="display:none;margin-top:12px">
-<div class="grid"><div class="card"><small class="sm">SAFE 70% 1.30x over1</small><br><b id="p1" class="g">KES 0</b><br><small class="sm" id="c1">0 trades</small></div><div class="card"><small class="sm">MART 55% over2</small><br><b id="p2">KES 0</b><br><small class="sm" id="c2">0 trades</small></div><div class="card"><small class="sm">AGG 40% over3</small><br><b id="p3">KES 0</b><br><small class="sm" id="c3">0 trades</small></div><div class="card"><small class="sm">EVEN/ODD 30% 1.9x</small><br><b id="p4">KES 0</b><br><small class="sm" id="c4">0 trades</small></div></div>
+<div class="card with">
+<div class="label">WITHDRAWALS PENDING</div>
+<div class="val" style="color:#00aaff" id="withTotal">KES 0</div>
+<div class="sub" id="withCount">To pay out • 0 pending</div>
 </div>
 </div>
 
-<div class="card"><small class="sm">QUICK SQL (Copy to Supabase SQL Editor for reports)</small><br><textarea id="sql" style="width:100%;background:#000;color:#0f0;border:1px solid #222;border-radius:8px;padding:8px;font-size:10px;height:70px" readonly>SELECT SUM(-player_profit) as house_profit, COUNT(*) as bets FROM bets;
-SELECT SUM(amount) as total_deposits FROM deposits WHERE status='completed';
-SELECT SUM(amount) as pending_withdraw FROM withdrawals WHERE status='pending';</textarea></div>
+<div class="grid2">
+<div class="card"><div class="label">TOTAL VOLUME</div><div class="val small" id="vol">KES 0</div><div class="sub">Stake bet</div></div>
+<div class="card"><div class="label">REAL WIN RATE</div><div class="val small" id="winRate">0% vs 48% set</div><div class="sub" id="winSub">Players winning?</div></div>
+<div class="card"><div class="label">NET CASH</div><div class="val small" style="color:#00e676" id="net">KES 0</div><div class="sub">Deposits - Withdrawals + House</div></div>
+<div class="card"><div class="label">ACTIVE USERS</div><div class="val small" id="usersCount">0</div><div class="sub">Profiles • Safe WR 48/60/52</div></div>
+</div>
+
+<div class="card" style="margin-bottom:12px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><b>⚙️ HOUSE CONTROLS</b><small style="color:#888">Safe - cannot drain</small></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap">
+<div style="flex:1"><small>EVEN/ODD WR</small><input id="wrEven" class="search" style="margin:0" value="0.48" type="number" step="0.01"></div>
+<div style="flex:1"><small>OVER1 WR</small><input id="wrOver" class="search" style="margin:0" value="0.60" type="number" step="0.01"></div>
+<div style="flex:1"><small>UNDER8 WR</small><input id="wrUnder" class="search" style="margin:0" value="0.52" type="number" step="0.01"></div>
+</div>
+<div style="font-size:10px;color:#ffb300;margin-top:6px">These control new bets only. House edge = 20-28% with these. Never set >0.70 or house drains!</div>
+</div>
+
+<div class="tabs">
+<button class="active" id="t-bets" onclick="tab('bets')">🎲 Bets</button>
+<button id="t-deposits" onclick="tab('deposits')">💰 Deposits</button>
+<button id="t-withdrawals" onclick="tab('withdrawals')">💸 Withdrawals</button>
+<button id="t-users" onclick="tab('users')">👥 Users</button>
+</div>
+
+<input id="searchInp" class="search" placeholder="Search phone, digit, choice..." oninput="render()">
+
+<div style="display:flex;justify-content:space-between;margin-bottom:8px">
+<h3 id="title">LIVE BETS (200 latest)</h3><small id="playerInfo" style="color:#888">Player profit + = player won</small>
+</div>
+<div id="list"></div>
 
 <script>
 const SUPA_URL="https://hkhqbtyyqgvaktamilxs.supabase.co";
 const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg";
-const sb=window.supabase.createClient(SUPA_URL,SUPA_KEY);
-
-function showTab(n){
- ['bets','dep','with','users','bots'].forEach(k=>{
-  document.getElementById('view-'+k).style.display=k==n?'block':'none';
-  document.getElementById('t-'+k).className=k==n?'tab active':'tab';
+const supa=window.supabase.createClient(SUPA_URL,SUPA_KEY);
+let allBets=[], allUsers=[], curTab='bets';
+async function load(){
+ document.getElementById('time').innerText=new Date().toLocaleString() + ' • Embu • OK';
+ let {data:bets} = await supa.from('bets').select('*').order('created_at',{ascending:false}).limit(300);
+ let {data:users} = await supa.from('users').select('*').order('balance',{ascending:false});
+ allBets=bets||[]; allUsers=users||[];
+ let house=0, vol=0, wins=0, cnt=0, dep=0, depC=0, withT=0;
+ allBets.forEach(b=>{
+  if(['BOT','TRADE','OVER_UNDER'].includes(b.type)){
+   let profit = b.win ? (b.payout-b.stake) : -b.stake;
+   house += -profit; vol += b.stake||0; if(b.win) wins++; cnt++;
+  }
+  if(b.type==='DEPOSIT'){ dep+=b.amount||0; depC++; }
+  if(b.type==='WITHDRAW'){ withT+=b.amount||0; }
  });
+ document.getElementById('live').innerText='● LIVE '+allBets.length+' bets • '+allUsers.length+' users';
+ document.getElementById('house').innerText='KES '+house;
+ document.getElementById('houseSub').innerText='-SUM(player_profit) • '+cnt+' bets';
+ document.getElementById('depTotal').innerText='KES '+dep;
+ document.getElementById('depCount').innerText='Total in • '+depC+' deposits';
+ document.getElementById('withTotal').innerText='KES '+withT;
+ document.getElementById('withCount').innerText='To pay out • 0 pending / '+withT+' total';
+ document.getElementById('vol').innerText='KES '+vol;
+ document.getElementById('winRate').innerText=(cnt? (wins/cnt*100).toFixed(1):0)+'% vs '+Math.round(parseFloat(document.getElementById('wrEven').value)*100)+'% set';
+ document.getElementById('winSub').innerText= (wins/cnt > 0.6 ? '⚠️ High - lower WR!' : 'Players winning? Safe');
+ document.getElementById('net').innerText='KES '+(dep - withT + house);
+ document.getElementById('usersCount').innerText=allUsers.length;
+ render();
 }
-
-async function loadAll(){
- document.getElementById('status').innerText='⏳ Loading...';
- document.getElementById('time').innerText=new Date().toLocaleTimeString();
- try{
-  // BETS
-  const {data:bets,error:be} = await sb.from('bets').select('*').order('created_at',{ascending:false}).limit(200);
-  if(be) throw be;
-  let house=0, vol=0, wins=0, g={over1:0,over2:0,over3:0,evenodd:0}, gc={over1:0,over2:0,over3:0,evenodd:0};
-  bets.forEach(b=>{
-   house+=-b.player_profit||0; vol+=b.stake||0; if(b.result=='WIN') wins++;
-   let k=b.bot_name;
-   if(k=='over1'){g.over1+=-b.player_profit; gc.over1++}
-   else if(k=='over2'){g.over2+=-b.player_profit; gc.over2++}
-   else if(k=='over3'){g.over3+=-b.player_profit; gc.over3++}
-   else {g.evenodd+=-b.player_profit; gc.evenodd++}
-  });
-  document.getElementById('house').innerText='KES '+house;
-  document.getElementById('house').className=house>=0?'big g':'big r';
-  document.getElementById('hSub').innerText=bets.length+' bets';
-  document.getElementById('vol').innerText='KES '+vol;
-  document.getElementById('wr').innerText=bets.length?(wins/bets.length*100).toFixed(1)+'%':'0%';
-  document.getElementById('p1').innerText='KES '+g.over1; document.getElementById('c1').innerText=gc.over1+' trades';
-  document.getElementById('p2').innerText='KES '+g.over2; document.getElementById('c2').innerText=gc.over2+' trades';
-  document.getElementById('p3').innerText='KES '+g.over3; document.getElementById('c3').innerText=gc.over3+' trades';
-  document.getElementById('p4').innerText='KES '+g.evenodd; document.getElementById('c4').innerText=gc.evenodd+' trades';
-  document.getElementById('betsList').innerHTML=bets.map(b=>`<div class="row ${b.result=='WIN'?'win':'loss'}"><span>${new Date(b.created_at).toLocaleTimeString()} [${b.bot_name}] ${b.choice} D:${b.digit} ${b.result}</span><span style="font-weight:800;color:${b.result=='WIN'?'#00e676':'#ff3d57'}">${b.player_profit>0?'+'+b.player_profit:b.player_profit}</span></div>`).join('')||'<small>No bets yet</small>';
-
-  // DEPOSITS
-  let depTotal=0; try{const {data:deps}=await sb.from('deposits').select('*').order('created_at',{ascending:false}).limit(100); if(deps){depTotal=deps.reduce((s,x)=>s+(x.amount||0),0); document.getElementById('deps').innerText='KES '+depTotal; document.getElementById('dSub').innerText=deps.length+' deposits'; document.getElementById('depList').innerHTML=deps.map(d=>`<div class="row dep"><span>${new Date(d.created_at).toLocaleString()} ${d.phone||d.user_id||''} ${d.status||''}</span><b class="y">KES ${d.amount}</b></div>`).join('');} }catch(e){document.getElementById('depList').innerHTML='<small class="sm">No deposits table or empty - '+e.message+'</small>'}
-
-  // WITHDRAWALS
-  let withTotal=0; try{const {data:withs}=await sb.from('withdrawals').select('*').order('created_at',{ascending:false}).limit(100); if(withs){let pend=withs.filter(w=>w.status=='pending'); withTotal=pend.reduce((s,x)=>s+(x.amount||0),0); document.getElementById('withs').innerText='KES '+withTotal; document.getElementById('wSub').innerText=pend.length+' pending / '+withs.length+' total'; document.getElementById('withList').innerHTML=withs.map(w=>`<div class="row with"><span>${new Date(w.created_at).toLocaleString()} ${w.phone||''} <small>${w.status}</small></span><b>KES ${w.amount}</b></div>`).join('');} }catch(e){document.getElementById('withList').innerHTML='<small class="sm">No withdrawals yet</small>'}
-
-  // PROFILES
-  try{const {data:profs,count}=await sb.from('profiles').select('*',{count:'exact'}).limit(50); document.getElementById('users').innerText=count||profs?.length||0; document.getElementById('userList').innerHTML=profs?.map(p=>`<div class="row"><span>${p.phone||p.id?.slice(0,8)} • Bal: ${p.balance||0}</span><small>${new Date(p.created_at||Date.now()).toLocaleDateString()}</small></div>`).join('')||'<small>No users</small>'; }catch(e){document.getElementById('users').innerText='-';}
-
-  // NET
-  let net = depTotal + house - withTotal;
-  document.getElementById('net').innerText='KES '+net;
-  document.getElementById('status').innerText='● LIVE '+bets.length+' bets';
-  document.getElementById('sup').innerText='OK';
- }catch(err){
-  document.getElementById('status').innerText='● ERROR: '+err.message.slice(0,60);
-  document.getElementById('sup').innerText='REST DOWN - Table Editor still works';
-  document.getElementById('betsList').innerHTML='<div style="color:#ff3d57">Supabase REST still in outage - use Table Editor tab in Supabase dashboard to see bets. Your data is safe. Wait 30 mins and refresh.<br><br>Error: '+err.message+'</div>';
+function tab(t){
+ curTab=t;
+ document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
+ document.getElementById('t-'+t).classList.add('active');
+ render();
+}
+function render(){
+ let q=document.getElementById('searchInp').value.toLowerCase();
+ let html='';
+ if(curTab==='bets'){
+  document.getElementById('title').innerText='LIVE BETS ('+allBets.filter(b=>['BOT','TRADE','OVER_UNDER'].includes(b.type)).length+' latest)';
+  let list=allBets.filter(b=>['BOT','TRADE','OVER_UNDER'].includes(b.type)).filter(b=> (b.phone+b.choice+b.digit).toLowerCase().includes(q)).slice(0,120);
+  html=list.map(b=>{
+   let tm=new Date(b.created_at).toLocaleTimeString();
+   let profit=b.win ? (b.payout-b.stake) : -b.stake;
+   return `<div class="row ${b.win?'win':'loss'}"><span>${tm} [${(b.phone||'').slice(-4)}] ${b.choice} D:${b.digit} ${b.win?'WIN':'LOSS'} • ${b.type}</span><b style="color:${profit>=0?'#00e676':'#ff3040'}">${profit>0?'+':''}${profit}</b></div>`;
+  }).join('');
+ }else if(curTab==='deposits'){
+  document.getElementById('title').innerText='DEPOSITS';
+  let list=allBets.filter(b=>b.type==='DEPOSIT').filter(b=> (b.phone+'').includes(q));
+  html=list.map(b=>`<div class="row depRow"><span>${new Date(b.created_at).toLocaleString()} • ${b.phone} • ${b.choice}</span><b style="color:#ffb300">KES ${b.amount}</b></div>`).join('')||'No deposits';
+ }else if(curTab==='withdrawals'){
+  document.getElementById('title').innerText='WITHDRAWALS';
+  let list=allBets.filter(b=>b.type==='WITHDRAW').filter(b=> (b.phone+'').includes(q));
+  html=list.map(b=>`<div class="row withRow"><span>${new Date(b.created_at).toLocaleString()} • ${b.phone} • GET ${b.choice}</span><div><b>KES ${b.amount}</b> <button class="btn btn-green" style="padding:4px 8px;font-size:10px" onclick="approveWithdraw('${b.id}','${b.phone}',${b.amount})">PAID</button></div></div>`).join('')||'No withdrawals';
+ }else if(curTab==='users'){
+  document.getElementById('title').innerText='USERS ('+allUsers.length+')';
+  let list=allUsers.filter(u=> (u.phone+'').includes(q));
+  html=list.map(u=>`<div class="row"><span>📱 ${u.phone}<br><small>BAL KES ${u.balance} • Wager ${u.wager_remaining}/${u.max_wager} • Bonus ${u.last_bonus_date||'none'}</small></span><div style="display:flex;gap:4px"><button class="btn btn-green" style="padding:4px 8px;font-size:10px" onclick="addBalance('${u.phone}',20)">+20</button><button class="btn btn-red" style="padding:4px 8px;font-size:10px" onclick="banUser('${u.phone}')">BAN</button></div></div>`).join('');
  }
+ document.getElementById('list').innerHTML=html||'<div style="color:#666;text-align:center;padding:20px">No data</div>';
 }
-loadAll(); setInterval(loadAll,8000);
-</script></body></html>
+async function approveWithdraw(id,phone,amt){
+ if(!confirm('Mark PAID for '+phone+' KES '+amt+'?')) return;
+ await supa.from('bets').delete().eq('id',id);
+ alert('Marked paid'); load();
+}
+async function addBalance(phone,amt){
+ let u=allUsers.find(x=>x.phone===phone);
+ if(!u) return;
+ let newBal=(u.balance||0)+amt;
+ await supa.from('users').update({balance:newBal}).eq('phone',phone);
+ alert('Added '+amt+' to '+phone); load();
+}
+async function banUser(phone){
+ if(!confirm('Ban '+phone+'? Sets balance 0')) return;
+ await supa.from('users').update({balance:0,wager_remaining:0}).eq('phone',phone);
+ alert('Banned'); load();
+}
+load(); setInterval(load,7000);
+</script>
+</body>
+</html>
