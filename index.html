@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BASHIRI v7.2 - FINAL</title>
+<title>BASHIRI v8.1 - GAME ONLY</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
@@ -34,8 +34,8 @@ body{background:#04120f;color:#fff;padding:10px;padding-bottom:80px}
 
 <div id="login" class="login">
 <div class="login-box">
-<h2>BASHIRI v7.2</h2>
-<p style="font-size:12px;color:#aaa;margin:8px 0">BOTS AUTO-BUY - 0 FREE - 5 BOB<br><b style="color:#00e676">Deposit 20 to start + get 5 bonus</b></p>
+<h2>BASHIRI v8.1 - GAME ONLY</h2>
+<p style="font-size:12px;color:#aaa;margin:8px 0">MARTINGALE EVEN/ODD ADDED • 0 FREE • 5 BOB<br><b style="color:#00e676">Deposit 20 to start + get 5 bonus</b></p>
 <input id="phoneInp" class="inp" style="width:100%;margin-bottom:10px" placeholder="07XXXXXXXX" type="tel">
 <button class="btn be" style="width:100%" onclick="doLogin()">ENTER - PLAY NOW</button>
 </div>
@@ -57,8 +57,8 @@ body{background:#04120f;color:#fff;padding:10px;padding-bottom:80px}
 <div style="font-size:10px;color:#aaa" id="wagerMsg">Deposit 20 get +5</div>
 </div>
 
-<div class="card" style="background:#0e2a24;border:1px solid #1a4a3a;border-radius:16px;padding:12px;margin-bottom:10px">
-<div style="display:flex;justify-content:space-between"><small style="color:#00e676">● LIVE CLOUD</small><small>6/7/8/8 - 5 BOB</small></div>
+<div style="background:#0e2a24;border:1px solid #1a4a3a;border-radius:16px;padding:12px;margin-bottom:10px">
+<div style="display:flex;justify-content:space-between"><small style="color:#00e676">● LIVE CLOUD - HOUSE SAFE 23%</small><small>6/7/8/8 - 5 BOB</small></div>
 <div class="digits" id="digitBar"></div>
 <canvas id="chart" width="320" height="80"></canvas>
 <div class="grid">
@@ -70,15 +70,16 @@ body{background:#04120f;color:#fff;padding:10px;padding-bottom:80px}
 </div>
 
 <div class="sec">
-<div class="bot-title">| EVEN / ODD BOTS - 50% WIN RATE</div>
+<div class="bot-title">| EVEN / ODD BOTS - 48% WIN - HOUSE SAFE</div>
 <div class="bot"><div><b>🛡️ Safe Bot</b><br><small style="color:#aaa">Low Risk • 3s • Fixed 5</small></div><button class="tog" id="tog-even-safe" onclick="toggleBot('EVEN','safe')">OFF</button></div>
+<div class="bot"><div><b>⚡ Martingale</b><br><small style="color:#aaa">Medium • 2.5s • 5→10→20→40→80</small></div><button class="tog" id="tog-even-mart" onclick="toggleBot('EVEN','mart')">OFF</button></div>
 <div class="bot"><div><b>🔥 Aggressive</b><br><small style="color:#aaa">High Risk • 1.5s • Random 5-20</small></div><button class="tog" id="tog-even-agg" onclick="toggleBot('EVEN','agg')">OFF</button></div>
 </div>
 
 <div class="sec">
-<div class="bot-title">| OVER 1 / UNDER 8 BOTS - 55% WIN RATE</div>
+<div class="bot-title">| OVER 1 / UNDER 8 BOTS - 60%/52% WIN</div>
 <div class="bot"><div><b>🛡️ Safe Bot</b><br><small style="color:#aaa">Low Risk • 3s</small></div><button class="tog" id="tog-ou-safe" onclick="toggleBot('OU','safe')">OFF</button></div>
-<div class="bot"><div><b>⚡ Martingale</b><br><small style="color:#aaa">Medium • 2.5s • Doubles on Loss</small></div><button class="tog" id="tog-ou-mart" onclick="toggleBot('OU','mart')">OFF</button></div>
+<div class="bot"><div><b>⚡ Martingale</b><br><small style="color:#aaa">Medium • 2.5s • 5→10→20→40→80</small></div><button class="tog" id="tog-ou-mart" onclick="toggleBot('OU','mart')">OFF</button></div>
 <div class="bot"><div><b>🔥 Aggressive</b><br><small style="color:#aaa">High • 1.5s</small></div><button class="tog" id="tog-ou-agg" onclick="toggleBot('OU','agg')">OFF</button></div>
 </div>
 
@@ -99,9 +100,10 @@ body{background:#04120f;color:#fff;padding:10px;padding-bottom:80px}
 const SUPABASE_URL="https://hkhqbtyyqgvaktamilxs.supabase.co";
 const SUPABASE_ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg";
 const supa=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON);
-const V6={MIN_DEPOSIT:20,BONUS:5,MIN_STAKE:5,PAYOUTS:{EVEN:8,ODD:8,OVER1:6,UNDER8:7},WR:{EVEN:0.50,ODD:0.50,OVER1:0.68,UNDER8:0.58},WAGER_MULT:5,MIN_WITHDRAW:50,WITHDRAW_FEE:2};
+// SAFE HOUSE - 23% edge - cannot drain
+const V6={MIN_DEPOSIT:20,BONUS:5,MIN_STAKE:5,PAYOUTS:{EVEN:8,ODD:8,OVER1:6,UNDER8:7},WR:{EVEN:0.48,ODD:0.48,OVER1:0.60,UNDER8:0.52},WAGER_MULT:5,MIN_WITHDRAW:50,WITHDRAW_FEE:2};
 let PHONE=localStorage.getItem('phone')||''; let BAL=0, wagerRemaining=0, maxWager=0, lastBonusDate='', hist=[];
-let activeBotInterval=null, activeBotId='', martStake=5;
+let activeBotInterval=null, activeBotId='', martStakeEven=5, martStakeOU=5;
 const bar=document.getElementById('digitBar'); const cv=document.getElementById('chart'),ctx=cv.getContext('2d');
 for(let i=0;i<10;i++){let d=document.createElement('div');d.innerHTML=`<div class="d-c" id="d-${i}">${i}</div><div class="d-p" id="p-${i}">0%</div>`;bar.appendChild(d)}
 function draw(){ctx.clearRect(0,0,cv.width,cv.height);ctx.strokeStyle='#00d09c';ctx.lineWidth=2;ctx.beginPath();let last=hist.slice(-30);last.forEach((h,i)=>{let x=i*(cv.width/30), y=cv.height - (h.d+1)*(cv.height/12); if(i==0)ctx.moveTo(x,y);else ctx.lineTo(x,y)});ctx.stroke();}
@@ -115,8 +117,8 @@ async function doLogin(){
   }
   BAL=data.balance; wagerRemaining=data.wager_remaining; maxWager=data.max_wager; lastBonusDate=data.last_bonus_date;
   document.getElementById('login').style.display='none'; document.getElementById('phoneShow').innerText=PHONE;
-  let {data:bets}=await supa.from('bets').select('*').eq('phone',PHONE).order('created_at',{ascending:false}).limit(80);
-  if(bets){hist=bets.filter(b=>b.digit!==null).map(b=>({d:b.digit,type:b.choice,stake:b.stake,payout:b.payout,win:b.win,bot:b.type==='BOT'})).reverse();}
+  let {data:bets}=await supa.from('bets').select('*').eq('phone',PHONE).order('created_at',{ascending:false}).limit(100);
+  if(bets){hist=bets.filter(b=>b.digit!==null && b.stake>0).map(b=>({d:b.digit,type:b.choice,stake:b.stake,payout:b.payout,win:b.win,bot:(b.type||'').includes('BOT')})).reverse();}
   upd();draw();
 }
 if(PHONE){document.getElementById('phoneInp').value=PHONE; doLogin();}
@@ -173,34 +175,48 @@ function manual(c){execTrade(c,parseInt(document.getElementById('stakeInp').valu
 function manualOver(t,th){execOver(t,th,parseInt(document.getElementById('stakeInp').value)||5,false)}
 function stopAllBots(){
   if(activeBotInterval) clearInterval(activeBotInterval); activeBotInterval=null;
-  document.querySelectorAll('.tog').forEach(b=>{if(b.id.startsWith('tog-')){b.classList.remove('on'); b.innerText='OFF';}}); activeBotId='';
+  document.querySelectorAll('.tog').forEach(b=>{if(b.id.startsWith('tog-')){b.classList.remove('on'); b.innerText='OFF';}});
+  activeBotId=''; martStakeEven=5; martStakeOU=5;
 }
 function toggleBot(cat,mode){
-  let id = cat==='EVEN'? (mode==='safe'?'tog-even-safe':'tog-even-agg') : (mode==='safe'?'tog-ou-safe':mode==='mart'?'tog-ou-mart':'tog-ou-agg');
+  let id = '';
+  if(cat==='EVEN'){
+    if(mode==='safe') id='tog-even-safe';
+    if(mode==='mart') id='tog-even-mart';
+    if(mode==='agg') id='tog-even-agg';
+  } else {
+    if(mode==='safe') id='tog-ou-safe';
+    if(mode==='mart') id='tog-ou-mart';
+    if(mode==='agg') id='tog-ou-agg';
+  }
   let btn=document.getElementById(id);
   if(activeBotId===id){ stopAllBots(); return; }
   stopAllBots(); activeBotId=id; btn.classList.add('on'); btn.innerText='BUYING';
-  let interval = mode==='agg'?1500: mode==='mart'?2500:3000; martStake=5;
+  let interval = mode==='agg'?1500: mode==='mart'?2500:3000;
+  martStakeEven=5; martStakeOU=5;
   doBotTick(cat,mode);
   activeBotInterval=setInterval(()=>doBotTick(cat,mode), interval);
 }
 async function doBotTick(cat,mode){
-  let stake = mode==='agg'? (5+Math.floor(Math.random()*4)*5) : mode==='mart'? martStake : 5;
+  let stake = 5;
+  if(mode==='safe') stake=5;
+  if(mode==='agg') stake=5+Math.floor(Math.random()*4)*5;
+  if(mode==='mart'){ stake = cat==='EVEN'? martStakeEven : martStakeOU; }
   let win=null;
   if(cat==='EVEN'){
-    let choice=Math.random()<0.5?'EVEN':'ODD'; win=await execTrade(choice,stake,true);
+    let choice=Math.random()<0.5?'EVEN':'ODD';
+    win=await execTrade(choice,stake,true);
+    if(mode==='mart'){ if(win===false) martStakeEven=Math.min(martStakeEven*2,80); else martStakeEven=5; }
   }else{
-    let isOver=Math.random()<0.5; if(isOver) win=await execOver('OVER','1',stake,true); else win=await execOver('UNDER','8',stake,true);
-    if(mode==='mart'){ if(win===false) martStake=Math.min(martStake*2,50); else martStake=5; }
+    let isOver=Math.random()<0.5;
+    if(isOver) win=await execOver('OVER','1',stake,true); else win=await execOver('UNDER','8',stake,true);
+    if(mode==='mart'){ if(win===false) martStakeOU=Math.min(martStakeOU*2,80); else martStakeOU=5; }
   }
 }
 async function clearHistory(){
   if(!confirm('Clear all results?')) return;
-  stopAllBots();
-  hist=[];
-  upd(); draw();
+  stopAllBots(); hist=[]; upd(); draw();
   document.getElementById('historyBox').innerHTML='<small style="color:#666">Cleared - ready for new bot runs</small>';
-  // clear from cloud too (keeps DEPOSIT/WITHDRAW)
   try{ await supa.from('bets').delete().eq('phone',PHONE).in('type',['BOT','TRADE','OVER_UNDER']); }catch(e){}
 }
 async function doDeposit(){
