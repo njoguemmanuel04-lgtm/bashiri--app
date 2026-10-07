@@ -1,183 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BASHIRI HQ v2 - UPGRADED</title>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>BASHIRI HQ v2.2 FIXED</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
-body{background:#0a0a0a;color:#fff;padding:12px;padding-bottom:100px}
-.header{background:#151515;border:1px solid #222;border-radius:18px;padding:14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
-.card{border-radius:16px;padding:14px;background:#151515;border:1px solid #222}
-.card.house{border-color:#00e676;background:#0e1a12}
-.card.dep{border-color:#ffb300;background:#1a160a}
-.card.with{border-color:#00aaff;background:#0a141a}
-.val{font-size:30px;font-weight:900;margin:4px 0}
-.val.small{font-size:20px}
-.label{font-size:11px;color:#888;letter-spacing:0.5px}
-.sub{font-size:11px;color:#666;margin-top:4px}
-.btn{border-radius:12px;padding:10px 14px;border:1px solid #333;font-weight:800;cursor:pointer}
-.btn-white{background:#fff;color:#000}
-.btn-green{background:#00e676;color:#000;border:0}
-.btn-red{background:#ff3040;color:#fff;border:0}
-.tabs{background:#151515;border-radius:16px;padding:6px;display:flex;gap:6px;overflow-x:auto;margin-bottom:12px;border:1px solid #222}
-.tabs button{padding:10px 16px;border-radius:12px;border:0;background:transparent;color:#888;font-weight:700;white-space:nowrap;cursor:pointer}
-.tabs button.active{background:#fff;color:#000}
-.row{padding:10px;background:#1c1c1c;border-radius:10px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;font-size:12px;border-left:4px solid #333}
-.row.win{border-left-color:#00e676}.row.loss{border-left-color:#ff3040}
-.row.depRow{border-left-color:#ffb300}.row.withRow{border-left-color:#00aaff}
-.search{width:100%;background:#1e1e1e;border:1px solid #333;border-radius:12px;padding:12px;color:#fff;margin-bottom:10px}
-@media(max-width:700px){.grid3{grid-template-columns:1fr 1fr}.val{font-size:24px}}
-</style>
-</head>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}body{background:#0a0a0a;color:#fff;padding:10px}.card{border-radius:16px;padding:12px;margin-bottom:8px;background:#1a1a1a;border:1px solid #333}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px} @media(min-width:600px){.grid3{grid-template-columns:1fr 1fr 1fr;display:grid;gap:8px}}.tab{display:flex;gap:6px;overflow-x:auto;margin:10px 0}.tab button{padding:10px 14px;border-radius:12px;border:1px solid #333;background:#1e1e1e;color:#aaa;font-weight:700;white-space:nowrap}.tab button.active{background:#fff;color:#000}.tog{border:1px solid #333;background:#fff;color:#000;padding:10px 16px;border-radius:12px;font-weight:800} </style></head>
 <body>
-
-<div class="header">
-<div>
-<h2>🏦 BASHIRI HQ v2</h2>
-<div style="color:#00e676;font-size:12px;font-weight:700" id="live">● LIVE 0 bets</div>
-<div style="color:#888;font-size:11px" id="time">-</div>
-</div>
-<div style="display:flex;gap:6px">
-<button class="btn btn-white" onclick="load()">🔄 REFRESH</button>
-<button class="btn" onclick="location.href='/'">🎮 Game</button>
-</div>
-</div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div><h2>🏦 BASHIRI HQ v2.2 FIXED</h2><small id="status" style="color:#00e6ff">Loading...</small><br><small id="time" style="color:#aaa"></small></div><button class="tog" onclick="load()">🔄 REFRESH</button></div>
 
 <div class="grid3">
-<div class="card house">
-<div class="label">HOUSE PROFIT (Your Money)</div>
-<div class="val" style="color:#00e676" id="house">KES 0</div>
-<div class="sub" id="houseSub">-SUM(player_profit) • 0 bets</div>
-</div>
-<div class="card dep">
-<div class="label">M-PESA DEPOSITS</div>
-<div class="val" style="color:#ffb300" id="depTotal">KES 0</div>
-<div class="sub" id="depCount">Total in • 0 deposits</div>
-</div>
-<div class="card with">
-<div class="label">WITHDRAWALS PENDING</div>
-<div class="val" style="color:#00aaff" id="withTotal">KES 0</div>
-<div class="sub" id="withCount">To pay out • 0 pending</div>
-</div>
+<div class="card" style="border-color:#00e676"><small>HOUSE PROFIT (Your Money)</small><div style="font-size:28px;font-weight:800;color:#00e676" id="house">KES 0</div><small id="houseSub">0 bets</small></div>
+<div class="card" style="border-color:#ffb300"><small>M-PESA DEPOSITS</small><div style="font-size:28px;font-weight:800;color:#ffb300" id="dep">KES 0</div><small id="depC">0</small></div>
+<div class="card" style="border-color:#00aaff"><small>WITHDRAWALS</small><div style="font-size:28px;font-weight:800;color:#00aaff" id="with">KES 0</div><small id="withC">0</small></div>
+<div class="card"><small>TOTAL VOLUME</small><div style="font-size:20px;font-weight:800" id="vol">KES 0</div><small>Stake bet</small></div>
+<div class="card"><small>REAL WIN RATE</small><div style="font-size:20px;font-weight:800" id="wr">0%</div><small id="wrSub">Safe</small></div>
+<div class="card"><small>NET CASH</small><div style="font-size:20px;font-weight:800;color:#00e676" id="net">KES 0</div><small>Dep - With + House</small></div>
 </div>
 
-<div class="grid2">
-<div class="card"><div class="label">TOTAL VOLUME</div><div class="val small" id="vol">KES 0</div><div class="sub">Stake bet</div></div>
-<div class="card"><div class="label">REAL WIN RATE</div><div class="val small" id="winRate">0% vs 48% set</div><div class="sub" id="winSub">Players winning?</div></div>
-<div class="card"><div class="label">NET CASH</div><div class="val small" style="color:#00e676" id="net">KES 0</div><div class="sub">Deposits - Withdrawals + House</div></div>
-<div class="card"><div class="label">ACTIVE USERS</div><div class="val small" id="usersCount">0</div><div class="sub">Profiles • Safe WR 48/60/52</div></div>
-</div>
+<div class="card"><h3>⚙️ HOUSE CONTROLS</h3><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px"><div><small>EVEN/ODD WR</small><input id="wrEven" value="0.48" style="width:100%;background:#222;color:#fff;border:1px solid #333;border-radius:8px;padding:8px"></div><div><small>OVER1 WR</small><input id="wrOver" value="0.60" style="width:100%;background:#222;color:#fff;border:1px solid #333;border-radius:8px;padding:8px"></div><div><small>UNDER8 WR</small><input id="wrUnder" value="0.52" style="width:100%;background:#222;color:#fff;border:1px solid #333;border-radius:8px;padding:8px"></div></div><small style="color:#ffb300">These control new bets only. Never set >0.70</small></div>
 
-<div class="card" style="margin-bottom:12px">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><b>⚙️ HOUSE CONTROLS</b><small style="color:#888">Safe - cannot drain</small></div>
-<div style="display:flex;gap:6px;flex-wrap:wrap">
-<div style="flex:1"><small>EVEN/ODD WR</small><input id="wrEven" class="search" style="margin:0" value="0.48" type="number" step="0.01"></div>
-<div style="flex:1"><small>OVER1 WR</small><input id="wrOver" class="search" style="margin:0" value="0.60" type="number" step="0.01"></div>
-<div style="flex:1"><small>UNDER8 WR</small><input id="wrUnder" class="search" style="margin:0" value="0.52" type="number" step="0.01"></div>
-</div>
-<div style="font-size:10px;color:#ffb300;margin-top:6px">These control new bets only. House edge = 20-28% with these. Never set >0.70 or house drains!</div>
-</div>
-
-<div class="tabs">
-<button class="active" id="t-bets" onclick="tab('bets')">🎲 Bets</button>
-<button id="t-deposits" onclick="tab('deposits')">💰 Deposits</button>
-<button id="t-withdrawals" onclick="tab('withdrawals')">💸 Withdrawals</button>
-<button id="t-users" onclick="tab('users')">👥 Users</button>
-</div>
-
-<input id="searchInp" class="search" placeholder="Search phone, digit, choice..." oninput="render()">
-
-<div style="display:flex;justify-content:space-between;margin-bottom:8px">
-<h3 id="title">LIVE BETS (200 latest)</h3><small id="playerInfo" style="color:#888">Player profit + = player won</small>
-</div>
-<div id="list"></div>
+<div class="tab"><button class="active" id="b-bets" onclick="setTab('bets')">🎲 Bets</button><button id="b-dep" onclick="setTab('dep')">💰 Deposits</button><button id="b-with" onclick="setTab('with')">💸 Withdrawals</button><button id="b-users" onclick="setTab('users')">👥 Users</button></div>
+<div class="card"><h3 id="tabTitle">LIVE BETS</h3><div id="list" style="margin-top:10px"></div></div>
+<pre id="debug" style="color:#666;font-size:10px;margin-top:10px;white-space:pre-wrap"></pre>
 
 <script>
-const SUPA_URL="https://hkhqbtyyqgvaktamilxs.supabase.co";
-const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg";
-const supa=window.supabase.createClient(SUPA_URL,SUPA_KEY);
-let allBets=[], allUsers=[], curTab='bets';
+const URL="https://hkhqbtyyqgvaktamilxs.supabase.co";
+const ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg";
+const supa=window.supabase.createClient(URL,ANON);
+let all=[], users=[], tab='bets';
 async function load(){
- document.getElementById('time').innerText=new Date().toLocaleString() + ' • Embu • OK';
- let {data:bets} = await supa.from('bets').select('*').order('created_at',{ascending:false}).limit(300);
- let {data:users} = await supa.from('users').select('*').order('balance',{ascending:false});
- allBets=bets||[]; allUsers=users||[];
- let house=0, vol=0, wins=0, cnt=0, dep=0, depC=0, withT=0;
- allBets.forEach(b=>{
-  if(['BOT','TRADE','OVER_UNDER'].includes(b.type)){
-   let profit = b.win ? (b.payout-b.stake) : -b.stake;
-   house += -profit; vol += b.stake||0; if(b.win) wins++; cnt++;
+ document.getElementById('time').innerText=new Date().toLocaleString();
+ document.getElementById('status').innerText='Fetching...';
+ let {data:bets, error} = await supa.from('bets').select('*').order('created_at',{ascending:false}).limit(500);
+ let {data:u} = await supa.from('users').select('*');
+ if(error){document.getElementById('debug').innerText=JSON.stringify(error,null,2); document.getElementById('status').innerText='ERROR: '+error.message; return;}
+ all=bets||[]; users=u||[];
+ document.getElementById('status').innerText='● LIVE '+all.length+' rows • '+users.length+' users • FIXED v2.2';
+ document.getElementById('debug').innerText='Sample row: '+JSON.stringify(all[0]||'no rows',null,2);
+ let house=0, vol=0, wins=0, cnt=0, dep=0, depC=0, withT=0, withC=0;
+ all.forEach(b=>{
+  // COUNT EVERY BET THAT HAS STAKE - this is the fix!
+  if(b.stake!=null && b.stake>0){
+    let profit = b.win? ((b.payout||0)-b.stake) : -b.stake;
+    house += -profit; vol+=Number(b.stake)||0; if(b.win) wins++; cnt++;
   }
-  if(b.type==='DEPOSIT'){ dep+=b.amount||0; depC++; }
-  if(b.type==='WITHDRAW'){ withT+=b.amount||0; }
+  if(b.amount!=null && (b.type||'').toUpperCase().includes('DEPOSIT')){dep+=Number(b.amount)||0; depC++;}
+  if(b.choice && b.choice.toString().toUpperCase().includes('DEPOSIT')){dep+=Number(b.amount)||0; depC++;}
+  if(b.amount!=null && (b.type||'').toUpperCase().includes('WITHDRAW')){withT+=Number(b.amount)||0; withC++;}
  });
- document.getElementById('live').innerText='● LIVE '+allBets.length+' bets • '+allUsers.length+' users';
  document.getElementById('house').innerText='KES '+house;
- document.getElementById('houseSub').innerText='-SUM(player_profit) • '+cnt+' bets';
- document.getElementById('depTotal').innerText='KES '+dep;
- document.getElementById('depCount').innerText='Total in • '+depC+' deposits';
- document.getElementById('withTotal').innerText='KES '+withT;
- document.getElementById('withCount').innerText='To pay out • 0 pending / '+withT+' total';
+ document.getElementById('houseSub').innerText=cnt+' bets counted (stake>0)';
+ document.getElementById('dep').innerText='KES '+dep;
+ document.getElementById('depC').innerText=depC+' deposits';
+ document.getElementById('with').innerText='KES '+withT;
+ document.getElementById('withC').innerText=withC+' withdrawals';
  document.getElementById('vol').innerText='KES '+vol;
- document.getElementById('winRate').innerText=(cnt? (wins/cnt*100).toFixed(1):0)+'% vs '+Math.round(parseFloat(document.getElementById('wrEven').value)*100)+'% set';
- document.getElementById('winSub').innerText= (wins/cnt > 0.6 ? '⚠️ High - lower WR!' : 'Players winning? Safe');
+ document.getElementById('wr').innerText=(cnt? (wins/cnt*100).toFixed(1):0)+'% vs 48% set';
+ document.getElementById('wrSub').innerText=wins+' wins / '+cnt;
  document.getElementById('net').innerText='KES '+(dep - withT + house);
- document.getElementById('usersCount').innerText=allUsers.length;
  render();
 }
-function tab(t){
- curTab=t;
- document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
- document.getElementById('t-'+t).classList.add('active');
- render();
-}
+function setTab(t){tab=t; document.querySelectorAll('.tab button').forEach(b=>b.classList.remove('active')); document.getElementById('b-'+t).classList.add('active'); render();}
 function render(){
- let q=document.getElementById('searchInp').value.toLowerCase();
  let html='';
- if(curTab==='bets'){
-  document.getElementById('title').innerText='LIVE BETS ('+allBets.filter(b=>['BOT','TRADE','OVER_UNDER'].includes(b.type)).length+' latest)';
-  let list=allBets.filter(b=>['BOT','TRADE','OVER_UNDER'].includes(b.type)).filter(b=> (b.phone+b.choice+b.digit).toLowerCase().includes(q)).slice(0,120);
-  html=list.map(b=>{
+ if(tab==='bets'){
+  document.getElementById('tabTitle').innerText='LIVE BETS ('+all.filter(b=>b.stake>0).length+')';
+  html=all.filter(b=>b.stake>0).slice(0,100).map(b=>{
    let tm=new Date(b.created_at).toLocaleTimeString();
-   let profit=b.win ? (b.payout-b.stake) : -b.stake;
-   return `<div class="row ${b.win?'win':'loss'}"><span>${tm} [${(b.phone||'').slice(-4)}] ${b.choice} D:${b.digit} ${b.win?'WIN':'LOSS'} • ${b.type}</span><b style="color:${profit>=0?'#00e676':'#ff3040'}">${profit>0?'+':''}${profit}</b></div>`;
-  }).join('');
- }else if(curTab==='deposits'){
-  document.getElementById('title').innerText='DEPOSITS';
-  let list=allBets.filter(b=>b.type==='DEPOSIT').filter(b=> (b.phone+'').includes(q));
-  html=list.map(b=>`<div class="row depRow"><span>${new Date(b.created_at).toLocaleString()} • ${b.phone} • ${b.choice}</span><b style="color:#ffb300">KES ${b.amount}</b></div>`).join('')||'No deposits';
- }else if(curTab==='withdrawals'){
-  document.getElementById('title').innerText='WITHDRAWALS';
-  let list=allBets.filter(b=>b.type==='WITHDRAW').filter(b=> (b.phone+'').includes(q));
-  html=list.map(b=>`<div class="row withRow"><span>${new Date(b.created_at).toLocaleString()} • ${b.phone} • GET ${b.choice}</span><div><b>KES ${b.amount}</b> <button class="btn btn-green" style="padding:4px 8px;font-size:10px" onclick="approveWithdraw('${b.id}','${b.phone}',${b.amount})">PAID</button></div></div>`).join('')||'No withdrawals';
- }else if(curTab==='users'){
-  document.getElementById('title').innerText='USERS ('+allUsers.length+')';
-  let list=allUsers.filter(u=> (u.phone+'').includes(q));
-  html=list.map(u=>`<div class="row"><span>📱 ${u.phone}<br><small>BAL KES ${u.balance} • Wager ${u.wager_remaining}/${u.max_wager} • Bonus ${u.last_bonus_date||'none'}</small></span><div style="display:flex;gap:4px"><button class="btn btn-green" style="padding:4px 8px;font-size:10px" onclick="addBalance('${u.phone}',20)">+20</button><button class="btn btn-red" style="padding:4px 8px;font-size:10px" onclick="banUser('${u.phone}')">BAN</button></div></div>`).join('');
+   let prof=b.win? ((b.payout||0)-b.stake): -b.stake;
+   return `<div style="display:flex;justify-content:space-between;padding:8px;background:#222;margin-bottom:4px;border-radius:8px;font-size:12px;border-left:3px solid ${prof>=0?'#00e676':'#ff5252'}"><span>${tm} [${(b.phone||'').slice(-4)}] ${b.choice} D:${b.digit} ${b.win?'WIN':'LOSS'}</span><b style="color:${prof>=0?'#00e676':'#ff5252'}">${prof>0?'+':''}${prof}</b></div>`
+  }).join('')||'No bets with stake>0 found - check debug below';
+ }else if(tab==='dep'){
+  document.getElementById('tabTitle').innerText='DEPOSITS';
+  html=all.filter(b=>(b.type||'').includes('DEPOSIT')|| (b.choice||'').includes('DEPOSIT')).map(b=>`<div style="padding:8px;background:#222;margin-bottom:4px;border-radius:8px;font-size:12px">${new Date(b.created_at).toLocaleString()} ${b.phone} KES ${b.amount} - ${b.choice}</div>`).join('')||'No deposits';
+ }else if(tab==='with'){
+  document.getElementById('tabTitle').innerText='WITHDRAWALS';
+  html=all.filter(b=>(b.type||'').includes('WITHDRAW')).map(b=>`<div style="padding:8px;background:#222;margin-bottom:4px;border-radius:8px;font-size:12px">${new Date(b.created_at).toLocaleString()} ${b.phone} KES ${b.amount}</div>`).join('')||'No withdrawals';
+ }else{
+  document.getElementById('tabTitle').innerText='USERS ('+users.length+')';
+  html=users.map(u=>`<div style="padding:8px;background:#222;margin-bottom:4px;border-radius:8px;font-size:12px">${u.phone} - BAL ${u.balance} - Wager ${u.wager_remaining}/${u.max_wager} - Bonus ${u.last_bonus_date}</div>`).join('');
  }
- document.getElementById('list').innerHTML=html||'<div style="color:#666;text-align:center;padding:20px">No data</div>';
+ document.getElementById('list').innerHTML=html;
 }
-async function approveWithdraw(id,phone,amt){
- if(!confirm('Mark PAID for '+phone+' KES '+amt+'?')) return;
- await supa.from('bets').delete().eq('id',id);
- alert('Marked paid'); load();
-}
-async function addBalance(phone,amt){
- let u=allUsers.find(x=>x.phone===phone);
- if(!u) return;
- let newBal=(u.balance||0)+amt;
- await supa.from('users').update({balance:newBal}).eq('phone',phone);
- alert('Added '+amt+' to '+phone); load();
-}
-async function banUser(phone){
- if(!confirm('Ban '+phone+'? Sets balance 0')) return;
- await supa.from('users').update({balance:0,wager_remaining:0}).eq('phone',phone);
- alert('Banned'); load();
-}
-load(); setInterval(load,7000);
-</script>
-</body>
-</html>
+load(); setInterval(load,5000);
+</script></body></html>
