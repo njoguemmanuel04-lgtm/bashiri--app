@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BASHIRI CLOUD v6 - 5 BOB</title>
+<title>BASHIRI CLOUD - 0 FREE</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
@@ -10,11 +10,9 @@ body{background:#04120f;color:#fff;padding:10px}
 .top{background:#121212;border:1px solid #222;border-radius:16px;padding:12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .bal{font-weight:700}.inp{width:90px;background:#222;color:#fff;border:1px solid #333;border-radius:8px;padding:8px}
 .last{width:46px;height:46px;background:#1a1a1a;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px}
-.card{background:#0e2a24;border:1px solid #1a4a3a;border-radius:16px;padding:12px;margin-bottom:10px}
 .digits{display:flex;justify-content:space-between;margin-top:8px}
 .d-c{width:34px;height:34px;border-radius:50%;border:1px solid #333;display:flex;align-items:center;justify-content:center;font-weight:700;background:#121212}
-.d-c.active{background:#00d09c;color:#000}
-.d-p{font-size:9px;color:#7fbba7;text-align:center}
+.d-c.active{background:#00d09c;color:#000}.d-p{font-size:9px;color:#7fbba7;text-align:center}
 #chart{width:100%;height:90px;background:#081a15;border-radius:12px;margin-top:8px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
 .btn{border-radius:12px;padding:14px;border:1px solid #333;font-weight:800;cursor:pointer}
@@ -36,10 +34,10 @@ body{background:#04120f;color:#fff;padding:10px}
 <div id="login" class="login">
 <div class="login-box">
 <h2 style="margin-bottom:10px">BASHIRI CLOUD</h2>
-<p style="font-size:12px;color:#aaa;margin-bottom:12px">Enter phone to play - 5 bob mode</p>
+<p style="font-size:12px;color:#aaa;margin-bottom:12px">Enter phone to play - 5 bob mode<br><b style="color:#00e676">Deposit 20 to start + get 5 bonus</b></p>
 <input id="phoneInp" class="inp" style="width:100%;margin-bottom:10px" placeholder="07XXXXXXXX" type="tel">
-<button class="btn be" style="width:100%" onclick="doLogin()">ENTER - GET 10 BOB FREE</button>
-<small style="color:#666;margin-top:8px;display:block">Balance saved in cloud - 1000 users ready</small>
+<button class="btn be" style="width:100%" onclick="doLogin()">ENTER - PLAY NOW</button>
+<small style="color:#666;margin-top:8px;display:block">No free balance - Deposit to play. Balance saved in cloud.</small>
 </div>
 </div>
 
@@ -56,10 +54,10 @@ body{background:#04120f;color:#fff;padding:10px}
 <span style="color:#ffb300">🔒 WAGER CLOUD</span><span id="wagerText">0 / 0</span>
 </div>
 <div class="w-bar"><div class="w-fill" id="wFill" style="width:0%"></div></div>
-<div style="font-size:10px;color:#aaa" id="wagerMsg">Deposit 20 get +5</div>
+<div style="font-size:10px;color:#aaa" id="wagerMsg">Deposit 20 get +5 bonus (25 bets to withdraw)</div>
 </div>
 
-<div class="card">
+<div class="card" style="background:#0e2a24;border:1px solid #1a4a3a;border-radius:16px;padding:12px;margin-bottom:10px">
 <div style="display:flex;justify-content:space-between"><small style="color:#00e676">● LIVE CLOUD</small><small>6/7/8/8 - 5 BOB</small></div>
 <div class="digits" id="digitBar"></div>
 <canvas id="chart"></canvas>
@@ -72,8 +70,8 @@ body{background:#04120f;color:#fff;padding:10px}
 </div>
 
 <div class="sec">
-<div style="display:flex;gap:6px"><input id="depositInp" class="inp" style="width:100px" placeholder="20+" type="number"><button class="btn be" style="padding:8px 12px" onclick="doDeposit()">DEPOSIT +5 CLOUD</button></div>
-<div style="display:flex;gap:6px;margin-top:8px"><input id="withdrawInp" class="inp" style="width:100px" placeholder="Min 50" type="number"><button class="btn bu" style="padding:8px 12px" onclick="doWithdraw()">WITHDRAW -2</button></div>
+<div style="display:flex;gap:6px"><input id="depositInp" class="inp" style="width:100px" placeholder="20+" type="number"><button class="btn be" style="padding:8px 12px" onclick="doDeposit()">DEPOSIT +5 BONUS</button></div>
+<div style="display:flex;gap:6px;margin-top:8px"><input id="withdrawInp" class="inp" style="width:100px" placeholder="Min 50" type="number"><button class="btn bu" style="padding:8px 12px" onclick="doWithdraw()">WITHDRAW -2 fee</button></div>
 </div>
 <div class="sec" id="historyBox"></div>
 
@@ -81,36 +79,26 @@ body{background:#04120f;color:#fff;padding:10px}
 const SUPABASE_URL="https://hkhqbtyyqgvaktamilxs.supabase.co";
 const SUPABASE_ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg";
 const supa=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON);
-
 const V6={MIN_DEPOSIT:20,BONUS:5,MIN_STAKE:5,PAYOUTS:{EVEN:8,ODD:8,OVER1:6,UNDER8:7},WR:{EVEN:0.50,ODD:0.50,OVER1:0.68,UNDER8:0.58},WAGER_MULT:5,MIN_WITHDRAW:50,WITHDRAW_FEE:2};
-
-let PHONE=localStorage.getItem('phone')||'';
-let BAL=0, wagerRemaining=0, maxWager=0, lastBonusDate='', hist=[];
-
-const bar=document.getElementById('digitBar');
-const cv=document.getElementById('chart'),ctx=cv.getContext('2d');
+let PHONE=localStorage.getItem('phone')||''; let BAL=0, wagerRemaining=0, maxWager=0, lastBonusDate='', hist=[];
+const bar=document.getElementById('digitBar'); const cv=document.getElementById('chart'),ctx=cv.getContext('2d');
 for(let i=0;i<10;i++){let d=document.createElement('div');d.innerHTML=`<div class="d-c" id="d-${i}">${i}</div><div class="d-p" id="p-${i}">0%</div>`;bar.appendChild(d)}
 function draw(){ctx.clearRect(0,0,cv.width,cv.height);ctx.strokeStyle='#00d09c';ctx.lineWidth=2;ctx.beginPath();let last=hist.slice(-30);last.forEach((h,i)=>{let x=i*(cv.width/30), y=cv.height - (h.d+1)*(cv.height/12); if(i==0)ctx.moveTo(x,y);else ctx.lineTo(x,y)});ctx.stroke();}
-
 async function doLogin(){
-  let p=document.getElementById('phoneInp').value.trim();
-  if(p.length<10){alert('Enter valid phone 07...');return;}
+  let p=document.getElementById('phoneInp').value.trim(); if(p.length<10){alert('Enter valid phone');return;}
   PHONE=p; localStorage.setItem('phone',PHONE);
   let {data}=await supa.from('users').select('*').eq('phone',PHONE).maybeSingle();
   if(!data){
-    let {data:newU, error}=await supa.from('users').insert({phone:PHONE,balance:10,wager_remaining:0,max_wager:0,last_bonus_date:''}).select().single();
-    if(error){alert(error.message);return;}
-    data=newU;
+    let {data:newU, error}=await supa.from('users').insert({phone:PHONE,balance:0,wager_remaining:0,max_wager:0,last_bonus_date:''}).select().single();
+    if(error){alert(error.message);return;} data=newU;
   }
   BAL=data.balance; wagerRemaining=data.wager_remaining; maxWager=data.max_wager; lastBonusDate=data.last_bonus_date;
-  document.getElementById('login').style.display='none';
-  document.getElementById('phoneShow').innerText=PHONE;
+  document.getElementById('login').style.display='none'; document.getElementById('phoneShow').innerText=PHONE;
   let {data:bets}=await supa.from('bets').select('*').eq('phone',PHONE).order('created_at',{ascending:false}).limit(50);
   if(bets){hist=bets.filter(b=>b.digit!==null).map(b=>({d:b.digit,type:b.choice,stake:b.stake,payout:b.payout,win:b.win})).reverse();}
   upd();draw();
 }
 if(PHONE){document.getElementById('phoneInp').value=PHONE; doLogin();}
-
 function getDigitByWR(wr,type){
   let mustWin=Math.random()<wr;
   if(type==='EVEN') return mustWin? [0,2,4,6,8][Math.floor(Math.random()*5)] : [1,3,5,7,9][Math.floor(Math.random()*5)];
@@ -131,14 +119,12 @@ function upd(){
   if(wagerRemaining>0){document.getElementById('wagerMsg').innerText=`Bet ${Math.ceil(wagerRemaining/5)} more x5 bob to withdraw`; document.getElementById('wagerMsg').style.color='#ffb300';}
   else{document.getElementById('wagerMsg').innerText= BAL>=50? '✅ Wager cleared - Can withdraw':'Need min 50'; document.getElementById('wagerMsg').style.color='#00e676';}
   let today=new Date().toISOString().slice(0,10);
-  document.getElementById('bonusTag').innerText= (lastBonusDate!==today)? ' +5 today':' bonus claimed';
+  document.getElementById('bonusTag').innerText= (lastBonusDate!==today)? ' +5 bonus today':' bonus claimed';
   document.getElementById('historyBox').innerHTML=hist.slice(-20).reverse().map(h=>`<div class="ri ${h.win?'win':'loss'}"><span>${h.type} ${h.stake}→${h.payout} | ${h.d}</span><span>${h.win?'WIN +'+(h.payout-h.stake):'LOSS -'+h.stake}</span></div>`).join('');
 }
-async function syncUser(){
-  await supa.from('users').update({balance:BAL,wager_remaining:wagerRemaining,max_wager:maxWager,last_bonus_date:lastBonusDate}).eq('phone',PHONE);
-}
+async function syncUser(){await supa.from('users').update({balance:BAL,wager_remaining:wagerRemaining,max_wager:maxWager,last_bonus_date:lastBonusDate}).eq('phone',PHONE);}
 async function doTrade(choice,stake){
-  if(BAL<stake){alert('Low balance');return;}
+  if(BAL<stake){alert('Deposit 20 to start');return;}
   stake=Math.max(V6.MIN_STAKE,parseInt(stake)||5);
   let wr=V6.WR[choice]; let digit=getDigitByWR(wr,choice);
   let win=(choice==='EVEN'&&digit%2===0)||(choice==='ODD'&&digit%2===1);
@@ -149,7 +135,7 @@ async function doTrade(choice,stake){
   await syncUser(); upd();draw();
 }
 async function doOver(type,th,stake){
-  if(BAL<stake){alert('Low balance');return;}
+  if(BAL<stake){alert('Deposit 20 to start');return;}
   stake=Math.max(V6.MIN_STAKE,parseInt(stake)||5);
   let key=type==='OVER'?'OVER1':'UNDER8'; let wr=V6.WR[key]; let digit=getDigitByWR(wr,key);
   let win=(type==='OVER'&&digit>parseInt(th))||(type==='UNDER'&&digit<parseInt(th));
@@ -161,7 +147,6 @@ async function doOver(type,th,stake){
 }
 function manual(c){doTrade(c,parseInt(document.getElementById('stakeInp').value)||5)}
 function manualOver(t,th){doOver(t,th,parseInt(document.getElementById('stakeInp').value)||5)}
-
 async function doDeposit(){
   let amt=parseInt(document.getElementById('depositInp').value)||0;
   if(amt<V6.MIN_DEPOSIT){alert(`Min ${V6.MIN_DEPOSIT}`);return;}
@@ -169,7 +154,7 @@ async function doDeposit(){
   if(lastBonusDate!==today){bonus=V6.BONUS; lastBonusDate=today;}
   BAL+=amt+bonus; let addWager=(amt+bonus)*V6.WAGER_MULT; wagerRemaining+=addWager; maxWager=Math.max(maxWager,wagerRemaining);
   await supa.from('bets').insert({phone:PHONE,type:'DEPOSIT',amount:amt+bonus,choice:`DEPOSIT ${amt}+BONUS ${bonus}`});
-  await syncUser(); alert(`Deposited ${amt}+Bonus ${bonus}=${amt+bonus}. Wager ${addWager}=${addWager/5} bets of 5`); document.getElementById('depositInp').value=''; upd();
+  await syncUser(); alert(`Deposited ${amt}+Bonus ${bonus}=${amt+bonus}. Wager ${addWager}=${addWager/5} bets`); document.getElementById('depositInp').value=''; upd();
 }
 async function doWithdraw(){
   let amt=parseInt(document.getElementById('withdrawInp').value)||0;
