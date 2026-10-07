@@ -1,86 +1,185 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BASHIRI - 1.30x SAFE CLOUD</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BASHIRI CLOUD v6 - 5 BOB</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Space Grotesk,sans-serif}
-body{background:#04120f;color:#fff;padding:10px;padding-bottom:90px}
-.top{background:#121212;border:1px solid #222;border-radius:14px;padding:12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.bal{font-weight:700}.inp{width:80px;background:#000;border:1px solid #333;color:#fff;border-radius:8px;padding:6px 10px;font-weight:700}
-.last{width:46px;height:46px;background:#1a1a1a;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;border:2px solid #333}
-.card{background:#0e2a24;border:1px solid #1a4a3e;border-radius:18px;padding:14px;margin-bottom:12px}
-.live-box{display:flex;justify-content:space-between;background:#081a16;border:1px solid #1a4a3e;border-radius:12px;padding:10px 12px;margin-bottom:12px}
-.ticker{position:relative;padding-top:18px;margin-bottom:10px}
-#cursor{position:absolute;top:0;transition:left.5s;color:#ff9500;font-size:14px;font-weight:800}
-.digits{display:flex;justify-content:space-between}
-.d-c{width:34px;height:34px;border-radius:50%;border:2px solid #2a4a42;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;font-weight:700;background:#0a1f1a;font-size:13px}
-.d-c.active{background:#00d09c;color:#000;border-color:#00d09c;transform:scale(1.15)}
-.d-p{font-size:9px;color:#7fbba7}
-#chart{width:100%;height:95px;background:#081a16;border:1px solid #1a4a3e;border-radius:12px;display:block;margin:10px 0}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.btn{border-radius:12px;padding:14px;border:1px solid;font-weight:800;cursor:pointer}
-.be{background:#c8fff0;color:#003d2f;border-color:#00d09c}.bo{background:#ffd0dd;color:#4a0015;border-color:#ff5a7f}.bov{background:#c2e8ff;color:#002a4a;border-color:#3aa0ff}.bu{background:#ffe9b5;color:#4a3300;border-color:#ffb300}
-.sec{border-radius:18px;padding:12px;margin-bottom:12px;background:#121212;border:1px solid #222}
-.bot{background:#1e1e1e;border-radius:12px;padding:12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.off{color:#666;font-size:10px;font-weight:700}.on{color:#00e676;font-size:10px;font-weight:700}
-.tog{border:1px solid #333;background:#2a2a2a;color:#fff;border-radius:8px;padding:7px 14px;font-weight:700;cursor:pointer}
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
+body{background:#04120f;color:#fff;padding:10px}
+.top{background:#121212;border:1px solid #222;border-radius:16px;padding:12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.bal{font-weight:700}.inp{width:90px;background:#222;color:#fff;border:1px solid #333;border-radius:8px;padding:8px}
+.last{width:46px;height:46px;background:#1a1a1a;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px}
+.card{background:#0e2a24;border:1px solid #1a4a3a;border-radius:16px;padding:12px;margin-bottom:10px}
+.digits{display:flex;justify-content:space-between;margin-top:8px}
+.d-c{width:34px;height:34px;border-radius:50%;border:1px solid #333;display:flex;align-items:center;justify-content:center;font-weight:700;background:#121212}
+.d-c.active{background:#00d09c;color:#000}
+.d-p{font-size:9px;color:#7fbba7;text-align:center}
+#chart{width:100%;height:90px;background:#081a15;border-radius:12px;margin-top:8px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.btn{border-radius:12px;padding:14px;border:1px solid #333;font-weight:800;cursor:pointer}
+.be{background:#c8fff0;color:#003d2f}.bo{background:#fff0c8;color:#3d2f00}.bov{background:#c8d4ff;color:#00203d}.bu{background:#ffd4c8;color:#3d1000}
+.sec{border-radius:18px;padding:12px;margin-bottom:10px;background:#121212;border:1px solid #222}
+.bot{background:#1e1e1e;border-radius:12px;padding:10px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+.tog{border:1px solid #333;background:#2a2a2a;color:#fff;padding:6px 10px;border-radius:20px;font-size:11px}
 .tog.active{background:#00e676;color:#000}
-.ri{display:flex;justify-content:space-between;padding:9px 10px;border-radius:10px;margin-bottom:5px;background:#0f0f0f;border-left:3px solid #333;font-size:12px}
-.ri.win{border-left-color:#00e676}.ri.loss{border-left-color:#ff3d57}
+.ri{display:flex;justify-content:space-between;padding:6px 8px;background:#1a1a1a;border-left:3px solid #333;margin-bottom:4px;border-radius:6px;font-size:12px}
+.ri.win{border-left-color:#00e676}.ri.loss{border-left-color:#ff5252}
+.wager-box{background:#1a2a12;border:1px solid #2a5a22;border-radius:12px;padding:10px;margin-bottom:10px}
+.w-bar{height:8px;background:#222;border-radius:4px;overflow:hidden;margin:6px 0}.w-fill{height:100%;background:#00e676;transition:width 0.3s}
+.login{position:fixed;inset:0;background:#04120f;z-index:99;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-box{background:#121212;border:1px solid #333;border-radius:20px;padding:20px;width:100%;max-width:360px}
 </style>
 </head>
 <body>
-<div class="top"><div class="bal">💰 KES <span id="bal">1000</span> | Stake: <input id="stake" class="inp" value="50" type="number"></div><div class="last" id="lastD">5</div><small id="cloud" style="color:#29b6f6;font-size:9px">CLOUD</small></div>
+
+<div id="login" class="login">
+<div class="login-box">
+<h2 style="margin-bottom:10px">BASHIRI CLOUD</h2>
+<p style="font-size:12px;color:#aaa;margin-bottom:12px">Enter phone to play - 5 bob mode</p>
+<input id="phoneInp" class="inp" style="width:100%;margin-bottom:10px" placeholder="07XXXXXXXX" type="tel">
+<button class="btn be" style="width:100%" onclick="doLogin()">ENTER - GET 10 BOB FREE</button>
+<small style="color:#666;margin-top:8px;display:block">Balance saved in cloud - 1000 users ready</small>
+</div>
+</div>
+
+<div class="top">
+<div class="bal">💰 KES <span id="bal">0</span><br><small id="phoneShow" style="font-size:10px;color:#aaa"></small><small style="color:#00e676" id="bonusTag"></small></div>
+<div style="display:flex;gap:6px;align-items:center">
+<input id="stakeInp" class="inp" type="number" value="5" min="5" step="5">
+<div class="last" id="lastDigit">-</div>
+</div>
+</div>
+
+<div class="wager-box">
+<div style="display:flex;justify-content:space-between;font-size:11px;font-weight:700">
+<span style="color:#ffb300">🔒 WAGER CLOUD</span><span id="wagerText">0 / 0</span>
+</div>
+<div class="w-bar"><div class="w-fill" id="wFill" style="width:0%"></div></div>
+<div style="font-size:10px;color:#aaa" id="wagerMsg">Deposit 20 get +5</div>
+</div>
+
 <div class="card">
-<div class="live-box"><div><small style="color:#00e676;font-weight:700">70% SAFE 1.30x CLOUD</small><br><b style="font-size:11px">20→+6 | 50→+15 • House +9%</b></div><div style="text-align:right"><small style="color:#5fbd9f;font-size:10px">LIVE</small><br><b id="liveTick">9436.30</b></div></div>
-<div class="ticker"><div id="cursor">▼</div><div class="digits" id="digitBar"></div></div>
+<div style="display:flex;justify-content:space-between"><small style="color:#00e676">● LIVE CLOUD</small><small>6/7/8/8 - 5 BOB</small></div>
+<div class="digits" id="digitBar"></div>
 <canvas id="chart"></canvas>
 <div class="grid">
-<button class="btn be" onclick="manual('EVEN')">EVEN 1.90x</button>
-<button class="btn bo" onclick="manual('ODD')">ODD 1.90x</button>
-<button class="btn bov" onclick="manualOver('OVER',1)">OVER 1 1.30x</button>
-<button class="btn bu" onclick="manualOver('UNDER',8)">UNDER 8 1.30x</button>
+<button class="btn be" onclick="manual('EVEN')">EVEN - 8<br><small>5→8</small></button>
+<button class="btn bo" onclick="manual('ODD')">ODD - 8<br><small>5→8</small></button>
+<button class="btn bov" onclick="manualOver('OVER','1')">OVER 1 - 6<br><small>5→6</small></button>
+<button class="btn bu" onclick="manualOver('UNDER','8')">UNDER 8 - 7<br><small>5→7</small></button>
 </div>
 </div>
+
 <div class="sec">
-<div style="color:#ffb300;font-weight:800;font-size:13px;margin-bottom:10px">| EVEN / ODD - 30% WR</div>
-<div class="bot"><div><b>🛡️ Safe Bot</b><br><small style="color:#888">30% WR • 1.90x</small></div><div style="text-align:right"><span class="off" id="s1">OFF</span><br><button class="tog" id="b1" onclick="toggleBot('safe')">ON/OFF</button></div></div>
-<div class="bot"><div><b>🔥 Aggressive</b><br><small style="color:#888">30% WR • 1.90x</small></div><div style="text-align:right"><span class="off" id="s3">OFF</span><br><button class="tog" id="b3" onclick="toggleBot('agg')">ON/OFF</button></div></div>
+<div style="display:flex;gap:6px"><input id="depositInp" class="inp" style="width:100px" placeholder="20+" type="number"><button class="btn be" style="padding:8px 12px" onclick="doDeposit()">DEPOSIT +5 CLOUD</button></div>
+<div style="display:flex;gap:6px;margin-top:8px"><input id="withdrawInp" class="inp" style="width:100px" placeholder="Min 50" type="number"><button class="btn bu" style="padding:8px 12px" onclick="doWithdraw()">WITHDRAW -2</button></div>
 </div>
-<div class="sec" style="border-color:#29b6f622">
-<div style="color:#29b6f6;font-weight:800;font-size:13px;margin-bottom:10px">| OVER / UNDER - 70% SAFE CLOUD</div>
-<div class="bot"><div><b>🛡️ Safe - 70%</b><br><small style="color:#00e676">20→+6 | 50→+15 • Best retention</small></div><div style="text-align:right"><span class="off" id="os1">OFF</span><br><button class="tog" id="ob1" onclick="toggleOBot('over1')">ON/OFF</button></div></div>
-<div class="bot"><div><b>⚡ Martingale - 55%</b><br><small style="color:#888">20→+6 | 50→+15</small></div><div style="text-align:right"><span class="off" id="os2">OFF</span><br><button class="tog" id="ob2" onclick="toggleOBot('over2')">ON/OFF</button></div></div>
-<div class="bot"><div><b>🔥 Aggressive - 40%</b><br><small style="color:#ff9500">20→+6 | 50→+15</small></div><div style="text-align:right"><span class="off" id="os3">OFF</span><br><button class="tog" id="ob3" onclick="toggleOBot('over3')">ON/OFF</button></div></div>
-</div>
-<div style="background:#121212;border:1px solid #222;border-radius:16px;padding:12px"><div style="display:flex;justify-content:space-between"><b>RESULTS <span id="cnt" style="color:#00e676;font-size:12px"></span></b><button onclick="localStorage.clear();location.reload()" style="background:#222;color:#fff;border:0;padding:6px 14px;border-radius:8px">CLEAR</button></div><div id="res" style="margin-top:8px"></div></div>
+<div class="sec" id="historyBox"></div>
+
 <script>
 const SUPABASE_URL="https://hkhqbtyyqgvaktamilxs.supabase.co";
 const SUPABASE_ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg";
-const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON);
-const CONFIG_OVER={over1:{wr:0.70,payout:1.30},over2:{wr:0.55,payout:1.30},over3:{wr:0.40,payout:1.30}};
-const BOT_WR_EVEN=0.30;
-let BAL=parseInt(localStorage.getItem('bal')||'1000'),last=5,tick=9436.30,hist=[],prices=[9436.3];
-let bots={},obots={},iv={},oiv={};
-const bar=document.getElementById('digitBar'); bar.innerHTML=''; for(let i=0;i<=9;i++) bar.innerHTML+=`<div style="text-align:center;flex:1"><div class="d-c" id="d-${i}">${i}</div><div class="d-p" id="p-${i}">0%</div></div>`;
-const cv=document.getElementById('chart'),ctx=cv.getContext('2d'); cv.width=cv.clientWidth*2; cv.height=190;
-function draw(){ctx.clearRect(0,0,cv.width,cv.height); if(prices.length<2)return; let min=Math.min(...prices),max=Math.max(...prices),range=(max-min)||1; ctx.beginPath(); ctx.lineWidth=4; ctx.strokeStyle=prices[prices.length-1]>=prices[prices.length-2]?'#00e676':'#ff3d57'; prices.forEach((p,i)=>{let x=(i/(prices.length-1))*cv.width; let y=cv.height-((p-min)/range)*cv.height*0.7-cv.height*0.15; if(i==0)ctx.moveTo(x,y); else ctx.lineTo(x,y)}); ctx.stroke();}
-function getDigitByWR(winRate,type){let mustWin=Math.random()<winRate; if(type==='OVER') return mustWin?[2,3,4,5,6,7,8,9][Math.floor(Math.random()*8)]:[0,1][Math.floor(Math.random()*2)]; if(type==='UNDER') return mustWin?[0,1,2,3,4,5,6,7][Math.floor(Math.random()*8)]:[8,9][Math.floor(Math.random()*2)]; if(type==='EVEN') return mustWin?[0,2,4,6,8][Math.floor(Math.random()*5)]:[1,3,5,7,9][Math.floor(Math.random()*5)]; if(type==='ODD') return mustWin?[1,3,5,7,9][Math.floor(Math.random()*5)]:[0,2,4,6,8][Math.floor(Math.random()*5)]; return Math.floor(Math.random()*10);}
-function upd(){let c=Array(10).fill(0); hist.slice(-100).forEach(d=>c[d]++); let tot=hist.length||1; for(let i=0;i<=9;i++){document.getElementById('p-'+i).innerText=((c[i]/tot*100)||0).toFixed(0)+'%'; document.getElementById('d-'+i).classList.remove('active');} document.getElementById('d-'+last)?.classList.add('active'); document.getElementById('cursor').style.left=`calc(${(last/9)*100}% - 8px)`; document.getElementById('lastD').innerText=last; document.getElementById('liveTick').innerText=tick.toFixed(2); document.getElementById('bal').innerText=BAL; localStorage.setItem('bal',BAL);}
-function load(){let bets=JSON.parse(localStorage.getItem('bets')||'[]'); document.getElementById('cnt').innerText=bets.length?`(${bets.length})`:''; document.getElementById('res').innerHTML=bets.map(b=>`<div class="ri ${b.r=='WIN'?'win':'loss'}"><span>[${b.botName}] ${b.c} D:${b.d} <small style="color:#666">${b.mult}x</small></span><span style="color:${b.r=='WIN'?'#00e676':'#ff3d57'};font-weight:800">${b.r=='WIN'?'+'+b.p:b.p}</span></div>`).join('')||'<small style="color:#555">No trades</small>';}
-function saveLocal(b){let a=JSON.parse(localStorage.getItem('bets')||'[]'); a.unshift(b); localStorage.setItem('bets',JSON.stringify(a.slice(0,200)))}
-async function save(b){saveLocal(b); try{let stake=b.r=='WIN'?Math.round(b.p/(b.mult-1)):Math.abs(b.p); await supabaseClient.from('bets').insert({bot_name:b.botName,choice:b.c,digit:b.d,result:b.r,player_profit:b.p,stake:stake,payout:b.mult,win_rate:b.wr}); document.getElementById('cloud').innerText='CLOUD SAVED'; document.getElementById('cloud').style.color='#00e676';}catch(e){document.getElementById('cloud').innerText='OFFLINE';}}
-function doTrade(choice,stake,isBot){if(BAL<stake) return; let mult=1.90; let wr=BOT_WR_EVEN; let d=getDigitByWR(wr,choice); last=d; let win=(choice=='EVEN'&&d%2==0)||(choice=='ODD'&&d%2==1); BAL-=stake; if(win) BAL+=stake*mult; save({c:choice,d:d,r:win?'WIN':'LOSS',p:win?Math.round(stake*(mult-1)):-stake,mult:mult,wr:wr,botName:'EVEN/ODD'}); upd(); load(); tick+=(Math.random()-0.5)*2; prices.push(tick); if(prices.length>60)prices.shift(); draw();}
-function doOver(type,th,stake,isBot,name){if(BAL<stake){if(isBot)toggleOBot(name); return;} let cfg=CONFIG_OVER[name]; let mult=cfg.payout; let wr=cfg.wr; let d=getDigitByWR(wr,type); last=d; let win=type=='OVER'?d>th:d<th; BAL-=stake; if(win) BAL+=stake*mult; save({c:`${type} ${th}`,d:d,r:win?'WIN':'LOSS',p:win?Math.round(stake*(mult-1)):-stake,mult:mult,wr:wr,botName:name}); upd(); load(); tick+=(Math.random()-0.5)*2; prices.push(tick); if(prices.length>60)prices.shift(); draw();}
-function manual(c){doTrade(c,parseInt(document.getElementById('stake').value),false)}
-function manualOver(t,th){doOver(t,th,parseInt(document.getElementById('stake').value),false,'over2')}
-function toggleBot(n){bots[n]=!bots[n]; document.getElementById(n=='safe'?'s1':'s3').innerText=bots[n]?'BUYING':'OFF'; document.getElementById(n=='safe'?'s1':'s3').className=bots[n]?'on':'off'; document.getElementById(n=='safe'?'b1':'b3').className=bots[n]?'tog active':'tog'; if(bots[n]) iv[n]=setInterval(()=>{let c=Math.random()>0.5?'EVEN':'ODD'; let stake=n=='agg'?Math.floor(Math.random()*80)+30:parseInt(document.getElementById('stake').value); doTrade(c,stake,true)}, n=='agg'?1500:3000); else clearInterval(iv[n]);}
-function toggleOBot(n){obots[n]=!obots[n]; document.getElementById(n=='over1'?'os1':n=='over2'?'os2':'os3').innerText=obots[n]?'BUYING':'OFF'; document.getElementById(n=='over1'?'os1':n=='over2'?'os2':'os3').className=obots[n]?'on':'off'; document.getElementById(n=='over1'?'ob1':n=='over2'?'ob2':'ob3').className=obots[n]?'tog active':'tog'; if(obots[n]) oiv[n]=setInterval(()=>{let t=Math.random()>0.5?'OVER':'UNDER'; let stake=n=='over3'?Math.floor(Math.random()*80)+30:parseInt(document.getElementById('stake').value); doOver(t,t=='OVER'?1:8,stake,true,n)}, n=='over3'?1500:n=='over2'?2500:3000); else clearInterval(oiv[n]);}
-setInterval(()=>{tick+=(Math.random()-0.5)*1.5; hist.push(Math.floor(Math.random()*10)); if(hist.length>200)hist.shift(); upd();},1000);
-upd(); load(); draw();
+const supa=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON);
+
+const V6={MIN_DEPOSIT:20,BONUS:5,MIN_STAKE:5,PAYOUTS:{EVEN:8,ODD:8,OVER1:6,UNDER8:7},WR:{EVEN:0.50,ODD:0.50,OVER1:0.68,UNDER8:0.58},WAGER_MULT:5,MIN_WITHDRAW:50,WITHDRAW_FEE:2};
+
+let PHONE=localStorage.getItem('phone')||'';
+let BAL=0, wagerRemaining=0, maxWager=0, lastBonusDate='', hist=[];
+
+const bar=document.getElementById('digitBar');
+const cv=document.getElementById('chart'),ctx=cv.getContext('2d');
+for(let i=0;i<10;i++){let d=document.createElement('div');d.innerHTML=`<div class="d-c" id="d-${i}">${i}</div><div class="d-p" id="p-${i}">0%</div>`;bar.appendChild(d)}
+function draw(){ctx.clearRect(0,0,cv.width,cv.height);ctx.strokeStyle='#00d09c';ctx.lineWidth=2;ctx.beginPath();let last=hist.slice(-30);last.forEach((h,i)=>{let x=i*(cv.width/30), y=cv.height - (h.d+1)*(cv.height/12); if(i==0)ctx.moveTo(x,y);else ctx.lineTo(x,y)});ctx.stroke();}
+
+async function doLogin(){
+  let p=document.getElementById('phoneInp').value.trim();
+  if(p.length<10){alert('Enter valid phone 07...');return;}
+  PHONE=p; localStorage.setItem('phone',PHONE);
+  let {data}=await supa.from('users').select('*').eq('phone',PHONE).maybeSingle();
+  if(!data){
+    let {data:newU, error}=await supa.from('users').insert({phone:PHONE,balance:10,wager_remaining:0,max_wager:0,last_bonus_date:''}).select().single();
+    if(error){alert(error.message);return;}
+    data=newU;
+  }
+  BAL=data.balance; wagerRemaining=data.wager_remaining; maxWager=data.max_wager; lastBonusDate=data.last_bonus_date;
+  document.getElementById('login').style.display='none';
+  document.getElementById('phoneShow').innerText=PHONE;
+  let {data:bets}=await supa.from('bets').select('*').eq('phone',PHONE).order('created_at',{ascending:false}).limit(50);
+  if(bets){hist=bets.filter(b=>b.digit!==null).map(b=>({d:b.digit,type:b.choice,stake:b.stake,payout:b.payout,win:b.win})).reverse();}
+  upd();draw();
+}
+if(PHONE){document.getElementById('phoneInp').value=PHONE; doLogin();}
+
+function getDigitByWR(wr,type){
+  let mustWin=Math.random()<wr;
+  if(type==='EVEN') return mustWin? [0,2,4,6,8][Math.floor(Math.random()*5)] : [1,3,5,7,9][Math.floor(Math.random()*5)];
+  if(type==='ODD') return mustWin? [1,3,5,7,9][Math.floor(Math.random()*5)] : [0,2,4,6,8][Math.floor(Math.random()*5)];
+  if(type==='OVER1') return mustWin? (2+Math.floor(Math.random()*8)) : (Math.random()<0.5?0:1);
+  if(type==='UNDER8') return mustWin? Math.floor(Math.random()*8) : (8+Math.floor(Math.random()*2));
+  return Math.floor(Math.random()*10);
+}
+function upd(){
+  let c=Array(10).fill(0); hist.slice(-50).forEach(h=>c[h.d]++);
+  let tot=c.reduce((a,b)=>a+b,0)||1;
+  for(let i=0;i<10;i++){document.getElementById(`p-${i}`).innerText=Math.round(c[i]/tot*100)+'%'; document.getElementById(`d-${i}`).classList.remove('active')}
+  if(hist.length){let l=hist[hist.length-1].d; document.getElementById(`d-${l}`).classList.add('active'); document.getElementById('lastDigit').innerText=l}
+  document.getElementById('bal').innerText=BAL;
+  let done=Math.max(0,maxWager-wagerRemaining);
+  document.getElementById('wFill').style.width=(maxWager? done/maxWager*100:0)+'%';
+  document.getElementById('wagerText').innerText=`${done} / ${maxWager}`;
+  if(wagerRemaining>0){document.getElementById('wagerMsg').innerText=`Bet ${Math.ceil(wagerRemaining/5)} more x5 bob to withdraw`; document.getElementById('wagerMsg').style.color='#ffb300';}
+  else{document.getElementById('wagerMsg').innerText= BAL>=50? '✅ Wager cleared - Can withdraw':'Need min 50'; document.getElementById('wagerMsg').style.color='#00e676';}
+  let today=new Date().toISOString().slice(0,10);
+  document.getElementById('bonusTag').innerText= (lastBonusDate!==today)? ' +5 today':' bonus claimed';
+  document.getElementById('historyBox').innerHTML=hist.slice(-20).reverse().map(h=>`<div class="ri ${h.win?'win':'loss'}"><span>${h.type} ${h.stake}→${h.payout} | ${h.d}</span><span>${h.win?'WIN +'+(h.payout-h.stake):'LOSS -'+h.stake}</span></div>`).join('');
+}
+async function syncUser(){
+  await supa.from('users').update({balance:BAL,wager_remaining:wagerRemaining,max_wager:maxWager,last_bonus_date:lastBonusDate}).eq('phone',PHONE);
+}
+async function doTrade(choice,stake){
+  if(BAL<stake){alert('Low balance');return;}
+  stake=Math.max(V6.MIN_STAKE,parseInt(stake)||5);
+  let wr=V6.WR[choice]; let digit=getDigitByWR(wr,choice);
+  let win=(choice==='EVEN'&&digit%2===0)||(choice==='ODD'&&digit%2===1);
+  let payout=win? V6.PAYOUTS[choice]:0;
+  BAL-=stake; wagerRemaining=Math.max(0,wagerRemaining-stake); if(win) BAL+=payout;
+  hist.push({d:digit,type:choice,stake,payout,win});
+  await supa.from('bets').insert({phone:PHONE,choice,digit,stake,payout,win,type:'TRADE'});
+  await syncUser(); upd();draw();
+}
+async function doOver(type,th,stake){
+  if(BAL<stake){alert('Low balance');return;}
+  stake=Math.max(V6.MIN_STAKE,parseInt(stake)||5);
+  let key=type==='OVER'?'OVER1':'UNDER8'; let wr=V6.WR[key]; let digit=getDigitByWR(wr,key);
+  let win=(type==='OVER'&&digit>parseInt(th))||(type==='UNDER'&&digit<parseInt(th));
+  let payout=win? V6.PAYOUTS[key]:0;
+  BAL-=stake; wagerRemaining=Math.max(0,wagerRemaining-stake); if(win) BAL+=payout;
+  hist.push({d:digit,type:`${type}${th}`,stake,payout,win});
+  await supa.from('bets').insert({phone:PHONE,choice:key,digit,stake,payout,win,type:'OVER_UNDER'});
+  await syncUser(); upd();draw();
+}
+function manual(c){doTrade(c,parseInt(document.getElementById('stakeInp').value)||5)}
+function manualOver(t,th){doOver(t,th,parseInt(document.getElementById('stakeInp').value)||5)}
+
+async function doDeposit(){
+  let amt=parseInt(document.getElementById('depositInp').value)||0;
+  if(amt<V6.MIN_DEPOSIT){alert(`Min ${V6.MIN_DEPOSIT}`);return;}
+  let today=new Date().toISOString().slice(0,10); let bonus=0;
+  if(lastBonusDate!==today){bonus=V6.BONUS; lastBonusDate=today;}
+  BAL+=amt+bonus; let addWager=(amt+bonus)*V6.WAGER_MULT; wagerRemaining+=addWager; maxWager=Math.max(maxWager,wagerRemaining);
+  await supa.from('bets').insert({phone:PHONE,type:'DEPOSIT',amount:amt+bonus,choice:`DEPOSIT ${amt}+BONUS ${bonus}`});
+  await syncUser(); alert(`Deposited ${amt}+Bonus ${bonus}=${amt+bonus}. Wager ${addWager}=${addWager/5} bets of 5`); document.getElementById('depositInp').value=''; upd();
+}
+async function doWithdraw(){
+  let amt=parseInt(document.getElementById('withdrawInp').value)||0;
+  if(wagerRemaining>0){alert(`Wager not cleared! Need ${wagerRemaining}=${Math.ceil(wagerRemaining/5)} bets`);return;}
+  if(amt<V6.MIN_WITHDRAW){alert(`Min ${V6.MIN_WITHDRAW}`);return;}
+  if(BAL<amt){alert('Low balance');return;}
+  BAL-=amt; let get=amt-V6.WITHDRAW_FEE;
+  await supa.from('bets').insert({phone:PHONE,type:'WITHDRAW',amount:amt,fee:V6.WITHDRAW_FEE,choice:`WITHDRAW ${amt} GET ${get}`});
+  await syncUser(); alert(`Withdraw ${amt}. Fee 2. You get ${get} M-Pesa`); document.getElementById('withdrawInp').value=''; upd();
+}
 </script>
 </body>
 </html>
