@@ -1,75 +1,53 @@
 <!DOCTYPE html>
-<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>BASHIRI HQ v2.2 FINAL</title>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>BASHIRI HQ v3 BOT LEADERBOARD</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}body{background:#0a0a0a;color:#fff;padding:10px}.card{background:#1a1a1a;border:1px solid #333;border-radius:16px;padding:12px;margin-bottom:8px}.grid3{display:grid;grid-template-columns:1fr 1fr;gap:8px}@media(min-width:700px){.grid3{grid-template-columns:1fr 1fr 1fr}}button{cursor:pointer}.tog{border:1px solid #333;background:#fff;color:#000;padding:10px 16px;border-radius:12px;font-weight:800}</style></head>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}body{background:#0a0a0a;color:#fff;padding:10px}.card{background:#1a1a1a;border:1px solid #333;border-radius:16px;padding:12px;margin-bottom:8px}.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.tog{border:1px solid #333;background:#222;color:#fff;padding:10px 14px;border-radius:12px;font-weight:800;cursor:pointer}.botRow{background:#222;border-radius:12px;padding:10px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;border-left:4px solid #00e676}.botRow.loss{border-left-color:#ff5252}</style></head>
 <body>
-<div style="display:flex;justify-content:space-between"><div><h2>🏦 BASHIRI HQ v2.2 FINAL</h2><small id="status" style="color:#00ff88">● LIVE</small><br><small id="time" style="color:#888"></small></div><button class="tog" onclick="load()">REFRESH</button></div>
+<div style="display:flex;justify-content:space-between"><div><h2>🏦 BASHIRI HQ v3</h2><small id="status" style="color:#00ff88">● LIVE</small> <small id="time" style="color:#888"></small></div><button class="tog" onclick="load()">REFRESH</button></div>
 
 <div class="grid3" style="margin-top:10px">
-<div class="card" style="border-color:#00e676"><small>HOUSE PROFIT</small><div style="font-size:26px;font-weight:800;color:#00e676" id="house">KES 0</div><small id="houseSub">0 bets</small></div>
-<div class="card" style="border-color:#ffb300"><small>DEPOSITS</small><div style="font-size:26px;font-weight:800;color:#ffb300" id="dep">KES 0</div><small id="depC">0 deps</small></div>
-<div class="card" style="border-color:#00aaff"><small>WITHDRAWALS</small><div style="font-size:26px;font-weight:800;color:#00aaff" id="with">KES 0</div><small id="withC">0 with</small></div>
+<div class="card" style="border-color:#00e676"><small>HOUSE PROFIT</small><div style="font-size:24px;font-weight:800;color:#00e676" id="house">KES 0</div><small id="houseSub">0 bets</small></div>
 <div class="card"><small>VOLUME</small><div style="font-size:20px;font-weight:800" id="vol">KES 0</div></div>
 <div class="card"><small>WIN RATE</small><div style="font-size:20px;font-weight:800" id="wr">0%</div><small id="wrSub"></small></div>
-<div class="card"><small>NET CASH</small><div style="font-size:20px;font-weight:800;color:#00e676" id="net">KES 0</div></div>
 </div>
 
-<div class="card"><h3>⚙️ CONTROLS</h3><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px"><div><small>EVEN/ODD 0.48</small><input id="wrEven" value="0.48" style="width:100%;padding:8px;border-radius:8px;background:#222;color:#fff;border:1px solid #333"></div><div><small>OVER1 0.60</small><input id="wrOver" value="0.60" style="width:100%;padding:8px;border-radius:8px;background:#222;color:#fff;border:1px solid #333"></div><div><small>UNDER8 0.52</small><input id="wrUnder" value="0.52" style="width:100%;padding:8px;border-radius:8px;background:#222;color:#fff;border:1px solid #333"></div></div></div>
+<div class="card"><h3>🤖 EACH BOT PROFIT (per phone)</h3><small style="color:#888">HOUSE + = you won from that bot. HOUSE - = bot beating you</small><div id="bots" style="margin-top:10px"></div></div>
 
-<div class="card"><div style="display:flex;gap:8px;margin-bottom:10px"><button class="tog" onclick="setTab('bets')">Bets</button><button class="tog" onclick="setTab('dep')">Deps</button><button class="tog" onclick="setTab('with')">Withs</button><button class="tog" onclick="setTab('users')">Users</button></div><h3 id="tabTitle">LIVE BETS</h3><div id="list" style="margin-top:10px"></div><pre id="debug" style="color:#555;font-size:10px;margin-top:12px;white-space:pre-wrap;background:#111;padding:8px;border-radius:8px"></pre></div>
+<div class="card"><b>LIVE BETS</b><div id="list" style="margin-top:10px"></div></div>
 
 <script>
-const SUPA_URL="https://hkhqbtyyqgvaktamilxs.supabase.co";
-const SUPA_ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg";
-const supa=window.supabase.createClient(SUPA_URL,SUPA_ANON);
-let all=[], users=[], tab='bets';
+const URL="https://hkhqbtyyqgvaktamilxs.supabase.co";
+const ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg";
+const supa=window.supabase.createClient(URL,ANON);
+let all=[];
 async function load(){
- document.getElementById('time').innerText=new Date().toLocaleString();
- let {data:bets, error} = await supa.from('bets').select('*').order('created_at',{ascending:false}).limit(500);
- let {data:u} = await supa.from('users').select('*').order('created_at',{ascending:false});
- if(error){document.getElementById('debug').innerText='ERROR: '+error.message; return;}
- all=bets||[]; users=u||[];
- document.getElementById('status').innerText='● LIVE '+all.length+' rows, '+users.length+' users - v2.2 FINAL';
- document.getElementById('debug').innerText='FIRST ROW SAMPLE (what game saved):\n'+JSON.stringify(all[0]||'NO ROWS - bets table empty! Run SQL fix',null,2);
- let house=0,vol=0,wins=0,cnt=0,dep=0,depC=0,withT=0,withC=0;
+ document.getElementById('time').innerText=new Date().toLocaleTimeString();
+ let {data}=await supa.from('bets').select('*').order('created_at',{ascending:false}).limit(500);
+ all=data||[];
+ let house=0,vol=0,wins=0,cnt=0;
+ let byPhone={};
  all.forEach(b=>{
-  if(b.stake && Number(b.stake)>0){
-   let profit=b.win? ((Number(b.payout)||0)-Number(b.stake)) : -Number(b.stake);
-   house += -profit; vol+=Number(b.stake); if(b.win) wins++; cnt++;
-  }
-  let t=(b.type||'').toUpperCase(); let ch=(b.choice||'').toUpperCase();
-  if(t.includes('DEPOSIT')||ch.includes('DEPOSIT')){dep+=Number(b.amount)||0; depC++;}
-  if(t.includes('WITHDRAW')){withT+=Number(b.amount)||0; withC++;}
+  if(!b.stake||Number(b.stake)<=0) return;
+  let stake=Number(b.stake), payout=Number(b.payout)||0;
+  let playerProfit=b.win? payout-stake : -stake;
+  house+=-playerProfit; vol+=stake; if(b.win) wins++; cnt++;
+  let p=(b.phone||'unknown'); if(!byPhone[p]) byPhone[p]={phone:p,bets:0,wins:0,player:0,house:0,stake:0,last:b.created_at};
+  byPhone[p].bets++; if(b.win) byPhone[p].wins++; byPhone[p].player+=playerProfit; byPhone[p].house+=-playerProfit; byPhone[p].stake+=stake; byPhone[p].last=b.created_at;
  });
- document.getElementById('house').innerText='KES '+house;
- document.getElementById('houseSub').innerText=cnt+' bets (stake>0)';
- document.getElementById('dep').innerText='KES '+dep; document.getElementById('depC').innerText=depC+' deposits';
- document.getElementById('with').innerText='KES '+withT; document.getElementById('withC').innerText=withC+' withdrawals';
- document.getElementById('vol').innerText='KES '+vol;
- document.getElementById('wr').innerText=(cnt? (wins/cnt*100).toFixed(1):0)+'%';
- document.getElementById('wrSub').innerText=wins+'W / '+cnt;
- document.getElementById('net').innerText='KES '+(dep - withT + house);
- render();
+ document.getElementById('house').innerText='KES '+house; document.getElementById('houseSub').innerText=cnt+' bets';
+ document.getElementById('vol').innerText='KES '+vol; document.getElementById('wr').innerText=(cnt? (wins/cnt*100).toFixed(1):0)+'%';
+ document.getElementById('wrSub').innerText=wins+'W / '+(cnt-wins)+'L'; document.getElementById('status').innerText='● LIVE '+cnt+' bets';
+
+ let arr=Object.values(byPhone).sort((a,b)=>b.house-a.house);
+ document.getElementById('bots').innerHTML=arr.map(x=>{
+  let wr=x.bets? (x.wins/x.bets*100).toFixed(1):0; let cls=x.house>=0?'':'loss'; let col=x.house>=0?'#00e676':'#ff5252';
+  return `<div class="botRow ${cls}"><div><b>${x.phone}</b><br><small>${x.bets} bets • ${wr}% win • Vol ${x.stake}</small><br><small style="color:#666">${new Date(x.last).toLocaleTimeString()}</small></div><div style="text-align:right"><div style="font-weight:800;color:${col}">HOUSE ${x.house>=0?'+':''}${x.house}</div><small>Player ${x.player>=0?'+':''}${x.player}</small><br><small>${x.wins}W-${x.bets-x.wins}L</small></div></div>`
+ }).join('')||'<small style="color:#666">No bot bets yet</small>';
+
+ document.getElementById('list').innerHTML=all.filter(b=>b.stake>0).slice(0,100).map(b=>{
+  let tm=new Date(b.created_at).toLocaleTimeString(); let pp=b.win? (b.payout-b.stake): -b.stake;
+  return `<div style="display:flex;justify-content:space-between;padding:7px;background:#222;margin-bottom:4px;border-radius:8px;font-size:12px;border-left:3px solid ${pp>=0?'#00e676':'#ff5252'}"><span>${tm} ${String(b.phone).slice(-4)} ${b.choice} D:${b.digit} ${b.win?'WIN':'LOSS'}</span><b style="color:${pp>=0?'#00e676':'#ff5252'}">${pp>=0?'+':''}${pp}</b></div>`
+ }).join('');
 }
-function setTab(t){tab=t; render();}
-function render(){
- let html='';
- if(tab==='bets'){
-  document.getElementById('tabTitle').innerText='LIVE BETS ('+all.filter(b=>b.stake>0).length+')';
-  html=all.filter(b=>b.stake>0).slice(0,100).map(b=>{
-   let tm=new Date(b.created_at).toLocaleTimeString();
-   let prof=b.win? ((b.payout||0)-b.stake): -b.stake;
-   return `<div style="display:flex;justify-content:space-between;padding:8px;background:#222;margin-bottom:4px;border-radius:8px;font-size:12px;border-left:3px solid ${prof>=0?'#00e676':'#ff5252'}"><span>${tm} ${String(b.phone||'').slice(-4)} ${b.choice} D:${b.digit} ${b.win?'WIN':'LOSS'}</span><b style="color:${prof>=0?'#00e676':'#ff5252'}">${prof}</b></div>`
-  }).join('')||'No bets with stake>0. Check debug - table empty?';
- }else if(tab==='dep'){
-  html=all.filter(b=>(b.type||'').includes('DEPOSIT')).map(b=>`<div style="padding:8px;background:#222;margin-bottom:4px;border-radius:8px;font-size:12px">${b.phone} KES ${b.amount} ${b.choice}</div>`).join('')||'No deps';
- }else if(tab==='with'){
-  html=all.filter(b=>(b.type||'').includes('WITHDRAW')).map(b=>`<div style="padding:8px;background:#222;margin-bottom:4px;border-radius:8px;font-size:12px">${b.phone} KES ${b.amount}</div>`).join('')||'No withs';
- }else{
-  document.getElementById('tabTitle').innerText='USERS ('+users.length+')';
-  html=users.map(u=>`<div style="padding:8px;background:#222;margin-bottom:4px;border-radius:8px;font-size:12px">${u.phone} BAL:${u.balance} WAGER:${u.wager_remaining}/${u.max_wager}</div>`).join('');
- }
- document.getElementById('list').innerHTML=html;
-}
-load(); setInterval(load,4000);
+load(); setInterval(load,3000);
 </script></body></html>
