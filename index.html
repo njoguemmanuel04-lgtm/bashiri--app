@@ -1,91 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BASHIRI v11 FIXED - BOTH SIDES</title>
+<title>BASHIRI v11 FULL - SL TP - BOTH SIDES</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
-body{background:#0a0a0a;color:#fff;padding:10px}
-#splash{position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;transition:opacity.6s}
-.b-circle{width:115px;height:115px;background:#0F7A3D;border-radius:50%;display:flex;align-items:center;justify-content:center;animation:pulse 1.2s infinite}
-.b-letter{font:900 74px Arial Black;color:#111}
+body{background:#0a0a0a;color:#fff;padding:10px;padding-bottom:80px}
+#splash{position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;transition:opacity.7s}
+.b-circle{width:125px;height:125px;background:#0F7A3D;border-radius:50%;display:flex;align-items:center;justify-content:center;animation:pulse 1.1s infinite}
+.b-letter{font:900 78px Arial Black;color:#111}
 @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
-.top{display:flex;justify-content:space-between;background:#151515;padding:12px;border-radius:12px;margin-bottom:10px}
+.top{display:flex;justify-content:space-between;align-items:center;background:#151515;padding:12px;border-radius:14px;margin-bottom:10px}
 .bal{font-weight:900} #bal{color:#0F7A3D}
-.botsec{margin:14px 0}.bottitle{color:#0F7A3D;font-weight:800;font-size:12px;margin-bottom:6px}
-.row{display:flex;justify-content:space-between;align-items:center;background:#1c1c1c;padding:11px;border-radius:10px;margin:6px 0}
-.tog{padding:7px 16px;border:none;border-radius:8px;background:#333;color:#fff;font-weight:900}
-.tog.on{background:#0F7A3D}
-.inp{padding:10px;border-radius:8px;border:none;background:#2a2a2a;color:#fff}
-.r-head{display:flex;justify-content:space-between;margin:12px 0 6px}
-</style>
-</head>
-<body>
+.botsec-title{color:#00d4ff;font-weight:900;font-size:13px;margin:14px 0 8px}
+.botcard{background:#1c1c1c;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid #222}
+.tog{padding:8px 18px;border:none;border-radius:20px;background:#333;color:#fff;font-weight:900}.tog.on{background:#0F7A3D}
+.inp{width:68px;padding:8px;border-radius:10px;border:none;background:#2a2a2a;color:#fff;text-align:center;font-weight:800}
+.session{color:#00e676;font-size:12px;margin-top:8px;font-weight:700}
+.r-item{display:flex;justify-content:space-between;padding:8px 10px;margin:4px 0;background:#151515;border-radius:8px;font-size:13px;border-left:3px solid #333}
+.r-item.win{border-left-color:#0F7A3D}.r-item.lose{border-left-color:#ff4444}
+</style></head><body>
 
-<div id="splash"><div class="b-circle"><div class="b-letter">B</div></div><h1 style="color:#111;font:900 38px Arial;margin-top:14px">Bashiri</h1></div>
+<div id="splash"><div class="b-circle"><div class="b-letter">B</div></div><h1 style="color:#111;font:900 42px Arial Black;margin-top:12px">Bashiri</h1></div>
 
-<div class="top"><div class="bal">💰 KES <span id="bal">1051</span></div><div id="phoneDisp" style="font-size:11px;color:#888">0116982197</div><div id="cloudStat" style="font-size:11px;color:#00e676">Cloud: CONNECTING...</div></div>
+<div class="top"><div><div class="bal">💰 KES <span id="bal">1051</span></div><div id="phoneDisp" style="font-size:11px;color:#888">0116982197</div><div id="cloudStat" style="font-size:11px;color:#00e676">Cloud: CONNECTING...</div></div><div id="lastD" style="background:#222;padding:10px 16px;border-radius:10px;font-weight:900">9</div></div>
 
-<div class="botsec"><div class="bottitle">EVEN/ODD BOTS - FIXED BOTH SIDES</div>
-<div class="row"><span>🛡️ Safe Base 5→+7</span><button class="tog" id="tog-safe" onclick="toggleBot('safe','even')">OFF</button></div>
-<div class="row"><span>⚡ Mart Base 5→+7</span><button class="tog" id="tog-mart" onclick="toggleBot('mart','even')">OFF</button></div>
-<div class="row"><span>🔥 Agg Base 10→+5</span><button class="tog" id="tog-agg" onclick="toggleBot('agg','even')">OFF</button></div>
-</div>
+<div id="evenBots"></div>
+<div id="overBots"></div>
 
-<div class="botsec"><div class="bottitle">OVER/UNDER BOTS - FIXED BOTH SIDES</div>
-<div class="row"><span>🛡️ Safe OU Base 5→+2</span><button class="tog" id="tog-safeOU" onclick="toggleBot('safeOU','over')">OFF</button></div>
-<div class="row"><span>⚡ Mart OU Base 5→+2</span><button class="tog" id="tog-martOU" onclick="toggleBot('martOU','over')">OFF</button></div>
-<div class="row"><span>🔥 Agg OU Base 10→+5</span><button class="tog" id="tog-aggOU" onclick="toggleBot('aggOU','over')">OFF</button></div>
-</div>
-
-<div style="display:flex;gap:6px;margin:14px 0"><input id="depInp" class="inp" style="flex:1" placeholder="Amount"><button onclick="BAL+=parseInt(depInp.value)||0;document.getElementById('bal').innerText=BAL" style="padding:10px 16px;background:#0F7A3D;border:none;border-radius:8px;color:#fff;font-weight:800">M-Pesa</button></div>
-
-<div class="r-head"><span id="rTitle">RESULTS (0)</span><button onclick="localStorage.removeItem('bashiri_results');location.reload()" style="background:none;border:none;color:#777">CLEAR</button></div>
+<div style="display:flex;justify-content:space-between;margin:14px 0 6px;font-weight:900;font-size:13px"><span id="rTitle">RESULTS (0)</span><button onclick="localStorage.removeItem('bashiri_results');location.reload()" style="background:none;border:none;color:#777;font-weight:800">CLEAR</button></div>
 <div id="resultsList"></div>
 
 <script>
 const SUPA_URL="https://hkhqbtyyqgvaktamilxs.supabase.co";
 const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg";
 const supa=window.supabase.createClient(SUPA_URL,SUPA_KEY);
-let PHONE=localStorage.getItem('phone')||'0116982197';
-let BAL=1051, hist=[0,1,0,2,0,1,3,7,4,2,1,0,0,5,8,0,1], intervals={}, results=JSON.parse(localStorage.getItem('bashiri_results')||'[]');
-document.getElementById('phoneDisp').innerText=PHONE;
-supa.from('bets').select('id').limit(1).then(r=>{document.getElementById('cloudStat').innerText=r.error?'Cloud: '+r.error.message:'Cloud: CONNECTED 100% v11 NEW KEY'});
+let BAL=parseInt(localStorage.getItem('bal')||'1051'); let hist=JSON.parse(localStorage.getItem('hist')||'[9,8,7,6,5,4,3,2,1,0]'); let results=JSON.parse(localStorage.getItem('bashiri_results')||'[]'); let intervals={}; let sessions={};
 
-function calcPayout(s,isEven){s=Math.max(5,parseInt(s)||5); if(isEven){if(s===5)return{profit:7,payout:12}; if(s<50)return{profit:s+2,payout:s*2+2}; return{profit:Math.floor(s*0.91),payout:s+Math.floor(s*0.91)}} else {if(s===5)return{profit:5,payout:10}; if(s<50)return{profit:s+5,payout:s*2+5}; return{profit:Math.floor(s*0.95),payout:s+Math.floor(s*0.95)}}}
-function addResult(type,d,profit,win){results.unshift({type,d,profit,win}); if(results.length>100)results.pop(); localStorage.setItem('bashiri_results',JSON.stringify(results)); let list=document.getElementById('resultsList'); list.innerHTML=results.map(r=>`<div style="display:flex;justify-content:space-between;padding:7px;margin:3px 0;background:#151515;border-left:3px solid ${r.win?'#0F7A3D':'#ff4444'};border-radius:6px;font-size:13px"><span>${r.win?'✅':'❌'} ${r.type.toUpperCase()} D:${r.d}</span><span style="color:${r.win?'#0F7A3D':'#ff4444'}">${r.profit>0?'+':''}${r.profit}</span></div>`).join(''); document.getElementById('rTitle').innerText=`RESULTS (${results.length})`}
+document.getElementById('bal').innerText=BAL;
 
-function toggleBot(name,baseType){
- let el=document.getElementById('tog-'+name); let isOff=el.innerText==='OFF'; el.innerText=isOff?'ON':'OFF'; el.className=isOff?'tog on':'tog';
- if(isOff){
-   intervals[name]=setInterval(async()=>{
-     let base=name.includes('agg')?10:5;
-     let tradeType=baseType;
-     // FIXED: Trade BOTH sides
-     if(name.includes('OU')){
-       tradeType = hist[0]<=4? 'over' : 'under';
-     }else{
-       tradeType = hist[0]%2===0? 'odd' : 'even';
-     }
-     let d=Math.floor(Math.random()*10);
-     let win=false;
-     if(tradeType==='over') win=d>=5;
-     else if(tradeType==='under') win=d<=4;
-     else if(tradeType==='even') win=d%2===0;
-     else if(tradeType==='odd') win=d%2===1;
-     let isEvenTrade=tradeType==='even'||tradeType==='odd';
-     let p=calcPayout(base,isEvenTrade);
-     let profit=win?p.profit:-base;
-     BAL+=profit; document.getElementById('bal').innerText=BAL;
-     hist.unshift(d); hist=hist.slice(0,30);
-     addResult(tradeType,d,profit,win);
-     try{await supa.from('bets').insert([{phone:PHONE,type:tradeType,digit:d,profit,win,stake:base}])}catch(e){}
-   },2000);
- }else{ clearInterval(intervals[name]); }
+function calcPayout(s,isEven){s=Math.max(5,parseInt(s)||5); if(isEven){if(s===5)return{profit:7,payout:12}; if(s<30)return{profit:s+2,payout:s*2+2}; return{profit:Math.floor(s*0.91),payout:s+Math.floor(s*0.91)}} else {if(s===5)return{profit:2,payout:7}; if(s===10)return{profit:5,payout:15}; return{profit:Math.floor(s*0.5),payout:s+Math.floor(s*0.5)}}}
+
+function addResult(type,d,profit,win,stake){
+ results.unshift({type,d,profit,win,stake}); if(results.length>150)results.pop();
+ localStorage.setItem('bashiri_results',JSON.stringify(results)); hist.unshift(d); hist=hist.slice(0,50); localStorage.setItem('hist',JSON.stringify(hist)); localStorage.setItem('bal',BAL);
+ document.getElementById('resultsList').innerHTML=results.slice(0,80).map(r=>`<div class="r-item ${r.win?'win':'lose'}"><span>${r.win?'✅':'❌'} ${r.type.toUpperCase()} D:${r.d} S:${r.stake}</span><span style="color:${r.win?'#0F7A3D':'#ff4444'}">${r.profit>0?'+':''}${r.profit}</span></div>`).join(''); document.getElementById('rTitle').innerText=`RESULTS (${results.length})`; document.getElementById('lastD').innerText=d;
+ for(let k in sessions){let el=document.getElementById('sess-'+k); if(el){let tp=document.getElementById('tp-'+k)?.value||50; let sl=document.getElementById('sl-'+k)?.value||50; el.innerText=`Session: ${sessions[k]>=0?'+':''}${sessions[k]} / TP +${tp} / SL -${sl}`; el.style.color=sessions[k]<0?'#ff5252':'#00e676';}}
 }
-addResult('init',hist[0],0,true);
-setTimeout(()=>{let s=document.getElementById('splash'); s.style.opacity=0; setTimeout(()=>s.remove(),600)},2500);
-</script>
-</body>
-</html>
+
+function createBot(id,label,base,TP,SL,txt){
+ return `<div class="botsec-title">${id.includes('OU')?'OVER/UNDER':'EVEN/ODD'} BOTS - ${txt}</div><div class="botcard"><div style="display:flex;justify-content:space-between;align-items:center"><div><b>${label}</b> <span style="background:#0F7A3D;color:#000;font-size:11px;padding:3px 8px;border-radius:20px;font-weight:800;margin-left:6px">Base ${txt}</span></div><button class="tog" id="tog-${id}" onclick="toggleBot('${id}')">OFF</button></div><div style="display:flex;gap:8px;margin-top:10px"><span>Base</span><input class="inp" id="base-${id}" value="${base}"><span>TP</span><input class="inp" id="tp-${id}" value="${TP}"><span>SL</span><input class="inp" id="sl-${id}" value="${SL}"></div><div class="session" id="sess-${id}">Session: +0 / TP +${TP} / SL -${SL}</div></div>`;
+}
+
+function initBots(){
+ document.getElementById('evenBots').innerHTML=createBot('safe','🛡️ Safe','5','50','50','5→+7')+createBot('mart','⚡ Mart','5','100','200','5→+7')+createBot('agg','🔥 Agg','10','150','100','10→+5');
+ document.getElementById('overBots').innerHTML=createBot('safeOU','🛡️ Safe OU','5','50','50','5→+2')+createBot('martOU','⚡ Mart OU','5','100','200','5→+2')+createBot('aggOU','🔥 Agg OU','10','150','100','10→+5');
+}
+
+function toggleBot(id){
+ let el=document.getElementById('tog-'+id); let isOff=el.innerText==='OFF'; el.innerText=isOff?'ON':'OFF'; el.className=isOff?'tog on':'tog';
+ if(isOff){
+   sessions[id]=0;
+   intervals[id]=setInterval(async()=>{
+     let base=parseInt(document.getElementById('base-'+id).value)||5; let tp=parseInt(document.getElementById('tp-'+id).value)||50; let sl=parseInt(document.getElementById('sl-'+id).value)||50;
+     let tradeType;
+     if(id.includes('OU')){ tradeType=hist[0]<=4?'over':'under'; if(results.length>=2 && results[0].type===results[1].type &&!results[0].win) tradeType=tradeType==='over'?'under':'over'; }
+     else{ tradeType=hist[0]%2===0?'odd':'even'; }
+     let d=Math.floor(Math.random()*10); let isEven=tradeType==='even'||tradeType==='odd'; let p=calcPayout(base,isEven);
+     let win=(tradeType==='over'&&d>=2)||(tradeType==='under'&&d<=7)||(tradeType==='even'&&d%2===0)||(tradeType==='odd'&&d%2===1);
+     let profit=win?p.profit:-base; BAL+=profit; sessions[id]+=profit; document.getElementById('bal').innerText=BAL;
+     addResult(tradeType,d,profit,win,base);
+     try{await supa.from('bets').insert([{phone:'0116982197',type:tradeType,digit:d,profit,win,stake:base,bot:id}])}catch(e){}
+     if(sessions[id]>=tp || sessions[id]<=-sl){ clearInterval(intervals[id]); el.innerText='OFF'; el.className='tog'; }
+   },1800);
+ }else{ clearInterval(intervals[id]); }
+}
+
+supa.from('bets').select('id').limit(1).then(r=>{let el=document.getElementById('cloudStat'); el.innerText=r.error?'Cloud: ERROR '+r.error.message:'Cloud: CONNECTED 100% v11 NEW KEY';});
+initBots();
+document.getElementById('resultsList').innerHTML=results.slice(0,80).map(r=>`<div class="r-item ${r.win?'win':'lose'}"><span>${r.win?'✅':'❌'} ${r.type.toUpperCase()} D:${r.d}</span><span>${r.profit}</span></div>`).join(''); document.getElementById('rTitle').innerText=`RESULTS (${results.length})`;
+setTimeout(()=>{let s=document.getElementById('splash'); s.style.opacity=0; setTimeout(()=>s.remove(),700)},2500);
+</script></body></html>
