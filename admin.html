@@ -1,49 +1,37 @@
 <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HOUSE ANALYTICS</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}body{background:#06140f;color:#fff;padding:10px;padding-bottom:40px}.card{background:#1a1a1a;border-radius:18px;padding:14px;margin-bottom:12px;border:1px solid #222}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.green{color:#00e676}.red{color:#ff5a5a}.yellow{color:#ffca28}.cyan{color:#00e6ff}table{width:100%;font-size:12px;border-collapse:collapse}th{color:#777;text-align:left;padding:8px 4px;font-size:10px;text-transform:uppercase}td{padding:9px 4px;border-top:1px solid #222}button{border:none;border-radius:12px;padding:10px 18px;font-weight:800;cursor:pointer}.refresh{background:#00e676;color:#000}.csv{background:#ff7a7a;color:#fff;margin-left:6px}.hrow{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}</style></head><body>
-
-<div class="card"><div class="hrow"><div><h2>🏦 HOUSE ANALYTICS</h2><div style="font-size:11px;color:#00e676;margin-top:4px" id="cloudStatus">Cloud CONNECTING... checking anon key...</div></div><div style="display:flex"><button class="refresh" onclick="loadAll()">🔄 REFRESH</button><button class="csv" onclick="exportCSV()">CSV</button></div></div></div>
-
+<div class="card"><div class="hrow"><div><h2>🏦 HOUSE ANALYTICS</h2><div style="font-size:11px;color:#00e676;margin-top:4px" id="cloudStatus">Cloud CONNECTING... NEW KEY...</div></div><div style="display:flex"><button class="refresh" onclick="loadAll()">🔄 REFRESH</button><button class="csv" onclick="exportCSV()">CSV</button></div></div></div>
 <div class="grid2">
 <div class="card"><div style="font-size:10px;color:#888">HOUSE PROFIT (TOTAL)</div><div style="font-size:28px;font-weight:900" id="houseTotal">KES 0</div><div style="font-size:11px;color:#666">Stakes - Payouts</div></div>
 <div class="card"><div style="font-size:10px;color:#888">TODAY HOUSE</div><div style="font-size:28px;font-weight:900" id="houseToday">KES 0</div><div style="font-size:11px;color:#888" id="betsToday">0 bets today</div></div>
 <div class="card"><div style="font-size:10px;color:#888">TOTAL STAKED</div><div style="font-size:28px;font-weight:900" id="totalStaked" class="cyan">0</div><div style="font-size:11px;color:#888" id="betsCount">0 bets</div></div>
 <div class="card"><div style="font-size:10px;color:#888">TOTAL PAID OUT</div><div style="font-size:28px;font-weight:900" id="totalPaid" class="red">0</div><div style="font-size:11px;color:#888">Player wins</div></div>
 </div>
-
-<div class="card"><h3>📊 BY GAME TYPE</h3><table><thead><tr><th>Type</th><th>Bets</th><th>Staked</th><th>Payout</th><th>House</th><th>Edge %</th></tr></thead><tbody id="byType"></tbody></table></div>
+<div class="card"><h3>📊 BY GAME TYPE</h3><table><thead><tr><th>TYPE</th><th>BETS</th><th>STAKED</th><th>PAYOUT</th><th>HOUSE</th><th>EDGE %</th></tr></thead><tbody id="byType"></tbody></table></div>
 <div class="card"><h3>💰 DEPOSITS vs WITHDRAWS</h3><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px"><div><div style="font-size:11px;color:#888">Deposits</div><div style="font-size:26px;font-weight:900" class="green" id="depTotal">0</div><div style="font-size:11px" id="depCount">0 deps</div></div><div><div style="font-size:11px;color:#888">Withdraws</div><div style="font-size:26px;font-weight:900" class="red" id="withTotal">0</div><div style="font-size:11px" id="withCount">0 with</div></div><div><div style="font-size:11px;color:#888">Net Cash</div><div style="font-size:26px;font-weight:900" class="yellow" id="netCash">0</div><div style="font-size:11px">Dep - With</div></div></div></div>
-<div class="card"><div class="hrow" style="margin-bottom:12px"><h3>👥 TOP USERS</h3><input id="searchPhone" placeholder="Search phone" style="background:#222;border:1px solid #333;color:#fff;padding:8px 12px;border-radius:10px" oninput="renderUsers()"></div><table><thead><tr><th>Phone</th><th>Bets</th><th>Staked</th><th>Payout</th><th>House</th><th>Balance</th></tr></thead><tbody id="topUsers"></tbody></table></div>
-<div class="card"><h3>📅 LAST 50 BETS - Live</h3><table><thead><tr><th>Time</th><th>Phone</th><th>Type</th><th>D</th><th>Stake</th><th>Payout</th><th>House</th></tr></thead><tbody id="lastBets"></tbody></table></div>
-
+<div class="card"><div class="hrow" style="margin-bottom:12px"><h3>👥 TOP USERS</h3><input id="searchPhone" placeholder="Search phone" style="background:#222;border:1px solid #333;color:#fff;padding:8px 12px;border-radius:10px" oninput="renderUsers()"></div><table><thead><tr><th>PHONE</th><th>BETS</th><th>STAKED</th><th>PAYOUT</th><th>HOUSE</th><th>BALANCE</th></tr></thead><tbody id="topUsers"></tbody></table></div>
+<div class="card"><h3>📅 LAST 50 BETS - Live</h3><table><thead><tr><th>TIME</th><th>PHONE</th><th>TYPE</th><th>D</th><th>STAKE</th><th>PAYOUT</th><th>HOUSE</th></tr></thead><tbody id="lastBets"></tbody></table></div>
 <script>
-// YOUR ANON KEY - THIS WAS MISSING BEFORE
-const SUPA_URL = "https://hkhqbtyyqgvaktamilxs.supabase.co";
-const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg0OTYyMDYsImV4cCI6MjA2NDA3MjIwNn0.PzZyN1rZz3x8h5qX8y9z0a1b2c3d4e5f6g7h8";
-const supa = window.supabase.createClient(SUPA_URL, SUPA_KEY);
-
+const SUPA_URL="https://hkhqbtyyqgvaktamilxs.supabase.co";
+const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg";
+const supa=window.supabase.createClient(SUPA_URL,SUPA_KEY);
 let cacheBets=[],cacheDeps=[],cacheWiths=[],cacheUsers=[];
-
 async function loadAll(){
-  try{
-    const [{data:bets},[STRIPPED] = await Promise.all([
-      supa.from('bets').select('*').order('created_at',{ascending:false}).limit(500),
-      supa.from('deposits').select('*'),
-      supa.from('withdraws').select('*'),
-      supa.from('users').select('*')
-    ]);
-    cacheBets=bets||[]; cacheDeps=deps||[]; cacheWiths=withs||[]; cacheUsers=users||[];
-    document.getElementById('cloudStatus').innerText = `Cloud CONNECTED - ${cacheBets.length} rows - Anon Key OK - ${new Date().toLocaleTimeString()}`;
-    renderAll();
-  }catch(e){
-    document.getElementById('cloudStatus').innerText = 'Cloud ERROR - Anon Key missing or RLS: '+e.message;
-  }
+  const [{data:bets},{data:deps},{data:withs},{data:users}] = await Promise.all([
+    supa.from('bets').select('*').order('created_at',{ascending:false}).limit(500),
+    supa.from('deposits').select('*'),
+    supa.from('withdraws').select('*'),
+    supa.from('users').select('*')
+  ]);
+  cacheBets=bets||[]; cacheDeps=deps||[]; cacheWiths=withs||[]; cacheUsers=users||[];
+  document.getElementById('cloudStatus').innerText=`Cloud CONNECTED NEW KEY - ${cacheBets.length} rows - ${new Date().toLocaleTimeString()}`;
+  renderAll();
 }
-
 function renderAll(){
   let totalStaked=0,totalPaid=0,todayHouse=0,todayBets=0; let byType={},byPhone={}; let today=new Date().toISOString().slice(0,10);
   cacheBets.forEach(b=>{totalStaked+=b.stake||0; totalPaid+=b.payout||0; if((b.created_at||'').slice(0,10)===today){todayBets++; todayHouse+=b.house||0} byType[b.type]=byType[b.type]||{bets:0,staked:0,payout:0,house:0}; byType[b.type].bets++; byType[b.type].staked+=b.stake||0; byType[b.type].payout+=b.payout||0; byType[b.type].house+=b.house||0; byPhone[b.phone]=byPhone[b.phone]||{bets:0,staked:0,payout:0,house:0}; byPhone[b.phone].bets++; byPhone[b.phone].staked+=b.stake||0; byPhone[b.phone].payout+=b.payout||0; byPhone[b.phone].house+=b.house||0; });
   document.getElementById('houseTotal').innerText='KES '+(totalStaked-totalPaid); document.getElementById('houseTotal').className=(totalStaked-totalPaid)>=0?'green':'red';
   document.getElementById('houseToday').innerText='KES '+todayHouse; document.getElementById('betsToday').innerText=todayBets+' bets today'; document.getElementById('totalStaked').innerText=totalStaked; document.getElementById('betsCount').innerText=cacheBets.length+' bets'; document.getElementById('totalPaid').innerText=totalPaid;
-  let typeHtml=''; Object.entries(byType).forEach(([k,v])=>{let edge=v.staked?((v.house/v.staked)*100).toFixed(1):'0.0'; typeHtml+=`<tr><td>${k}</td><td>${v.bets}</td><td>${v.staked}</td><td>${v.payout}</td><td class="${v.house>=0?'green':'red'}">${v.house>=0?'+':''}${v.house}</td><td>${edge}%</td></tr>`}); document.getElementById('byType').innerHTML=typeHtml||'<tr><td colspan=6 style="color:#555;text-align:center;padding:20px">No bets yet - check main app cloud write</td></tr>';
+  let typeHtml=''; Object.entries(byType).forEach(([k,v])=>{let edge=v.staked?((v.house/v.staked)*100).toFixed(1):'0.0'; typeHtml+=`<tr><td>${k}</td><td>${v.bets}</td><td>${v.staked}</td><td>${v.payout}</td><td class="${v.house>=0?'green':'red'}">${v.house>=0?'+':''}${v.house}</td><td>${edge}%</td></tr>`}); document.getElementById('byType').innerHTML=typeHtml||'<tr><td colspan=6 style="color:#555;text-align:center;padding:20px">No bets yet - place bet in main app</td></tr>';
   let depSum=cacheDeps.reduce((a,b)=>a+(b.amount||0),0), withSum=cacheWiths.reduce((a,b)=>a+(b.amount||0),0); document.getElementById('depTotal').innerText=depSum; document.getElementById('withTotal').innerText=withSum; document.getElementById('netCash').innerText=depSum-withSum; document.getElementById('depCount').innerText=cacheDeps.length+' deps'; document.getElementById('withCount').innerText=cacheWiths.length+' with';
   renderUsers(byPhone); renderBets();
 }
