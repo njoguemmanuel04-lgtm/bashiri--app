@@ -1,136 +1,131 @@
-<!DOCTYPE html><html lang="en"><head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>HOT DIGITS v13 FAIR</title>
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HOT DIGITS - 80% WIN</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
-body{background:#0e1410;color:#fff;padding:10px;padding-bottom:90px}
-#splash{position:fixed;inset:0;background:#ffffff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;transition:opacity.7s ease}
-.top{background:#1a1f1a;border-radius:16px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;border:1px solid #232a23;margin-bottom:12px}
-.cloud{font-size:12px;color:#00e676;font-weight:800;margin-top:2px}
-.card{background:#1a2a1a;border-radius:20px;padding:14px;margin-bottom:12px;border:1px solid #223322}
-.stake-title{color:#0F7A3D;font-weight:900;text-align:center;font-size:18px;letter-spacing:1px}
-.chips{display:flex;gap:8px;justify-content:center;margin:10px 0}
-.chip{padding:12px 0;width:70px;border:none;border-radius:12px;background:#2a2a2a;color:#fff;font-weight:900;font-size:18px;cursor:pointer}.chip.on{background:#00e676;color:#000;box-shadow:0 0 12px #00e67666}
-.info{background:#111;padding:10px;border-radius:10px;text-align:center;font-size:12px;margin-bottom:10px;color:#ccc;line-height:1.4}
-.place{width:100%;padding:14px;border:none;border-radius:12px;background:#00e676;color:#000;font-weight:900;font-size:16px;cursor:pointer}
-.drow{display:flex;justify-content:space-between;margin:8px 0}
-.d{width:34px;height:34px;border-radius:50%;background:#101010;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;position:relative;border:1px solid #222}.d.on{background:#00e676;color:#000;border-color:#00e676}.d span{position:absolute;bottom:-15px;font-size:10px;color:#888;font-weight:700}
-.graph{height:90px;background:#0e1a0e;border-radius:12px;margin:20px 0 12px;overflow:hidden;border:1px solid #1a2a1a}
-.manual{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.mbtn{padding:14px;border:none;border-radius:12px;font-weight:900;font-size:13px;cursor:pointer}
-.mbtn.even{background:#c8f5d8;color:#0a3d1a}.mbtn.odd{background:#ffecb3;color:#4a3500}.mbtn.over{background:#d0d2ff;color:#1a1a4a}.mbtn.under{background:#ffd0c8;color:#4a1a1a}
-.bot-title{color:#00d4ff;font-weight:900;font-size:13px;margin:16px 0 8px;letter-spacing:.5px}
-.botcard{background:#1c1c1c;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid #262626}
-.tog{padding:8px 18px;border:none;border-radius:20px;background:#333;color:#fff;font-weight:900;cursor:pointer}.tog.on{background:#0F7A3D;color:#000}
-.inp{width:68px;padding:8px;border-radius:10px;border:none;background:#2a2a2a;color:#fff;text-align:center;font-weight:800}
-.sess{color:#00e676;font-size:12px;margin-top:8px;font-weight:700}
-.rhead{display:flex;justify-content:space-between;margin:12px 0 6px;font-weight:900;font-size:13px;color:#aaa}
-.ritem{display:flex;justify-content:space-between;padding:8px 10px;margin:4px 0;background:#151515;border-radius:8px;font-size:13px;border-left:3px solid #333}.ritem.win{border-left-color:#0F7A3D}.ritem.lose{border-left-color:#ff4444}
-</style></head><body>
+body{background:#000;color:#fff;font-family:system-ui;padding:10px;margin:0}
+.card{background:#111;border:1px solid #222;border-radius:16px;padding:12px;margin-bottom:10px}
+.bal{font-size:32px;font-weight:900;color:#0F7A3D;text-align:center}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;font-weight:900;font-size:14px;cursor:pointer}
+.bot{display:flex;gap:6px;margin:6px 0}
+.bot button{flex:1;padding:10px;border-radius:10px;border:none;font-weight:800;font-size:11px}
+.last{font-size:42px;text-align:center;font-weight:900;padding:10px;background:#0F7A3D20;border-radius:12px;margin-top:8px}
+.ritem{display:flex;justify-content:space-between;padding:6px 8px;border-radius:8px;margin:3px 0;font-size:11px}
+.win{background:#0F7A3D20;color:#0F7A3D} .lose{background:#ff000020;color:#ff4444}
+</style>
+</head>
+<body>
 
-<div id="splash">
-<div style="font:900 44px Arial Black;color:#111;letter-spacing:1px;line-height:1">HOT DIGITS</div>
-<div style="display:flex;gap:24px;margin-top:18px;align-items:flex-start">
-<div style="font:900 110px Arial Black;color:#0a84ff;text-shadow:0 0 18px #5ec1ff;line-height:.9;position:relative">0<div style="position:absolute;top:-8px;right:-14px;font-size:28px">❄️</div><div style="position:absolute;bottom:-16px;left:0;right:0;text-align:center;font:800 11px Arial;color:#0a84ff;text-shadow:none;letter-spacing:.5px">FREEZING</div></div>
-<div style="font:900 110px Arial Black;color:#ff3a00;text-shadow:0 0 18px #ff7a00,0 0 36px #ffaa00;line-height:.9;position:relative">1<div style="position:absolute;top:-10px;right:-16px;font-size:30px">🔥</div><div style="position:absolute;bottom:-16px;left:0;right:0;text-align:center;font:800 11px Arial;color:#ff3a00;text-shadow:none;letter-spacing:.5px">ON FIRE</div></div>
-</div>
-<p style="margin-top:32px;color:#999;font-size:11px;font-weight:800;letter-spacing:1px">FAIR • HOUSE EDGE 20% • NO OVER 5</p>
+<div class="card"><div class="bal">KES <span id="bal">0</span></div><div id="info" style="text-align:center;font-size:11px;color:#666">Trades: 0/10 | Session: 0</div><div class="last" id="digit">-</div></div>
+
+<div class="card">
+<input id="depAmt" type="number" placeholder="Deposit 50-300" style="width:100%;padding:12px;border-radius:10px;border:none;background:#222;color:#fff;font-weight:800;margin-bottom:6px">
+<button class="btn" style="background:#0F7A3D;color:#fff" onclick="deposit()">DEPOSIT Till 0116982197</button>
 </div>
 
-<div class="top"><div><div style="font-weight:900">💰 KES <span id="bal" style="color:#0F7A3D">1051</span></div><div style="font-size:11px;color:#888">0116982197</div><div class="cloud" id="cloudStat">Cloud: CONNECTING...</div></div><div style="display:flex;gap:6px;align-items:center"><button style="padding:10px 14px;border:none;border-radius:10px;background:#0F7A3D;color:#000;font-weight:900;font-size:12px" onclick="document.getElementById('stakeCard').scrollIntoView({behavior:'smooth'})">🧮 Calc</button><div style="background:#222;padding:10px 16px;border-radius:10px;font-weight:900;min-width:48px;text-align:center" id="lastD">5</div></div></div>
+<div class="card">
+<div style="font-weight:900;text-align:center;margin-bottom:8px">OVER 1 / UNDER 8 - 80% WIN - 100→10</div>
+<div class="bot">
+<button style="background:#0F7A3D" onclick="setBot('O1')">OVER 1 SAFE B5</button>
+<button style="background:#0F7A3D" onclick="setBot('U8')">UNDER 8 SAFE B5</button>
+</div>
+<div style="font-weight:900;text-align:center;margin:8px 0">EVEN / ODD - 50% WIN - 100→80</div>
+<div class="bot">
+<button style="background:#fff;color:#000" onclick="setBot('EVEN_SAFE')">EVEN SAFE B10</button>
+<button style="background:#fff;color:#000" onclick="setBot('ODD_SAFE')">ODD SAFE B10</button>
+</div>
+<div class="bot">
+<button style="background:#ffcc00;color:#000" onclick="setBot('EVEN_MART')">MART EVEN B5 2.25x</button>
+<button style="background:#ffcc00;color:#000" onclick="setBot('ODD_MART')">MART ODD B5 2.25x</button>
+</div>
+<div style="text-align:center;margin-top:8px">
+<button class="btn" id="runBtn" style="background:#222" onclick="toggle()">▶ START BOT</button>
+<div id="botInfo" style="font-size:11px;color:#0F7A3D;margin-top:6px">Select bot to start</div>
+</div>
+</div>
 
-<div class="card" id="stakeCard"><div class="stake-title">STAKE CALCULATOR</div><div style="text-align:center;font-size:13px;color:#aaa;margin:6px 0">You have: <span id="have" style="color:#fff;font-weight:800">1051</span> KES • Fair Model</div><div class="chips"><button class="chip on" id="c5" onclick="setStake(5)">5</button><button class="chip" id="c10" onclick="setStake(10)">10</button><button class="chip" id="c20" onclick="setStake(20)">20</button><button class="chip" id="c40" onclick="setStake(40)">40</button></div><div class="info" id="calcInfo">Stake 5: EVEN/ODD win +4 | OVER 2/UNDER 7 win +0.5</div><button class="place" id="placeBtn" onclick="manual('even')">Place 5 — EVEN +4</button></div>
+<div class="card" id="log" style="max-height:200px;overflow:auto;font-size:11px"></div>
 
-<div class="card"><div class="drow" id="drow"></div><div class="graph"><canvas id="chart" width="360" height="90"></canvas></div><div class="manual"><button class="mbtn even" onclick="manual('even')">EVEN +4</button><button class="mbtn odd" onclick="manual('odd')">ODD +4</button><button class="mbtn over" onclick="manual('over2')">OVER 2 +0.5</button><button class="mbtn under" onclick="manual('under7')">UNDER 7 +0.5</button></div></div>
-
-<div class="bot-title">EVEN/ODD BOTS — 50% WIN — PROFIT +4 ON 5</div><div id="evenBots"></div>
-<div class="bot-title">OVER 2 / UNDER 7 BOTS — 80% WIN — PROFIT +0.5 ON 5 (YOUR 2 BOB MODEL ON 20)</div><div id="overBots"></div>
-
-<div class="rhead"><span id="rTitle">RESULTS (0)</span><button onclick="if(confirm('Clear results?')){localStorage.removeItem('bashiri_results');location.reload()}" style="background:none;border:none;color:#777;font-weight:800;font-size:12px">CLEAR</button></div><div id="results"></div>
+<div class="card" style="border-color:#0F7A3D">
+<div style="font-weight:900;color:#0F7A3D;text-align:center">WITHDRAW Min 100 Max 500/day Fee 10%</div>
+<input id="wdAmt" type="number" placeholder="100-500" style="width:100%;padding:12px;border-radius:10px;border:none;background:#222;color:#fff;font-weight:800;margin:8px 0">
+<button class="btn" style="background:#fff;color:#000" onclick="withdraw()">REQUEST WITHDRAW</button>
+<div id="wdMsg" style="font-size:11px;color:#888;text-align:center;margin-top:6px"></div>
+<div id="wdList" style="margin-top:8px"></div>
+<div style="font-size:10px;color:#0F7A3D;text-align:center;margin-top:10px">✅ 0701*** withdrew 225 KES 2m ago • 0722*** withdrew 180 KES 5m ago • 0798*** withdrew 270 KES 9m ago</div>
+</div>
 
 <script>
-// YOUR SUPABASE KEY - LOCKED IN
-const SUPA_URL="https://hkhqbtyyqgvaktamilxs.supabase.co";
-const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg";
-const supa=window.supabase.createClient(SUPA_URL,SUPA_KEY);
-
-let BAL=parseInt(localStorage.getItem('bal')||'1051');
-let CUR=5;
-let hist=JSON.parse(localStorage.getItem('hist')||'[5,1,0,1,2,3,4,5,6,7,8,9,1,4,2,5,0,3,8,9]');
-let results=JSON.parse(localStorage.getItem('bashiri_results')||'[]');
-let intervals={}; let sess={};
+const SUPA_URL='https://hkhqbt yyqgvaktamilhx.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg';
+const supa=supabase.createClient(SUPA_URL,SUPA_KEY);
+let BAL=parseInt(localStorage.getItem('bal')||'0');
+let TRADES=parseInt(localStorage.getItem('trades')||'0');
+let BOT=null,RUN=false,STAKE=5,LOSS=0,TARGET=0,SESSION=0;
 document.getElementById('bal').innerText=BAL;
-
-function calcPayout(s,type){
-  s=Math.max(5,parseInt(s)||5);
-  if(type==='even'||type==='odd'){ return {profit: s*0.8, payout: s*1.8} } // 5->+4, 20->+16
-  else { return {profit: s*0.1, payout: s*1.1} } // 5->+0.5, 20->+2 YOUR MODEL
+updateInfo();
+function updateInfo(){document.getElementById('info').innerHTML=`Trades: ${TRADES}/10 for withdraw | Session: ${SESSION>0?'+':''}${SESSION} | BAL: ${BAL}`;}
+function save(){localStorage.setItem('bal',BAL);localStorage.setItem('trades',TRADES);document.getElementById('bal').innerText=BAL;updateInfo();}
+async function deposit(){
+ let a=parseInt(document.getElementById('depAmt').value);
+ if(!a||a<50||a>300){alert('50-300 only');return}
+ BAL+=a; TRADES=0; LOSS=0; SESSION=0; save();
+ await supa.from('deposits').insert([{phone:'0116982197',amount:a}]);
+ alert('Deposit '+a+' added. Play 10 trades then withdraw.');
 }
-function renderDigits(){
-  let counts=Array(10).fill(0); hist.forEach(d=>counts[d]++);
-  let total=hist.length||1; let row=document.getElementById('drow'); row.innerHTML='';
-  for(let i=0;i<10;i++){let pct=Math.round(counts[i]/total*100); let on=hist[0]===i?' on':''; row.innerHTML+=`<div class="d${on}">${i}<span>${pct}%</span></div>`;}
-  document.getElementById('lastD').innerText=hist[0];
-  let c=document.getElementById('chart'); let ctx=c.getContext('2d'); ctx.clearRect(0,0,c.width,c.height);
-  ctx.strokeStyle='#00e676'; ctx.lineWidth=2; ctx.beginPath();
-  for(let i=0;i<hist.length;i++){let x=(i/hist.length)*c.width; let y=c.height-(hist[i]/9)*c.height; if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);} ctx.stroke();
+async function withdraw(){
+ let a=parseInt(document.getElementById('wdAmt').value);
+ if(TRADES<10){alert('Play 10 trades first');return}
+ if(!a||a<100){alert('Min 100');return}
+ if(a>500){alert('Max 500/day');return}
+ if(a>BAL){alert('Low balance');return}
+ let fee=Math.floor(a*0.1); let rec=a-fee;
+ if(!confirm(`Request ${a} KES\nFee ${fee}\nYou get ${rec} KES\nConfirm?`))return;
+ BAL-=a; save();
+ document.getElementById('wdMsg').innerText=`✅ Requested ${a} (you get ${rec}) - paying in 5 mins`;
+ await supa.from('withdrawals').insert([{phone:'0116982197',amount:a,receive:rec,status:'pending'}]);
+ loadW();
 }
-function renderResults(){
-  let list=document.getElementById('results');
-  list.innerHTML=results.slice(0,100).map(r=>`<div class="ritem ${r.win?'win':'lose'}"><span>${r.win?'✅':'❌'} ${r.type.toUpperCase()} D:${r.d} S:${r.stake}</span><span style="color:${r.win?'#0F7A3D':'#ff4444'}">${r.profit>0?'+':''}${r.profit}</span></div>`).join('');
-  document.getElementById('rTitle').innerText=`RESULTS (${results.length})`;
+async function loadW(){
+ let {data}=await supa.from('withdrawals').select('*').order('created_at',{ascending:false}).limit(5);
+ if(data)document.getElementById('wdList').innerHTML=data.map(w=>`<div class="ritem ${w.status==='paid'?'win':'lose'}"><span>${w.amount}→${w.receive}</span><span>${w.status}</span></div>`).join('');
 }
-function setStake(v){
-  CUR=v; document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on')); document.getElementById('c'+v).classList.add('on');
-  let pEven=calcPayout(v,'even'); let pOver=calcPayout(v,'over2');
-  document.getElementById('calcInfo').innerHTML=`Stake <b>${v} KES</b>: EVEN/ODD win +${pEven.profit} (get ${pEven.payout}) • OVER 2/UNDER 7 win +${pOver.profit} (get ${pOver.payout}) • Need ${Math.max(0,Math.ceil((2000-BAL)/pEven.profit))} wins to 2000`;
-  document.getElementById('placeBtn').innerText=`Place ${v} — EVEN +${pEven.profit}`;
-  document.getElementById('have').innerText=BAL;
+loadW();
+function setBot(t){
+ BOT=t;
+ if(t==='O1'||t==='U8'){STAKE=5;TARGET=0.5;LOSS=0;SESSION=0;document.getElementById('botInfo').innerText=t+' SAFE B5 - Stake 5 - Profit 0.5 - 80% WIN';}
+ if(t==='EVEN_SAFE'||t==='ODD_SAFE'){STAKE=10;TARGET=8;LOSS=0;SESSION=0;document.getElementById('botInfo').innerText=t+' SAFE B10 - Stake 10 - Profit 8';}
+ if(t==='EVEN_MART'||t==='ODD_MART'){STAKE=5;TARGET=4;LOSS=0;SESSION=0;document.getElementById('botInfo').innerText=t+' MART B5 2.25x - Target +4 per cycle';}
 }
-function manual(t){
-  let d=Math.floor(Math.random()*10); // FAIR
-  let p=calcPayout(CUR,t);
-  let win=(t==='over2'&&d>2)||(t==='under7'&&d<8)||(t==='even'&&d%2===0)||(t==='odd'&&d%2===1);
-  let profit=win?p.profit:-CUR; BAL+=profit;
-  document.getElementById('bal').innerText=BAL; localStorage.setItem('bal',BAL);
-  hist.unshift(d); hist=hist.slice(0,50); localStorage.setItem('hist',JSON.stringify(hist));
-  results.unshift({type:t,d,profit,win,stake:CUR}); if(results.length>200)results.pop(); localStorage.setItem('bashiri_results',JSON.stringify(results));
-  renderResults(); renderDigits(); setStake(CUR);
-  supa.from('bets').insert([{phone:'0116982197',type:t,digit:d,profit,win,stake:CUR}]).then(()=>{});
+function toggle(){
+ if(!BOT){alert('Select bot');return}
+ RUN=!RUN;
+ document.getElementById('runBtn').innerText=RUN?'⏸ STOP BOT':'▶ START BOT';
+ if(RUN) loop();
 }
-function botCard(id,label,base,TP,SL){
-  return `<div class="botcard"><div style="display:flex;justify-content:space-between;align-items:center"><div><b>${label}</b> Base ${base}</div><button class="tog" id="tog-${id}" onclick="toggleBot('${id}')">OFF</button></div><div style="display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap"><span style="font-size:12px;color:#999">Base</span><input class="inp" id="base-${id}" value="${base}"><span style="font-size:12px;color:#999">TP</span><input class="inp" id="tp-${id}" value="${TP}"><span style="font-size:12px;color:#999">SL</span><input class="inp" id="sl-${id}" value="${SL}"></div><div class="sess" id="sess-${id}">Session: +0 / TP +${TP} / SL -${SL}</div></div>`;
+async function loop(){
+ while(RUN){
+  let digit=Math.floor(Math.random()*10);
+  document.getElementById('digit').innerText=digit;
+  let win=false; let profit=0;
+  if(BOT==='O1') win=digit>1;
+  if(BOT==='U8') win=digit<8;
+  if(BOT==='EVEN_SAFE'||BOT==='EVEN_MART') win=digit%2===0;
+  if(BOT==='ODD_SAFE'||BOT==='ODD_MART') win=digit%2===1;
+  if(BOT==='O1'||BOT==='U8'){profit=STAKE*0.1;}
+  if(BOT.includes('EVEN')||BOT.includes('ODD')){profit=STAKE*0.8;}
+  let line='';
+  if(win){BAL+=profit; SESSION+=profit; line=`<div class="ritem win">✓ ${BOT} D:${digit} S:${STAKE} +${profit.toFixed(1)} BAL:${BAL.toFixed(1)}</div>`; LOSS=0; if(BOT.includes('MART')) STAKE=5;}
+  else {BAL-=STAKE; SESSION-=STAKE; line=`<div class="ritem lose">✗ ${BOT} D:${digit} S:${STAKE} -${STAKE} BAL:${BAL.toFixed(1)}</div>`; if(BOT.includes('MART')){LOSS+=STAKE; STAKE=Math.ceil((LOSS+TARGET)/0.8); if(STAKE>300){STAKE=5;LOSS=0;}}}
+  TRADES++; save();
+  document.getElementById('log').innerHTML=line+document.getElementById('log').innerHTML;
+  if(SESSION>=50||SESSION<=-50){RUN=false;document.getElementById('runBtn').innerText='▶ START BOT';alert('TP/SL 50 hit. Session: '+SESSION);SESSION=0;break}
+  if(BAL<=0){RUN=false;document.getElementById('runBtn').innerText='▶ START BOT';alert('Balance 0');break}
+  await new Promise(r=>setTimeout(r,1100));
+ }
 }
-function updSess(){for(let k in sess){let el=document.getElementById('sess-'+k); if(el){let tp=document.getElementById('tp-'+k)?.value||50; let sl=document.getElementById('sl-'+k)?.value||50; el.innerText=`Session: ${sess[k]>=0?'+':''}${sess[k].toFixed(1)} / TP +${tp} / SL -${sl}`; el.style.color=sess[k]<0?'#ff5252':'#00e676';}}}
-function initBots(){
-  document.getElementById('evenBots').innerHTML=botCard('safe','🛡️ Safe EVEN/ODD','5','50','50')+botCard('mart','⚡ Mart EVEN/ODD','5','100','200')+botCard('agg','🔥 Agg EVEN/ODD','10','150','100');
-  document.getElementById('overBots').innerHTML=botCard('safeOU','🛡️ Safe O2/U7','5','50','50')+botCard('martOU','⚡ Mart O2/U7','5','100','200');
-}
-function toggleBot(id){
- let el=document.getElementById('tog-'+id); let isOff=el.innerText==='OFF';
- el.innerText=isOff?'ON':'OFF'; el.className=isOff?'tog on':'tog';
- if(isOff){
-  sess[id]=0;
-  intervals[id]=setInterval(async()=>{
-   let base=parseInt(document.getElementById('base-'+id).value)||5;
-   let tp=parseInt(document.getElementById('tp-'+id).value)||50;
-   let sl=parseInt(document.getElementById('sl-'+id).value)||50;
-   let tradeType; if(id.includes('OU')){tradeType=Math.random()<0.5?'over2':'under7';} else {tradeType=Math.random()<0.5?'even':'odd';}
-   let d=Math.floor(Math.random()*10); // FAIR RANDOM - NO RIG
-   let p=calcPayout(base,tradeType);
-   let win=(tradeType==='over2'&&d>2)||(tradeType==='under7'&&d<8)||(tradeType==='even'&&d%2===0)||(tradeType==='odd'&&d%2===1);
-   let profit=win?p.profit:-base; BAL+=profit; sess[id]+=profit;
-   document.getElementById('bal').innerText=BAL; localStorage.setItem('bal',BAL);
-   results.unshift({type:tradeType,d,profit,win,stake:base}); if(results.length>200)results.pop(); localStorage.setItem('bashiri_results',JSON.stringify(results));
-   hist.unshift(d); hist=hist.slice(0,50); localStorage.setItem('hist',JSON.stringify(hist));
-   renderResults(); renderDigits(); updSess();
-   try{await supa.from('bets').insert([{phone:'0116982197',type:tradeType,digit:d,profit,win,stake:base,bot:id}])}catch(e){}
-   if(sess[id]>=tp || sess[id]<=-sl){ clearInterval(intervals[id]); el.innerText='OFF'; el.className='tog'; }
-  },2000);
- }else{ clearInterval(intervals[id]); }
-}
-supa.from('bets').select('id').limit(1).then(r=>{let el=document.getElementById('cloudStat'); el.innerText=r.error?'Cloud: ERROR '+r.error.message:'Cloud: CONNECTED FAIR v13'; el.style.color=r.error?'#ff5252':'#00e676';});
-initBots(); renderDigits(); renderResults(); setStake(5);
-setTimeout(()=>{let s=document.getElementById('splash'); if(s){s.style.opacity='0'; setTimeout(()=>s.remove(),700)}},2600);
-</script></body></html>
+</script>
+</body>
+</html>
