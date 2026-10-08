@@ -1,83 +1,59 @@
 <!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BASHIRI v11 FULL - SL TP - BOTH SIDES</title>
+<title>BASHIRI v11 CLEAN FINAL</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
-body{background:#0a0a0a;color:#fff;padding:10px;padding-bottom:80px}
+body{background:#0e1410;color:#fff;padding:10px;padding-bottom:90px}
 #splash{position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;transition:opacity.7s}
-.b-circle{width:125px;height:125px;background:#0F7A3D;border-radius:50%;display:flex;align-items:center;justify-content:center;animation:pulse 1.1s infinite}
+.b-circle{width:125px;height:125px;background:#0F7A3D;border-radius:50%;display:flex;align-items:center;justify-content:center}
 .b-letter{font:900 78px Arial Black;color:#111}
-@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
-.top{display:flex;justify-content:space-between;align-items:center;background:#151515;padding:12px;border-radius:14px;margin-bottom:10px}
-.bal{font-weight:900} #bal{color:#0F7A3D}
-.botsec-title{color:#00d4ff;font-weight:900;font-size:13px;margin:14px 0 8px}
-.botcard{background:#1c1c1c;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid #222}
+.top{background:#1a1f1a;border-radius:16px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;border:1px solid #232a23;margin-bottom:12px}
+.cloud{font-size:12px;color:#00e676;font-weight:800}
+.card{background:#1a2a1a;border-radius:20px;padding:14px;margin-bottom:12px;border:1px solid #223322}
+.stake-title{color:#0F7A3D;font-weight:900;text-align:center;font-size:18px}
+.chips{display:flex;gap:8px;justify-content:center;margin:10px 0}
+.chip{padding:12px 0;width:70px;border:none;border-radius:12px;background:#2a2a2a;color:#fff;font-weight:900;font-size:18px}.chip.on{background:#00e676;color:#000}
+.info{background:#111;padding:10px;border-radius:10px;text-align:center;font-size:13px;margin-bottom:10px;color:#ccc}
+.place{width:100%;padding:14px;border:none;border-radius:12px;background:#00e676;color:#000;font-weight:900;font-size:16px}
+.drow{display:flex;justify-content:space-between;margin:8px 0}
+.d{width:34px;height:34px;border-radius:50%;background:#101010;display:flex;align-items:center;justify-content:center;font-weight:900;position:relative}.d.on{background:#00e676;color:#000}.d span{position:absolute;bottom:-15px;font-size:10px;color:#888}
+.graph{height:90px;background:#0e1a0e;border-radius:12px;margin:20px 0 12px;overflow:hidden}
+.manual{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mbtn{padding:14px;border:none;border-radius:12px;font-weight:900;font-size:14px}
+.mbtn.even{background:#c8f5d8}.mbtn.odd{background:#ffecb3}.mbtn.over{background:#d0d2ff}.mbtn.under{background:#ffd0c8}
+.bot-title{color:#00d4ff;font-weight:900;font-size:14px;margin:14px 0 8px}
+.botcard{background:#1c1c1c;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid #262626}
 .tog{padding:8px 18px;border:none;border-radius:20px;background:#333;color:#fff;font-weight:900}.tog.on{background:#0F7A3D}
 .inp{width:68px;padding:8px;border-radius:10px;border:none;background:#2a2a2a;color:#fff;text-align:center;font-weight:800}
-.session{color:#00e676;font-size:12px;margin-top:8px;font-weight:700}
-.r-item{display:flex;justify-content:space-between;padding:8px 10px;margin:4px 0;background:#151515;border-radius:8px;font-size:13px;border-left:3px solid #333}
-.r-item.win{border-left-color:#0F7A3D}.r-item.lose{border-left-color:#ff4444}
+.sess{color:#00e676;font-size:12px;margin-top:8px;font-weight:700}
+.rhead{display:flex;justify-content:space-between;margin:12px 0 6px;font-weight:900;font-size:13px;color:#aaa}
+.ritem{display:flex;justify-content:space-between;padding:8px 10px;margin:4px 0;background:#151515;border-radius:8px;font-size:13px;border-left:3px solid #333}.ritem.win{border-left-color:#0F7A3D}.ritem.lose{border-left-color:#ff4444}
 </style></head><body>
-
 <div id="splash"><div class="b-circle"><div class="b-letter">B</div></div><h1 style="color:#111;font:900 42px Arial Black;margin-top:12px">Bashiri</h1></div>
-
-<div class="top"><div><div class="bal">💰 KES <span id="bal">1051</span></div><div id="phoneDisp" style="font-size:11px;color:#888">0116982197</div><div id="cloudStat" style="font-size:11px;color:#00e676">Cloud: CONNECTING...</div></div><div id="lastD" style="background:#222;padding:10px 16px;border-radius:10px;font-weight:900">9</div></div>
-
-<div id="evenBots"></div>
-<div id="overBots"></div>
-
-<div style="display:flex;justify-content:space-between;margin:14px 0 6px;font-weight:900;font-size:13px"><span id="rTitle">RESULTS (0)</span><button onclick="localStorage.removeItem('bashiri_results');location.reload()" style="background:none;border:none;color:#777;font-weight:800">CLEAR</button></div>
-<div id="resultsList"></div>
-
+<div class="top"><div><div style="font-weight:900">💰 KES <span id="bal" style="color:#0F7A3D">1051</span></div><div style="font-size:11px;color:#888">0116982197</div><div class="cloud" id="cloudStat">Cloud: CONNECTING...</div></div><div style="display:flex;gap:6px"><button style="padding:10px 14px;border:none;border-radius:10px;background:#0F7A3D;color:#000;font-weight:900" onclick="document.getElementById('stakeCard').scrollIntoView({behavior:'smooth'})">🧮 Calculator</button><div style="background:#222;padding:10px 16px;border-radius:10px;font-weight:900" id="lastD">5</div></div></div>
+<div class="card" id="stakeCard"><div class="stake-title">STAKE CALCULATOR</div><div style="text-align:center;font-size:13px;color:#aaa;margin:4px 0">You have: <span id="have">1051</span> KES • Target: 2000 KES</div><div class="chips"><button class="chip on" id="c5" onclick="setStake(5)">5</button><button class="chip" id="c10" onclick="setStake(10)">10</button><button class="chip" id="c20" onclick="setStake(20)">20</button><button class="chip" id="c40" onclick="setStake(40)">40</button></div><div class="info" id="calcInfo">If you bet <b>5 KES</b>: You need to win <b>136 times</b> • If you win: <b>2000 KES</b></div><button class="place" id="placeBtn" onclick="manual('even')">Place 5</button></div>
+<div class="card"><div class="drow" id="drow"></div><div class="graph"><canvas id="chart" width="360" height="90"></canvas></div><div class="manual"><button class="mbtn even" onclick="manual('even')">EVEN +7</button><button class="mbtn odd" onclick="manual('odd')">ODD +7</button><button class="mbtn over" onclick="manual('over')">OVER 1 +2</button><button class="mbtn under" onclick="manual('under')">UNDER 8 +2</button></div></div>
+<div class="bot-title">EVEN/ODD BOTS - 3 BOTS - BOTH SIDES FIXED</div><div id="evenBots"></div>
+<div class="bot-title">OVER/UNDER BOTS - 3 BOTS - BOTH SIDES FIXED</div><div id="overBots"></div>
+<div class="rhead"><span id="rTitle">RESULTS (0)</span><button onclick="localStorage.removeItem('bashiri_results');location.reload()" style="background:none;border:none;color:#777;font-weight:800">CLEAR</button></div><div id="results"></div>
 <script>
 const SUPA_URL="https://hkhqbtyyqgvaktamilxs.supabase.co";
 const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg";
 const supa=window.supabase.createClient(SUPA_URL,SUPA_KEY);
-let BAL=parseInt(localStorage.getItem('bal')||'1051'); let hist=JSON.parse(localStorage.getItem('hist')||'[9,8,7,6,5,4,3,2,1,0]'); let results=JSON.parse(localStorage.getItem('bashiri_results')||'[]'); let intervals={}; let sessions={};
-
+let BAL=parseInt(localStorage.getItem('bal')||'1051'); let CUR=5; let hist=JSON.parse(localStorage.getItem('hist')||'[1,0,1,2,3,4,5,6,7,8,9,1,4,2,5,0,3,8,9]'); let results=JSON.parse(localStorage.getItem('bashiri_results')||'[]'); let intervals={}; let sess={};
 document.getElementById('bal').innerText=BAL;
-
-function calcPayout(s,isEven){s=Math.max(5,parseInt(s)||5); if(isEven){if(s===5)return{profit:7,payout:12}; if(s<30)return{profit:s+2,payout:s*2+2}; return{profit:Math.floor(s*0.91),payout:s+Math.floor(s*0.91)}} else {if(s===5)return{profit:2,payout:7}; if(s===10)return{profit:5,payout:15}; return{profit:Math.floor(s*0.5),payout:s+Math.floor(s*0.5)}}}
-
-function addResult(type,d,profit,win,stake){
- results.unshift({type,d,profit,win,stake}); if(results.length>150)results.pop();
- localStorage.setItem('bashiri_results',JSON.stringify(results)); hist.unshift(d); hist=hist.slice(0,50); localStorage.setItem('hist',JSON.stringify(hist)); localStorage.setItem('bal',BAL);
- document.getElementById('resultsList').innerHTML=results.slice(0,80).map(r=>`<div class="r-item ${r.win?'win':'lose'}"><span>${r.win?'✅':'❌'} ${r.type.toUpperCase()} D:${r.d} S:${r.stake}</span><span style="color:${r.win?'#0F7A3D':'#ff4444'}">${r.profit>0?'+':''}${r.profit}</span></div>`).join(''); document.getElementById('rTitle').innerText=`RESULTS (${results.length})`; document.getElementById('lastD').innerText=d;
- for(let k in sessions){let el=document.getElementById('sess-'+k); if(el){let tp=document.getElementById('tp-'+k)?.value||50; let sl=document.getElementById('sl-'+k)?.value||50; el.innerText=`Session: ${sessions[k]>=0?'+':''}${sessions[k]} / TP +${tp} / SL -${sl}`; el.style.color=sessions[k]<0?'#ff5252':'#00e676';}}
-}
-
-function createBot(id,label,base,TP,SL,txt){
- return `<div class="botsec-title">${id.includes('OU')?'OVER/UNDER':'EVEN/ODD'} BOTS - ${txt}</div><div class="botcard"><div style="display:flex;justify-content:space-between;align-items:center"><div><b>${label}</b> <span style="background:#0F7A3D;color:#000;font-size:11px;padding:3px 8px;border-radius:20px;font-weight:800;margin-left:6px">Base ${txt}</span></div><button class="tog" id="tog-${id}" onclick="toggleBot('${id}')">OFF</button></div><div style="display:flex;gap:8px;margin-top:10px"><span>Base</span><input class="inp" id="base-${id}" value="${base}"><span>TP</span><input class="inp" id="tp-${id}" value="${TP}"><span>SL</span><input class="inp" id="sl-${id}" value="${SL}"></div><div class="session" id="sess-${id}">Session: +0 / TP +${TP} / SL -${SL}</div></div>`;
-}
-
-function initBots(){
- document.getElementById('evenBots').innerHTML=createBot('safe','🛡️ Safe','5','50','50','5→+7')+createBot('mart','⚡ Mart','5','100','200','5→+7')+createBot('agg','🔥 Agg','10','150','100','10→+5');
- document.getElementById('overBots').innerHTML=createBot('safeOU','🛡️ Safe OU','5','50','50','5→+2')+createBot('martOU','⚡ Mart OU','5','100','200','5→+2')+createBot('aggOU','🔥 Agg OU','10','150','100','10→+5');
-}
-
-function toggleBot(id){
- let el=document.getElementById('tog-'+id); let isOff=el.innerText==='OFF'; el.innerText=isOff?'ON':'OFF'; el.className=isOff?'tog on':'tog';
- if(isOff){
-   sessions[id]=0;
-   intervals[id]=setInterval(async()=>{
-     let base=parseInt(document.getElementById('base-'+id).value)||5; let tp=parseInt(document.getElementById('tp-'+id).value)||50; let sl=parseInt(document.getElementById('sl-'+id).value)||50;
-     let tradeType;
-     if(id.includes('OU')){ tradeType=hist[0]<=4?'over':'under'; if(results.length>=2 && results[0].type===results[1].type &&!results[0].win) tradeType=tradeType==='over'?'under':'over'; }
-     else{ tradeType=hist[0]%2===0?'odd':'even'; }
-     let d=Math.floor(Math.random()*10); let isEven=tradeType==='even'||tradeType==='odd'; let p=calcPayout(base,isEven);
-     let win=(tradeType==='over'&&d>=2)||(tradeType==='under'&&d<=7)||(tradeType==='even'&&d%2===0)||(tradeType==='odd'&&d%2===1);
-     let profit=win?p.profit:-base; BAL+=profit; sessions[id]+=profit; document.getElementById('bal').innerText=BAL;
-     addResult(tradeType,d,profit,win,base);
-     try{await supa.from('bets').insert([{phone:'0116982197',type:tradeType,digit:d,profit,win,stake:base,bot:id}])}catch(e){}
-     if(sessions[id]>=tp || sessions[id]<=-sl){ clearInterval(intervals[id]); el.innerText='OFF'; el.className='tog'; }
-   },1800);
- }else{ clearInterval(intervals[id]); }
-}
-
+function calcPayout(s,isEven){s=Math.max(5,parseInt(s)||5); if(isEven){if(s===5)return{profit:7,payout:12}; return{profit:s+2,payout:s*2+2}} else {if(s===5)return{profit:2,payout:7}; return{profit:5,payout:s+5}}}
+function renderDigits(){let counts=Array(10).fill(0); hist.forEach(d=>counts[d]++); let total=hist.length||1; let row=document.getElementById('drow'); row.innerHTML=''; for(let i=0;i<10;i++){let pct=Math.round(counts[i]/total*100); let on=hist[0]===i?' on':''; row.innerHTML+=`<div class="d${on}">${i}<span>${pct}%</span></div>`;} document.getElementById('lastD').innerText=hist[0]; let c=document.getElementById('chart'); let ctx=c.getContext('2d'); ctx.clearRect(0,0,c.width,c.height); ctx.strokeStyle='#00e676'; ctx.lineWidth=2; ctx.beginPath(); for(let i=0;i<hist.length;i++){let x=(i/hist.length)*c.width; let y=c.height-(hist[i]/9)*c.height; if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);} ctx.stroke();}
+function renderResults(){let list=document.getElementById('results'); list.innerHTML=results.slice(0,80).map(r=>`<div class="ritem ${r.win?'win':'lose'}"><span>${r.win?'✅':'❌'} ${r.type.toUpperCase()} D:${r.d} S:${r.stake}</span><span style="color:${r.win?'#0F7A3D':'#ff4444'}">${r.profit>0?'+':''}${r.profit}</span></div>`).join(''); document.getElementById('rTitle').innerText=`RESULTS (${results.length})`;}
+function setStake(v){CUR=v; document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on')); document.getElementById('c'+v).classList.add('on'); document.getElementById('placeBtn').innerText='Place '+v; let need=Math.ceil((2000-BAL)/(v===5?7:2)); if(need<0)need=0; document.getElementById('calcInfo').innerHTML=`If you bet <b>${v} KES</b>: You need to win <b>${need} times</b> • If you win: <b>2000 KES</b>`; document.getElementById('have').innerText=BAL;}
+function manual(t){let d=Math.floor(Math.random()*10); let isEven=t==='even'||t==='odd'; let p=calcPayout(CUR,isEven); let win=(t==='over'&&d>=2)||(t==='under'&&d<=7)||(t==='even'&&d%2===0)||(t==='odd'&&d%2===1); let profit=win?p.profit:-CUR; BAL+=profit; document.getElementById('bal').innerText=BAL; localStorage.setItem('bal',BAL); hist.unshift(d); hist=hist.slice(0,50); localStorage.setItem('hist',JSON.stringify(hist)); results.unshift({type:t,d,profit,win,stake:CUR}); if(results.length>150)results.pop(); localStorage.setItem('bashiri_results',JSON.stringify(results)); renderResults(); renderDigits(); setStake(CUR); supa.from('bets').insert([{phone:'0116982197',type:t,digit:d,profit,win,stake:CUR}]).then(()=>{});}
+function botCard(id,label,base,TP,SL,txt){return `<div class="botcard"><div style="display:flex;justify-content:space-between;align-items:center"><div> <b>${label}</b> Base ${txt}</div><button class="tog" id="tog-${id}" onclick="toggleBot('${id}')">OFF</button></div><div style="display:flex;gap:8px;margin-top:10px;align-items:center"><span>Base</span><input class="inp" id="base-${id}" value="${base}"><span>TP</span><input class="inp" id="tp-${id}" value="${TP}"><span>SL</span><input class="inp" id="sl-${id}" value="${SL}"></div><div class="sess" id="sess-${id}">Session: +0 / TP +${TP} / SL -${SL}</div></div>`;}
+function updSess(){for(let k in sess){let el=document.getElementById('sess-'+k); if(el){let tp=document.getElementById('tp-'+k)?.value||50; let sl=document.getElementById('sl-'+k)?.value||50; el.innerText=`Session: ${sess[k]>=0?'+':''}${sess[k]} / TP +${tp} / SL -${sl}`; el.style.color=sess[k]<0?'#ff5252':'#00e676';}}}
+function initBots(){document.getElementById('evenBots').innerHTML=botCard('safe','🛡️ Safe','5','50','50','5→+7')+botCard('mart','⚡ Mart','5','100','200','5→+7')+botCard('agg','🔥 Agg','10','150','100','10→+5'); document.getElementById('overBots').innerHTML=botCard('safeOU','🛡️ Safe OU','5','50','50','5→+2')+botCard('martOU','⚡ Mart OU','5','100','200','5→+2')+botCard('aggOU','🔥 Agg OU','10','150','100','10→+5');}
+function toggleBot(id){let el=document.getElementById('tog-'+id); let isOff=el.innerText==='OFF'; el.innerText=isOff?'ON':'OFF'; el.className=isOff?'tog on':'tog'; if(isOff){sess[id]=0; intervals[id]=setInterval(async()=>{let base=parseInt(document.getElementById('base-'+id).value)||5; let tp=parseInt(document.getElementById('tp-'+id).value)||50; let sl=parseInt(document.getElementById('sl-'+id).value)||50; let tradeType; if(id.includes('OU')){tradeType=hist[0]<=4?'over':'under'; if(results.length>=2 && results[0].type===results[1].type &&!results[0].win) tradeType=tradeType==='over'?'under':'over';} else {tradeType=hist[0]%2===0?'odd':'even';} let d=Math.floor(Math.random()*10); let isEven=tradeType==='even'||tradeType==='odd'; let p=calcPayout(base,isEven); let win=(tradeType==='over'&&d>=2)||(tradeType==='under'&&d<=7)||(tradeType==='even'&&d%2===0)||(tradeType==='odd'&&d%2===1); let profit=win?p.profit:-base; BAL+=profit; sess[id]+=profit; document.getElementById('bal').innerText=BAL; localStorage.setItem('bal',BAL); results.unshift({type:tradeType,d,profit,win,stake:base}); if(results.length>150)results.pop(); localStorage.setItem('bashiri_results',JSON.stringify(results)); hist.unshift(d); hist=hist.slice(0,50); localStorage.setItem('hist',JSON.stringify(hist)); renderResults(); renderDigits(); updSess(); try{await supa.from('bets').insert([{phone:'0116982197',type:tradeType,digit:d,profit,win,stake:base,bot:id}])}catch(e){} if(sess[id]>=tp || sess[id]<=-sl){ clearInterval(intervals[id]); el.innerText='OFF'; el.className='tog'; }},1800);}else{ clearInterval(intervals[id]); }}
 supa.from('bets').select('id').limit(1).then(r=>{let el=document.getElementById('cloudStat'); el.innerText=r.error?'Cloud: ERROR '+r.error.message:'Cloud: CONNECTED 100% v11 NEW KEY';});
-initBots();
-document.getElementById('resultsList').innerHTML=results.slice(0,80).map(r=>`<div class="r-item ${r.win?'win':'lose'}"><span>${r.win?'✅':'❌'} ${r.type.toUpperCase()} D:${r.d}</span><span>${r.profit}</span></div>`).join(''); document.getElementById('rTitle').innerText=`RESULTS (${results.length})`;
-setTimeout(()=>{let s=document.getElementById('splash'); s.style.opacity=0; setTimeout(()=>s.remove(),700)},2500);
+initBots(); renderDigits(); renderResults(); setStake(5);
+setTimeout(()=>{let s=document.getElementById('splash'); s.style.opacity=0; setTimeout(()=>s.remove(),700)},2200);
 </script></body></html>
