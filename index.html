@@ -2,130 +2,110 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>HOT DIGITS - 80% WIN</title>
+<title>BASHIRI - FINAL PROFIT MODEL</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-body{background:#000;color:#fff;font-family:system-ui;padding:10px;margin:0}
-.card{background:#111;border:1px solid #222;border-radius:16px;padding:12px;margin-bottom:10px}
-.bal{font-size:32px;font-weight:900;color:#0F7A3D;text-align:center}
-.btn{width:100%;padding:14px;border:none;border-radius:12px;font-weight:900;font-size:14px;cursor:pointer}
-.bot{display:flex;gap:6px;margin:6px 0}
-.bot button{flex:1;padding:10px;border-radius:10px;border:none;font-weight:800;font-size:11px}
-.last{font-size:42px;text-align:center;font-weight:900;padding:10px;background:#0F7A3D20;border-radius:12px;margin-top:8px}
-.ritem{display:flex;justify-content:space-between;padding:6px 8px;border-radius:8px;margin:3px 0;font-size:11px}
-.win{background:#0F7A3D20;color:#0F7A3D} .lose{background:#ff000020;color:#ff4444}
+body{background:#0a0f0a;color:#fff;font-family:system-ui;margin:0;padding:8px}
+.card{background:#161616;border:1px solid #222;border-radius:18px;padding:12px;margin-bottom:10px}
+.bal{font-size:30px;font-weight:900;color:#fff;text-align:center}
+.sub{font-size:11px;color:#888;text-align:center}
+.digit-grid{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:10px 0}
+.d{width:40px;height:40px;border-radius:50%;background:#222;display:flex;align-items:center;justify-content:center;font-weight:900;flex-direction:column;font-size:15px}
+.d b{font-size:9px;color:#888}.d.active{background:#0fd09a;color:#000}
+.btn-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mbtn{padding:14px;border:none;border-radius:14px;font-weight:900}
+.bot-card{background:#1e1e1e;border-radius:14px;padding:10px;margin:8px 0}
+.bot-head{display:flex;justify-content:space-between;align-items:center}
+.switch{padding:8px 18px;border-radius:20px;border:none;font-weight:900;background:#333;color:#fff}
+.switch.on{background:#0fd09a;color:#000}
+.inputs{display:flex;gap:6px;margin-top:8px}
+.inputs div{display:flex;align-items:center;gap:4px;background:#111;padding:6px 8px;border-radius:10px;flex:1}
+.inputs input{width:100%;background:transparent;border:none;color:#fff;font-weight:900;text-align:center}
+.ritem{display:flex;justify-content:space-between;padding:6px 8px;background:#111;border-radius:8px;margin:3px 0;font-size:12px;border-left:3px solid transparent}
+.ritem.win{border-left-color:#0f9;color:#0f9}.ritem.lose{border-left-color:#f44;color:#f88}
 </style>
 </head>
 <body>
 
-<div class="card"><div class="bal">KES <span id="bal">0</span></div><div id="info" style="text-align:center;font-size:11px;color:#666">Trades: 0/10 | Session: 0</div><div class="last" id="digit">-</div></div>
+<div class="card">
+<div class="bal">KES <span id="bal">0</span></div>
+<div class="sub" id="info">Trades: 0/10 for withdraw | Session: 0</div>
+<div style="width:60px;height:60px;background:#222;border-radius:16px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:26px;margin:10px auto" id="lastDigit">-</div>
+</div>
 
 <div class="card">
-<input id="depAmt" type="number" placeholder="Deposit 50-300" style="width:100%;padding:12px;border-radius:10px;border:none;background:#222;color:#fff;font-weight:800;margin-bottom:6px">
-<button class="btn" style="background:#0F7A3D;color:#fff" onclick="deposit()">DEPOSIT Till 0116982197</button>
+<input id="depAmt" type="number" placeholder="Deposit 50-300 Max" style="width:100%;padding:12px;border-radius:12px;border:none;background:#222;color:#fff;font-weight:800;margin-bottom:6px">
+<button style="width:100%;padding:14px;background:#15803d;border:none;border-radius:12px;font-weight:900;color:#fff" onclick="deposit()">DEPOSIT Till 0116982197 - Max 300</button>
+<div style="font-size:10px;color:#0f9;text-align:center;margin-top:6px">Max deposit 300 KES - 10 trades to withdraw</div>
 </div>
 
-<div class="card">
-<div style="font-weight:900;text-align:center;margin-bottom:8px">OVER 1 / UNDER 8 - 80% WIN - 100→10</div>
-<div class="bot">
-<button style="background:#0F7A3D" onclick="setBot('O1')">OVER 1 SAFE B5</button>
-<button style="background:#0F7A3D" onclick="setBot('U8')">UNDER 8 SAFE B5</button>
-</div>
-<div style="font-weight:900;text-align:center;margin:8px 0">EVEN / ODD - 50% WIN - 100→80</div>
-<div class="bot">
-<button style="background:#fff;color:#000" onclick="setBot('EVEN_SAFE')">EVEN SAFE B10</button>
-<button style="background:#fff;color:#000" onclick="setBot('ODD_SAFE')">ODD SAFE B10</button>
-</div>
-<div class="bot">
-<button style="background:#ffcc00;color:#000" onclick="setBot('EVEN_MART')">MART EVEN B5 2.25x</button>
-<button style="background:#ffcc00;color:#000" onclick="setBot('ODD_MART')">MART ODD B5 2.25x</button>
-</div>
-<div style="text-align:center;margin-top:8px">
-<button class="btn" id="runBtn" style="background:#222" onclick="toggle()">▶ START BOT</button>
-<div id="botInfo" style="font-size:11px;color:#0F7A3D;margin-top:6px">Select bot to start</div>
+<div class="card" style="background:#12261a">
+<div class="digit-grid" id="digitGrid"></div>
+<div class="btn-grid">
+<button class="mbtn" style="background:#c8f7e8" onclick="manual('EVEN')">EVEN +8 (100→80)</button>
+<button class="mbtn" style="background:#fff0c2" onclick="manual('ODD')">ODD +8 (100→80)</button>
+<button class="mbtn" style="background:#d6d9ff" onclick="manual('OVER1')">OVER 1 +1 (100→10) 80% WIN</button>
+<button class="mbtn" style="background:#ffd6c2" onclick="manual('UNDER8')">UNDER 8 +1 (100→10) 80% WIN</button>
 </div>
 </div>
 
-<div class="card" id="log" style="max-height:200px;overflow:auto;font-size:11px"></div>
+<div id="bots"></div>
 
-<div class="card" style="border-color:#0F7A3D">
-<div style="font-weight:900;color:#0F7A3D;text-align:center">WITHDRAW Min 100 Max 500/day Fee 10%</div>
-<input id="wdAmt" type="number" placeholder="100-500" style="width:100%;padding:12px;border-radius:10px;border:none;background:#222;color:#fff;font-weight:800;margin:8px 0">
-<button class="btn" style="background:#fff;color:#000" onclick="withdraw()">REQUEST WITHDRAW</button>
+<div class="card"><div style="display:flex;justify-content:space-between"><b>RESULTS (<span id="rCount">0</span>)</b><span onclick="localStorage.removeItem('results');results=[];render();" style="color:#888">CLEAR</span></div><div id="results"></div></div>
+
+<div class="card" style="border:1px solid #0f9">
+<div style="font-weight:900;color:#0f9;text-align:center;font-size:13px">WITHDRAW - Min 100 Max 500/day Fee 10%</div>
+<input id="wdAmt" type="number" placeholder="100-500" style="width:100%;padding:12px;border-radius:12px;border:none;background:#222;color:#fff;font-weight:800;margin:8px 0">
+<button style="width:100%;padding:14px;background:#fff;border:none;border-radius:12px;font-weight:900;color:#000" onclick="withdraw()">REQUEST WITHDRAW</button>
 <div id="wdMsg" style="font-size:11px;color:#888;text-align:center;margin-top:6px"></div>
 <div id="wdList" style="margin-top:8px"></div>
-<div style="font-size:10px;color:#0F7A3D;text-align:center;margin-top:10px">✅ 0701*** withdrew 225 KES 2m ago • 0722*** withdrew 180 KES 5m ago • 0798*** withdrew 270 KES 9m ago</div>
+<div style="font-size:10px;color:#666;text-align:center;margin-top:8px">10 trades required | 10% fee | Paid in 5 mins</div>
 </div>
 
 <script>
 const SUPA_URL='https://hkhqbt yyqgvaktamilhx.supabase.co';
 const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg';
-const supa=supabase.createClient(SUPA_URL,SUPA_KEY);
-let BAL=parseInt(localStorage.getItem('bal')||'0');
+const supa=supabase.createClient(SUPA_URL.replace(' ',''),SUPA_KEY);
+let BAL=parseInt(localStorage.getItem('bal')||'0'); if(BAL<0) BAL=0;
 let TRADES=parseInt(localStorage.getItem('trades')||'0');
-let BOT=null,RUN=false,STAKE=5,LOSS=0,TARGET=0,SESSION=0;
-document.getElementById('bal').innerText=BAL;
-updateInfo();
-function updateInfo(){document.getElementById('info').innerHTML=`Trades: ${TRADES}/10 for withdraw | Session: ${SESSION>0?'+':''}${SESSION} | BAL: ${BAL}`;}
-function save(){localStorage.setItem('bal',BAL);localStorage.setItem('trades',TRADES);document.getElementById('bal').innerText=BAL;updateInfo();}
-async function deposit(){
- let a=parseInt(document.getElementById('depAmt').value);
- if(!a||a<50||a>300){alert('50-300 only');return}
- BAL+=a; TRADES=0; LOSS=0; SESSION=0; save();
- await supa.from('deposits').insert([{phone:'0116982197',amount:a}]);
- alert('Deposit '+a+' added. Play 10 trades then withdraw.');
+let digitCount={0:7,1:3,2:3,3:10,4:17,5:20,6:7,7:3,8:13,9:17}, lastDigits=[1,3,5,7,9,2,4,6,8,0];
+let results=JSON.parse(localStorage.getItem('results')||'[]');
+let botsCfg=[
+{id:'even_safe',title:'EVEN / ODD BOTS - 50% WIN - 100→80 - PROFIT +4 ON 5 - Mart 2.25x works',name:'Safe EVEN/ODD',badge:'Base 10 → +8',base:10,tp:50,sl:50,type:'EVEN',mode:'SAFE'},
+{id:'even_mart',title:'',name:'Mart EVEN/ODD',badge:'Base 5 → +4 Mart 2.25x',base:5,tp:100,sl:200,type:'EVEN',mode:'MART'},
+{id:'even_agg',title:'',name:'Agg EVEN/ODD',badge:'Base 10 → +5',base:10,tp:150,sl:100,type:'EVEN',mode:'AGG'},
+{id:'ou_safe',title:'OVER 1 / UNDER 8 BOTS - 80% WIN - 100→10 - PROFIT +0.5 ON 5',name:'Safe O1/U8',badge:'Base 5 → +0.5',base:5,tp:50,sl:50,type:'OVER1',mode:'SAFE'},
+{id:'ou_mart',title:'',name:'Mart O1/U8',badge:'Base 5 → +0.5 Mart 11x',base:5,tp:20,sl:200,type:'OVER1',mode:'MART'},
+{id:'ou_agg',title:'',name:'Agg O1/U8',badge:'Base 10 → +1',base:10,tp:150,sl:100,type:'OVER1',mode:'AGG'},
+];
+let botState={}; botsCfg.forEach(b=>botState[b.id]={on:false,session:0,currentStake:b.base,loss:0});
+function renderDigits(){let g=document.getElementById('digitGrid'); g.innerHTML=''; for(let i=0;i<=9;i++){g.innerHTML+=`<div class="d ${i==lastDigits[lastDigits.length-1]?'active':''}">${i}<b>${digitCount[i]||0}%</b></div>`}}
+function renderBots(){
+ let html='',cur=''; botsCfg.forEach(b=>{
+  if(b.title&&b.title!=cur){html+=`<div style="color:#0cf;font-weight:900;font-size:12px;margin:12px 4px">${b.title}</div>`; cur=b.title;}
+  let s=botState[b.id];
+  html+=`<div class="bot-card"><div class="bot-head"><div>🛡️ ${b.name} <span style="background:#0f9;color:#000;padding:2px 8px;border-radius:12px;font-size:11px">${b.badge}</span></div><button class="switch ${s.on?'on':''}" onclick="toggleBot('${b.id}')">${s.on?'ON':'OFF'}</button></div><div class="inputs"><div>Base <input id="base_${b.id}" value="${b.base}"></div><div>TP <input id="tp_${b.id}" value="${b.tp}"></div><div>SL <input id="sl_${b.id}" value="${b.sl}"></div></div><div style="font-size:11px;margin-top:4px" class="${s.session<0?'lose':'win'}">Session: ${s.session>0?'+':''}${s.session.toFixed(1)} | Stake: ${s.currentStake}</div></div>`;
+ }); document.getElementById('bots').innerHTML=html;
 }
-async function withdraw(){
- let a=parseInt(document.getElementById('wdAmt').value);
- if(TRADES<10){alert('Play 10 trades first');return}
- if(!a||a<100){alert('Min 100');return}
- if(a>500){alert('Max 500/day');return}
- if(a>BAL){alert('Low balance');return}
- let fee=Math.floor(a*0.1); let rec=a-fee;
- if(!confirm(`Request ${a} KES\nFee ${fee}\nYou get ${rec} KES\nConfirm?`))return;
- BAL-=a; save();
- document.getElementById('wdMsg').innerText=`✅ Requested ${a} (you get ${rec}) - paying in 5 mins`;
- await supa.from('withdrawals').insert([{phone:'0116982197',amount:a,receive:rec,status:'pending'}]);
- loadW();
+function render(){document.getElementById('bal').innerText=BAL; document.getElementById('info').innerText=`Trades: ${TRADES}/10 for withdraw | Session Total: ${Object.values(botState).reduce((a,b)=>a+b.session,0).toFixed(1)}`; document.getElementById('rCount').innerText=results.length; document.getElementById('results').innerHTML=results.slice(0,80).map(r=>`<div class="ritem ${r.win?'win':'lose'}"><span>${r.win?'✅':'❌'} ${r.type} D:${r.d} S:${r.stake}</span><span>${r.win?'+'+r.profit:'-'+r.stake}</span></div>`).join(''); renderDigits(); localStorage.setItem('bal',BAL); localStorage.setItem('trades',TRADES); localStorage.setItem('results',JSON.stringify(results));}
+function isWin(t,d){if(t==='EVEN')return d%2===0; if(t==='ODD')return d%2===1; if(t==='OVER1')return d>1; if(t==='UNDER8')return d<8; return false;}
+function trade(id,type,stake,mode){
+ let d=Math.floor(Math.random()*10); lastDigits.push(d); if(lastDigits.length>30)lastDigits.shift(); digitCount[d]=(digitCount[d]||0)+1;
+ let win=isWin(type,d); let profit=type==='EVEN'||type==='ODD'? (mode==='AGG'?stake*0.5:stake*0.8) : (mode==='AGG'?stake*0.1:stake*0.1);
+ let s=botState[id]||{session:0,loss:0,currentStake:stake};
+ if(win){BAL+=profit; if(s.session!==undefined){s.session+=profit; s.loss=0; if(mode==='MART')s.currentStake=botsCfg.find(b=>b.id===id)?.base||5;} TRADES++; results.unshift({type,d,stake,win:true,profit:profit.toFixed(1)});}
+ else {BAL-=stake; if(s.session!==undefined){s.session-=stake; s.loss+=stake; if(mode==='MART'){if(type==='EVEN'||type==='ODD')s.currentStake=Math.ceil((s.loss+4)/0.8); else s.currentStake=Math.ceil((s.loss+0.5)/0.1); if(s.currentStake>300){s.currentStake=botsCfg.find(b=>b.id===id)?.base||5; s.loss=0;}}} TRADES++; results.unshift({type,d,stake,win:false,profit:0});}
+ if(id==='manual')document.getElementById('lastDigit').innerText=d;
+ render(); renderBots();
+ let cfg=botsCfg.find(b=>b.id===id); if(cfg&&botState[id]){let tp=parseInt(document.getElementById('tp_'+id)?.value||cfg.tp); let sl=parseInt(document.getElementById('sl_'+id)?.value||cfg.sl); if(botState[id].session>=tp||botState[id].session<=-sl){botState[id].on=false; setTimeout(()=>{botState[id].session=0; botState[id].currentStake=cfg.base; botState[id].loss=0; renderBots();},600);}}
+ if(BAL<=0){Object.values(botState).forEach(v=>v.on=false); renderBots();}
 }
-async function loadW(){
- let {data}=await supa.from('withdrawals').select('*').order('created_at',{ascending:false}).limit(5);
- if(data)document.getElementById('wdList').innerHTML=data.map(w=>`<div class="ritem ${w.status==='paid'?'win':'lose'}"><span>${w.amount}→${w.receive}</span><span>${w.status}</span></div>`).join('');
-}
-loadW();
-function setBot(t){
- BOT=t;
- if(t==='O1'||t==='U8'){STAKE=5;TARGET=0.5;LOSS=0;SESSION=0;document.getElementById('botInfo').innerText=t+' SAFE B5 - Stake 5 - Profit 0.5 - 80% WIN';}
- if(t==='EVEN_SAFE'||t==='ODD_SAFE'){STAKE=10;TARGET=8;LOSS=0;SESSION=0;document.getElementById('botInfo').innerText=t+' SAFE B10 - Stake 10 - Profit 8';}
- if(t==='EVEN_MART'||t==='ODD_MART'){STAKE=5;TARGET=4;LOSS=0;SESSION=0;document.getElementById('botInfo').innerText=t+' MART B5 2.25x - Target +4 per cycle';}
-}
-function toggle(){
- if(!BOT){alert('Select bot');return}
- RUN=!RUN;
- document.getElementById('runBtn').innerText=RUN?'⏸ STOP BOT':'▶ START BOT';
- if(RUN) loop();
-}
-async function loop(){
- while(RUN){
-  let digit=Math.floor(Math.random()*10);
-  document.getElementById('digit').innerText=digit;
-  let win=false; let profit=0;
-  if(BOT==='O1') win=digit>1;
-  if(BOT==='U8') win=digit<8;
-  if(BOT==='EVEN_SAFE'||BOT==='EVEN_MART') win=digit%2===0;
-  if(BOT==='ODD_SAFE'||BOT==='ODD_MART') win=digit%2===1;
-  if(BOT==='O1'||BOT==='U8'){profit=STAKE*0.1;}
-  if(BOT.includes('EVEN')||BOT.includes('ODD')){profit=STAKE*0.8;}
-  let line='';
-  if(win){BAL+=profit; SESSION+=profit; line=`<div class="ritem win">✓ ${BOT} D:${digit} S:${STAKE} +${profit.toFixed(1)} BAL:${BAL.toFixed(1)}</div>`; LOSS=0; if(BOT.includes('MART')) STAKE=5;}
-  else {BAL-=STAKE; SESSION-=STAKE; line=`<div class="ritem lose">✗ ${BOT} D:${digit} S:${STAKE} -${STAKE} BAL:${BAL.toFixed(1)}</div>`; if(BOT.includes('MART')){LOSS+=STAKE; STAKE=Math.ceil((LOSS+TARGET)/0.8); if(STAKE>300){STAKE=5;LOSS=0;}}}
-  TRADES++; save();
-  document.getElementById('log').innerHTML=line+document.getElementById('log').innerHTML;
-  if(SESSION>=50||SESSION<=-50){RUN=false;document.getElementById('runBtn').innerText='▶ START BOT';alert('TP/SL 50 hit. Session: '+SESSION);SESSION=0;break}
-  if(BAL<=0){RUN=false;document.getElementById('runBtn').innerText='▶ START BOT';alert('Balance 0');break}
-  await new Promise(r=>setTimeout(r,1100));
- }
-}
+async function toggleBot(id){let s=botState[id]; s.on=!s.on; renderBots(); if(!s.on)return; let cfg=botsCfg.find(b=>b.id===id); (async function loop(){while(botState[id].on){trade(id,cfg.type,botState[id].currentStake,cfg.mode); await new Promise(r=>setTimeout(r,900));}})();}
+function manual(t){let stake=5; let si=document.getElementById('stakeInput'); if(si) stake=parseInt(si.value)||5; if(!si){stake=parseInt(prompt('Stake?','5'))||5;} trade('manual',t,stake,'SAFE');}
+async function deposit(){let a=parseInt(document.getElementById('depAmt').value); if(!a||a<50||a>300){alert('Max deposit 300 KES - Min 50');return} BAL+=a; TRADES=0; render(); await supa.from('deposits').insert([{phone:'0116982197',amount:a}]); alert('Deposit '+a+' added. Play 10 trades to withdraw.');}
+async function withdraw(){let a=parseInt(document.getElementById('wdAmt').value); if(TRADES<10){alert('Play 10 trades first');return} if(!a||a<100){alert('Min withdraw 100');return} if(a>500){alert('Max 500/day');return} if(a>BAL){alert('Low balance');return} let fee=Math.floor(a*0.1); let rec=a-fee; if(!confirm(`Withdraw ${a} KES\nFee 10% = ${fee}\nYou get ${rec}\nConfirm?`))return; BAL-=a; render(); document.getElementById('wdMsg').innerText=`Requested ${a} (you get ${rec}) - paying in 5 mins`; await supa.from('withdrawals').insert([{phone:'0116982197',amount:a,receive:rec,status:'pending'}]); loadW();}
+async function loadW(){let {data}=await supa.from('withdrawals').select('*').order('created_at',{ascending:false}).limit(5); if(data)document.getElementById('wdList').innerHTML=data.map(w=>`<div class="ritem ${w.status==='paid'?'win':'lose'}"><span>${w.amount}→${w.receive}</span><span>${w.status}</span></div>`).join('');}
+loadW(); render(); renderBots();
 </script>
 </body>
 </html>
