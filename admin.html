@@ -1,103 +1,195 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>BASHIRI ADMIN - House Profit v9.1</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}body{background:#040d0a;color:#fff;padding:12px}
-.top{background:#121212;border:1px solid #222;border-radius:16px;padding:14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.card{background:#121212;border:1px solid #222;border-radius:16px;padding:14px;margin-bottom:10px}
-.kpi{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.kpi.card{margin:0;text-align:center}
-.big{font-size:22px;font-weight:800}.green{color:#00e676}.red{color:#ff5252}.yellow{color:#ffb300}.blue{color:#00e6ff}
-.btn{background:#00e676;color:#000;border:none;padding:10px 16px;border-radius:10px;font-weight:800;cursor:pointer}
-.inp{background:#1a1a1a;border:1px solid #333;color:#fff;padding:8px;border-radius:8px;width:120px}
-table{width:100%;border-collapse:collapse;font-size:12px}th,td{padding:8px;border-bottom:1px solid #222;text-align:left}th{color:#aaa;font-size:10px}
-.login{position:fixed;inset:0;background:#040d0a;z-index:99;display:flex;align-items:center;justify-content:center;padding:20px}.lb{background:#121212;border:1px solid #333;border-radius:20px;padding:20px;width:100%;max-width:360px}
-</style></head><body>
-<div id="login" class="login"><div class="lb"><h2>🔐 BASHIRI ADMIN v9.1</h2><p style="font-size:11px;color:#aaa;margin:8px 0">House Profit Tracker - B+ 0.91 -5 OU min5<br><small style="color:#00e676">Same cloud: hkhqbtyyqgvaktamilxs - NEW KEY</small></p>
-<input id="pass" class="inp" style="width:100%" type="password" placeholder="Admin password"><button class="btn" style="width:100%;margin-top:10px" onclick="checkPass()">ENTER ADMIN</button><div id="err" style="color:#ff5252;font-size:11px;margin-top:8px"></div><small style="font-size:10px;color:#666;display:block;margin-top:8px">Default: Bashiri2025!</small></div></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HOUSE ANALYTICS</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
+body{background:#06140f;color:#fff;padding:10px;padding-bottom:40px}
+.card{background:#1a1a1a;border-radius:18px;padding:14px;margin-bottom:12px;border:1px solid #222}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.green{color:#00e676}.red{color:#ff5a5a}.yellow{color:#ffca28}.cyan{color:#00e6ff}
+table{width:100%;font-size:12px;border-collapse:collapse}
+th{color:#777;text-align:left;padding:8px 4px;font-size:10px;text-transform:uppercase}
+td{padding:9px 4px;border-top:1px solid #222}
+.btn{border:none;border-radius:12px;padding:10px 18px;font-weight:800;cursor:pointer}
+.btn.refresh{background:#00e676;color:#000}
+.btn.csv{background:#ff7a7a;color:#fff;margin-left:6px}
+.hrow{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+</style>
+</head>
+<body>
 
-<div class="top"><div><b>🏦 HOUSE PROFIT v9.1 FINAL</b><br><small id="status" style="font-size:11px;color:#00e676">Connecting...</small></div><div><button class="btn" onclick="loadData()">🔄 REFRESH</button> <button class="btn" style="background:#ff5252;color:#fff" onclick="exportCSV()">CSV</button></div></div>
-
-<div class="kpi">
-<div class="card"><div style="font-size:10px;color:#aaa">HOUSE PROFIT (TOTAL)</div><div class="big" id="houseProfit">0</div><small id="houseSub" style="font-size:10px;color:#aaa">Stakes - Payouts</small></div>
-<div class="card"><div style="font-size:10px;color:#aaa">TODAY HOUSE</div><div class="big yellow" id="todayProfit">0</div><small id="todaySub" style="font-size:10px">Today bets</small></div>
-<div class="card"><div style="font-size:10px;color:#aaa">TOTAL STAKED</div><div class="big blue" id="totalStaked">0</div><small id="totalBets" style="font-size:10px">0 bets</small></div>
-<div class="card"><div style="font-size:10px;color:#aaa">TOTAL PAID OUT</div><div class="big red" id="totalPayout">0</div><small style="font-size:10px">Player wins</small></div>
+<div class="card">
+  <div class="hrow">
+    <div>
+      <h2>🏦 HOUSE ANALYTICS</h2>
+      <div style="font-size:11px;color:#00e676;margin-top:4px" id="cloudStatus">Cloud CONNECTING...</div>
+    </div>
+    <div style="display:flex">
+      <button class="btn refresh" onclick="loadAll()">🔄 REFRESH</button>
+      <button class="btn csv" onclick="exportCSV()">CSV</button>
+    </div>
+  </div>
 </div>
 
-<div class="card"><b>📊 BY GAME TYPE - House Edge</b><div id="byType" style="margin-top:8px"></div></div>
+<div class="grid2">
+  <div class="card">
+    <div style="font-size:10px;color:#888">HOUSE PROFIT (TOTAL)</div>
+    <div style="font-size:28px;font-weight:900;margin:6px 0" id="houseTotal">KES 0</div>
+    <div style="font-size:11px;color:#666">Stakes - Payouts</div>
+  </div>
+  <div class="card">
+    <div style="font-size:10px;color:#888">TODAY HOUSE</div>
+    <div style="font-size:28px;font-weight:900;margin:6px 0" id="houseToday">KES 0</div>
+    <div style="font-size:11px;color:#888" id="betsToday">0 bets today</div>
+  </div>
+  <div class="card">
+    <div style="font-size:10px;color:#888">TOTAL STAKED</div>
+    <div style="font-size:28px;font-weight:900;margin:6px 0" id="totalStaked" class="cyan">0</div>
+    <div style="font-size:11px;color:#888" id="betsCount">0 bets</div>
+  </div>
+  <div class="card">
+    <div style="font-size:10px;color:#888">TOTAL PAID OUT</div>
+    <div style="font-size:28px;font-weight:900;margin:6px 0" id="totalPaid" class="red">0</div>
+    <div style="font-size:11px;color:#888">Player wins</div>
+  </div>
+</div>
 
-<div class="card"><b>💰 DEPOSITS vs WITHDRAWS</b><div style="display:flex;gap:10px;margin-top:8px"><div><small style="color:#aaa">Deposits</small><div class="big green" id="depTotal">0</div><small id="depCount" style="font-size:10px">0 deps</small></div><div><small style="color:#aaa">Withdraws</small><div class="big red" id="withTotal">0</div><small id="withCount" style="font-size:10px">0 with</small></div><div><small style="color:#aaa">Net Cash</small><div class="big yellow" id="netCash">0</div><small style="font-size:10px">Dep - With</small></div></div></div>
+<div class="card">
+  <h3 style="font-size:15px;margin-bottom:12px">📊 BY GAME TYPE</h3>
+  <table>
+    <thead><tr><th>Type</th><th>Bets</th><th>Staked</th><th>Payout</th><th>House</th><th>Edge %</th></tr></thead>
+    <tbody id="byType"></tbody>
+  </table>
+</div>
 
-<div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><b>👥 TOP USERS - House Profit per Phone</b><input id="search" class="inp" placeholder="Search phone" oninput="filterUsers()"></div><div style="max-height:300px;overflow:auto;margin-top:8px"><table><thead><tr><th>Phone</th><th>Bets</th><th>Staked</th><th>Payout</th><th>House +</th><th>Balance</th></tr></thead><tbody id="usersBody"></tbody></table></div></div>
+<div class="card">
+  <h3 style="font-size:15px;margin-bottom:14px">💰 DEPOSITS vs WITHDRAWS</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+    <div><div style="font-size:11px;color:#888">Deposits</div><div style="font-size:26px;font-weight:900" class="green" id="depTotal">0</div><div style="font-size:11px;color:#888" id="depCount">0 deps</div></div>
+    <div><div style="font-size:11px;color:#888">Withdraws</div><div style="font-size:26px;font-weight:900" class="red" id="withTotal">0</div><div style="font-size:11px;color:#888" id="withCount">0 with</div></div>
+    <div><div style="font-size:11px;color:#888">Net Cash</div><div style="font-size:26px;font-weight:900" class="yellow" id="netCash">0</div><div style="font-size:11px;color:#888">Dep - With</div></div>
+  </div>
+</div>
 
-<div class="card"><b>📅 LAST 50 BETS - Live</b><div style="max-height:400px;overflow:auto;margin-top:8px"><table><thead><tr><th>Time</th><th>Phone</th><th>Type</th><th>D</th><th>Stake</th><th>Payout</th><th>House</th></tr></thead><tbody id="betsBody"></tbody></table></div></div>
+<div class="card">
+  <div class="hrow" style="margin-bottom:12px">
+    <h3 style="font-size:15px">👥 TOP USERS</h3>
+    <input id="searchPhone" placeholder="Search phone" style="background:#222;border:1px solid #333;color:#fff;padding:8px 12px;border-radius:10px;font-size:12px" oninput="renderUsers()">
+  </div>
+  <table>
+    <thead><tr><th>Phone</th><th>Bets</th><th>Staked</th><th>Payout</th><th>House</th><th>Balance</th></tr></thead>
+    <tbody id="topUsers"></tbody>
+  </table>
+</div>
 
-<div class="card"><b>⚙️ WR SETTINGS (Live from code)</b><div style="font-size:11px;color:#aaa;margin-top:6px">EVEN WR 42% ODD 42% OVER1 50% UNDER8 48% | B+ Rule: EVEN 5→+7 10→+5 20→+15 30→+25 40→+35 50→+45 500→+455 | OVER 5→+2 10→+5 20→+10 30→+20 40→+30 50→+40 500→+450 | House EV: stake 20 → +5, stake 50 → +5, stake 500 → +25</div></div>
+<div class="card">
+  <h3 style="font-size:15px;margin-bottom:12px">📅 LAST 50 BETS - Live</h3>
+  <table>
+    <thead><tr><th>Time</th><th>Phone</th><th>Type</th><th>D</th><th>Stake</th><th>Payout</th><th>House</th></tr></thead>
+    <tbody id="lastBets"></tbody>
+  </table>
+</div>
 
 <script>
-const SUPABASE_URL="https://hkhqbtyyqgvaktamilxs.supabase.co";
-const SUPABASE_ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg";
-const supa=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON);
-const ADMIN_PASS="Bashiri2025!";
-function checkPass(){let p=document.getElementById('pass').value;if(p===ADMIN_PASS){document.getElementById('login').style.display='none';loadData();}else{document.getElementById('err').innerText='Wrong password';}}
-let allBets=[],allUsers=[];
-async function loadData(){
- document.getElementById('status').innerText='Loading 100% CLOUD...';
- let {data:bets,error:bErr}=await supa.from('bets').select('*').order('created_at',{ascending:false}).limit(2000);
- if(bErr){document.getElementById('status').innerText='BETS ERR: '+bErr.message;return;}
- allBets=bets||[];
- let {data:users,error:uErr}=await supa.from('users').select('*').order('balance',{ascending:false}).limit(500);
- if(uErr){document.getElementById('status').innerText='USERS ERR: '+uErr.message;}
- allUsers=users||[];
- calc();
+const SUPA_URL="https://hkhqbtyyqgvaktamilxs.supabase.co";
+const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg0OTYyMDYsImV4cCI6MjA2NDA3MjIwNn0.PzZyN1rZz3x8h5qX8y9z0a1b2c3d4e5f6g7h8";
+const supa=window.supabase.createClient(SUPA_URL,SUPA_KEY);
+
+let cacheBets=[],cacheDeps=[],cacheWiths=[],cacheUsers=[];
+
+async function loadAll(){
+  const [{data:bets},{data:deps},{data:withs},{data:users}] = await Promise.all([
+    supa.from('bets').select('*').order('created_at',{ascending:false}).limit(500),
+    supa.from('deposits').select('*'),
+    supa.from('withdraws').select('*'),
+    supa.from('users').select('*')
+  ]);
+  cacheBets=bets||[]; cacheDeps=deps||[]; cacheWiths=withs||[]; cacheUsers=users||[];
+  renderAll();
 }
-function calc(){
- let tradeBets=allBets.filter(b=> (b.stake>0) && b.digit!==null);
- let totalStaked=tradeBets.reduce((s,b)=>s+(b.stake||0),0);
- let totalPayout=tradeBets.reduce((s,b)=>s+(b.payout||0),0);
- let house=totalStaked-totalPayout;
- let todayStr=new Date().toISOString().slice(0,10);
- let todayBets=tradeBets.filter(b=> b.created_at && b.created_at.slice(0,10)===todayStr);
- let todayStaked=todayBets.reduce((s,b)=>s+(b.stake||0),0);
- let todayPayout=todayBets.reduce((s,b)=>s+(b.payout||0),0);
- let todayHouse=todayStaked-todayPayout;
 
- document.getElementById('houseProfit').innerText='KES '+(house>=0?'+':'')+house;
- document.getElementById('houseProfit').className='big '+(house>=0?'green':'red');
- document.getElementById('todayProfit').innerText='KES '+(todayHouse>=0?'+':'')+todayHouse;
- document.getElementById('totalStaked').innerText=totalStaked;
- document.getElementById('totalBets').innerText=tradeBets.length+' bets';
- document.getElementById('totalPayout').innerText=totalPayout;
- document.getElementById('todaySub').innerText=todayBets.length+' bets today';
+function renderAll(){
+  let totalStaked=0,totalPaid=0,todayHouse=0,todayBets=0;
+  let byType={},byPhone={};
+  let today=new Date().toISOString().slice(0,10);
 
- let types={}; tradeBets.forEach(b=>{let t=b.choice||'UNKNOWN';if(!types[t])types[t]={staked:0,payout:0,count:0};types[t].staked+=b.stake;types[t].payout+=b.payout||0;types[t].count++;});
- let byTypeHtml='<table><tr><th>Type</th><th>Bets</th><th>Staked</th><th>Payout</th><th>House</th><th>Edge %</th></tr>';
- Object.keys(types).forEach(k=>{let v=types[k];let h=v.staked-v.payout;let edge=v.staked>0?((h/v.staked)*100).toFixed(1):0;byTypeHtml+=`<tr><td>${k}</td><td>${v.count}</td><td>${v.staked}</td><td>${v.payout}</td><td style="color:${h>=0?'#00e676':'#ff5252'};font-weight:800">${h>=0?'+':''}${h}</td><td>${edge}%</td></tr>`});
- byTypeHtml+='</table>'; document.getElementById('byType').innerHTML=byTypeHtml;
+  cacheBets.forEach(b=>{
+    totalStaked+=b.stake||0; totalPaid+=b.payout||0;
+    if((b.created_at||'').slice(0,10)===today){todayBets++; todayHouse+=b.house||0}
+    byType[b.type]=byType[b.type]||{bets:0,staked:0,payout:0,house:0};
+    byType[b.type].bets++; byType[b.type].staked+=b.stake||0; byType[b.type].payout+=b.payout||0; byType[b.type].house+=b.house||0;
+    byPhone[b.phone]=byPhone[b.phone]||{bets:0,staked:0,payout:0,house:0};
+    byPhone[b.phone].bets++; byPhone[b.phone].staked+=b.stake||0; byPhone[b.phone].payout+=b.payout||0; byPhone[b.phone].house+=b.house||0;
+  });
 
- let deps=allBets.filter(b=> b.type==='DEPOSIT'); let withs=allBets.filter(b=> b.type==='WITHDRAW');
- let depSum=deps.reduce((s,b)=>s+(b.amount||0),0); let withSum=withs.reduce((s,b)=>s+(b.amount||0),0);
- document.getElementById('depTotal').innerText=depSum; document.getElementById('depCount').innerText=deps.length+' deps';
- document.getElementById('withTotal').innerText=withSum; document.getElementById('withCount').innerText=withs.length+' with';
- document.getElementById('netCash').innerText=depSum-withSum;
+  document.getElementById('houseTotal').innerText='KES '+(totalStaked-totalPaid);
+  document.getElementById('houseTotal').className=(totalStaked-totalPaid)>=0?'green':'red';
+  document.getElementById('houseToday').innerText='KES '+todayHouse;
+  document.getElementById('betsToday').innerText=todayBets+' bets today';
+  document.getElementById('totalStaked').innerText=totalStaked;
+  document.getElementById('betsCount').innerText=cacheBets.length+' bets';
+  document.getElementById('totalPaid').innerText=totalPaid;
+  document.getElementById('cloudStatus').innerText=`Cloud CONNECTED - ${cacheBets.length} rows - House KES ${totalStaked-totalPaid} - ${new Date().toLocaleTimeString()}`;
 
- renderUsers(allUsers);
+  let typeHtml=''; Object.entries(byType).forEach(([k,v])=>{
+    let edge=v.staked?((v.house/v.staked)*100).toFixed(1):'0.0';
+    typeHtml+=`<tr><td>${k}</td><td>${v.bets}</td><td>${v.staked}</td><td>${v.payout}</td><td class="${v.house>=0?'green':'red'}">${v.house>=0?'+':''}${v.house}</td><td>${edge}%</td></tr>`;
+  });
+  document.getElementById('byType').innerHTML=typeHtml||'<tr><td colspan=6 style="color:#555;text-align:center;padding:20px">No bets yet</td></tr>';
 
- let betsBody=document.getElementById('betsBody'); betsBody.innerHTML='';
- allBets.slice(0,50).forEach(b=>{
-   if(b.stake>0 && b.digit!==null){
-     let h=b.stake-(b.payout||0); let time=b.created_at?b.created_at.slice(11,19):'-';
-     betsBody.innerHTML+=`<tr><td>${time}</td><td>${(b.phone||'').slice(-4)}</td><td>${b.choice}</td><td>${b.digit}</td><td>${b.stake}</td><td>${b.payout||0}</td><td style="color:${h>=0?'#00e676':'#ff5252'};font-weight:700">${h>=0?'+':''}${h}</td></tr>`;
-   }
- });
- document.getElementById('status').innerText=`Cloud CONNECTED NEW KEY - ${allBets.length} rows - House KES ${house} - Updated ${new Date().toLocaleTimeString()}`;
+  let depSum=cacheDeps.reduce((a,b)=>a+(b.amount||0),0);
+  let withSum=cacheWiths.reduce((a,b)=>a+(b.amount||0),0);
+  document.getElementById('depTotal').innerText=depSum;
+  document.getElementById('withTotal').innerText=withSum;
+  document.getElementById('netCash').innerText=depSum-withSum;
+  document.getElementById('depCount').innerText=cacheDeps.length+' deps';
+  document.getElementById('withCount').innerText=cacheWiths.length+' with';
+
+  renderUsers(byPhone);
+  renderBets();
 }
-function renderUsers(list){
- let map={}; allBets.filter(b=>b.stake>0 && b.digit!==null).forEach(b=>{let ph=b.phone;if(!map[ph])map[ph]={staked:0,payout:0,count:0};map[ph].staked+=b.stake;map[ph].payout+=b.payout||0;map[ph].count++;});
- let tbody=document.getElementById('usersBody'); tbody.innerHTML='';
- list.forEach(u=>{
-   let ph=u.phone; let stats=map[ph]||{staked:0,payout:0,count:0}; let house=stats.staked-stats.payout;
-   tbody.innerHTML+=`<tr><td>${ph}</td><td>${stats.count}</td><td>${stats.staked}</td><td>${stats.payout}</td><td style="color:${house>=0?'#00e676':'#ff5252'};font-weight:800">${house>=0?'+':''}${house}</td><td>${u.balance}</td></tr>`;
- });
+
+function renderUsers(byPhone){
+  byPhone=byPhone||{};
+  // rebuild if not passed
+  if(!Object.keys(byPhone).length){
+    byPhone={};
+    cacheBets.forEach(b=>{
+      byPhone[b.phone]=byPhone[b.phone]||{bets:0,staked:0,payout:0,house:0};
+      byPhone[b.phone].bets++; byPhone[b.phone].staked+=b.stake||0; byPhone[b.phone].payout+=b.payout||0; byPhone[b.phone].house+=b.house||0;
+    });
+  }
+  let search=(document.getElementById('searchPhone').value||'').toLowerCase();
+  let html='';
+  Object.entries(byPhone).sort((a,b)=>b[1].house-a[1].house).forEach(([phone,stats])=>{
+    if(search &&!phone.toLowerCase().includes(search)) return;
+    let bal=(cacheUsers.find(u=>u.phone===phone)?.balance)||0;
+    html+=`<tr><td>${phone}</td><td>${stats.bets}</td><td>${stats.staked}</td><td>${stats.payout}</td><td class="${stats.house>=0?'green':'red'}">${stats.house>=0?'+':''}${stats.house}</td><td>${bal}</td></tr>`;
+  });
+  document.getElementById('topUsers').innerHTML=html||'<tr><td colspan=6 style="color:#555;text-align:center;padding:20px">No users</td></tr>';
 }
-function filterUsers(){let q=document.getElementById('search').value.trim();if(!q){renderUsers(allUsers);return;}let f=allUsers.filter(u=>u.phone.includes(q));renderUsers(f);}
-function exportCSV(){let csv='phone,choice,digit,stake,payout,house,win,created_at\n';allBets.forEach(b=>{if(b.stake>0){let house=b.stake-(b.payout||0);csv+=`${b.phone},${b.choice},${b.digit},${b.stake},${b.payout||0},${house},${b.win},${b.created_at}\n`;}});let blob=new Blob([csv],{type:'text/csv'});let url=URL.createObjectURL(blob);let a=document.createElement('a');a.href=url;a.download='bashiri_house_profit.csv';a.click();}
-</script></body></html>
+
+function renderBets(){
+  let html='';
+  cacheBets.slice(0,50).forEach(b=>{
+    let t=new Date(b.created_at).toLocaleTimeString('en-GB',{hour12:false});
+    html+=`<tr><td>${t}</td><td>${(b.phone||'').slice(-4)}</td><td>${b.type}</td><td>${b.d}</td><td>${b.stake}</td><td>${b.payout}</td><td class="${b.house>=0?'green':'red'}">${b.house>=0?'+':''}${b.house}</td></tr>`;
+  });
+  document.getElementById('lastBets').innerHTML=html||'<tr><td colspan=7 style="color:#555;text-align:center;padding:20px">No bets - start bot in app</td></tr>';
+}
+
+function exportCSV(){
+  let csv='Time,Phone,Type,D,Stake,Payout,House\n';
+  cacheBets.forEach(b=>{csv+=`${b.created_at},${b.phone},${b.type},${b.d},${b.stake},${b.payout},${b.house}\n`});
+  let blob=new Blob([csv],{type:'text/csv'}); let a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='bets.csv'; a.click();
+}
+
+loadAll();
+setInterval(loadAll,3000);
+</script>
+</body>
+</html>
