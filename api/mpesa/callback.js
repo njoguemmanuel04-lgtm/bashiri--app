@@ -1,47 +1,31 @@
-import { createClient } from '@supabase/supabase-js'
+// Simple memory store (Vercel will keep for few mins)
+global.mpesaPayments = global.mpesaPayments || {};
 
-const supa = createClient(
-  process.env.SUPA_URL || 'https://hkhqbtyyqgvaktamilxs.supabase.co',
-  process.env.SUPA_KEY || process.env.SUPABASE_SERVICE_KEY
-)
+export default async function handler(req, res) {
+  try {
+    console.log('CALLBACK', JSON.stringify(req.body));
+    const body = req.body;
+    const stkCallback = body?.Body?.stkCallback;
+    if (!stkCallback) return res.json({ ResultCode: 0, ResultDesc: "No callback" });
 
-export default async function handler(req,res){
-  try{
-    console.log('CALLBACK:', JSON.stringify(req.body))
-    const stk = req.body?.Body?.stkCallback
-    if(!stk){ return res.json({ResultCode:0, ResultDesc:'No stk'}) }
+    const checkoutId = stkCallback.CheckoutRequestID;
+    const resultCode = stkCallback.ResultCode;
 
-    const checkoutId = stk.CheckoutRequestID
-    const resultCode = stk.ResultCode
-
-    if(resultCode === 0){
-      const meta = stk.CallbackMetadata?.Item || []
-      const amount = meta.find(i=>i.Name==='Amount')?.Value
-      const code = meta.find(i=>i.Name==='MpesaReceiptNumber')?.Value
-      const phone = meta.find(i=>i.Name==='PhoneNumber')?.Value
-
-      // Save to cloud - this is what frontend polls
-      await supa.from('mpesa_payments').insert([{
-        checkout_id: checkoutId,
-        amount: amount,
-        mpesa_code: code,
-        phone: String(phone),
-        status: 'paid',
-        raw: req.body
-      }])
-      console.log('PAID SAVED', checkoutId, amount, code)
+    if (resultCode === 0) {
+      const items = stkCallback.CallbackMetadata?.Item || [];
+      const get = (name) => items.find(i=>i.Name===name)?.Value;
+      global.mpesaPayments[checkoutId] = {
+        paid: true,
+        amount: get('Amount'),
+        code: get('MpesaReceiptNumber'),
+        phone: get('PhoneNumber'),
+        date: new Date().toISOString()
+      };
     } else {
-      // Save failed too
-      await supa.from('mpesa_payments').insert([{
-        checkout_id: checkoutId,
-        status: 'failed',
-        raw: req.body
-      }])
+      global.mpesaPayments[checkoutId] = { paid: false, reason: stkCallback.ResultDesc };
     }
-
-    res.json({ResultCode:0, ResultDesc:'Accepted'})
-  }catch(e){
-    console.error('callback error', e)
-    res.json({ResultCode:0})
+    return res.json({ ResultCode: 0, ResultDesc: "Accepted" });
+  } catch (e) {
+    return res.json({ ResultCode: 0, ResultDesc: "Error" });
   }
 }
