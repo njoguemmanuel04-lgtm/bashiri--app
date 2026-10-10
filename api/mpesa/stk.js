@@ -28,7 +28,7 @@ export default async function handler(req, res) {
     const tokenData = await tokenRes.json();
     if (!tokenData.access_token) return res.status(500).json({ error: 'Token failed', details: tokenData });
 
-    // 2. STK
+    // 2. STK - TILL FIX
     const timestamp = new Date().toISOString().replace(/[-T:.Z]/g,'').slice(0,14);
     const password = Buffer.from(shortcode + passkey + timestamp).toString('base64');
 
@@ -42,14 +42,15 @@ export default async function handler(req, res) {
         TransactionType: "CustomerBuyGoodsOnline",
         Amount: Number(amount),
         PartyA: phone,
-        PartyB: shortcode,
+        PartyB: till,
         PhoneNumber: phone,
         CallBackURL: `https://${req.headers.host}/api/mpesa/callback`,
-        AccountReference: `HOT DIGITS ${till}`,
+        AccountReference: "HOT DIGITS",
         TransactionDesc: `Deposit Till ${till}`
       })
     });
     const stkData = await stkRes.json();
+    console.log("STK RESULT", stkData);
     return res.status(200).json(stkData);
 
   } catch (e) {
