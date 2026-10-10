@@ -17,7 +17,7 @@
 <div class="botcard"><div style="display:flex;justify-content:space-between"><span>🛡️ <b>Safe OU</b> Base 5→+1</span><button class="tog" id="tog-safeOU" onclick="toggleBot('safeOU','over')">OFF</button></div><div class="row"><span>Base</span><input id="base-safeOU" class="inp" value="5"><span>TP</span><input id="tp-safeOU" class="inp" value="50"><span>SL</span><input id="sl-safeOU" class="inp" value="50"></div><div class="sess" id="sess-safeOU">Session: +0</div></div>
 <div class="botcard"><div style="display:flex;justify-content:space-between"><span>🔥 <b>Agg OU</b> Base 10→+2</span><button class="tog" id="tog-aggOU" onclick="toggleBot('aggOU','over')">OFF</button></div><div class="row"><span>Base</span><input id="base-aggOU" class="inp" value="10"><span>TP</span><input id="tp-aggOU" class="inp" value="150"><span>SL</span><input id="sl-aggOU" class="inp" value="100"></div><div class="sess" id="sess-aggOU">Session: +0</div></div>
 </div>
-<div class="depsec"><input id="mpesaPhone" class="inp" style="flex:1;min-width:120px" value="254116982197" placeholder="2547..."><input id="depInp" class="inp" style="flex:1" placeholder="50-300"><button class="btn be" id="depBtn" onclick="doDeposit()">DEPOSIT LIVE</button><div id="depMsg" style="width:100%;font-size:11px;color:#00e676;margin-top:6px;text-align:center"></div></div>
+<div class="depsec"><input id="mpesaPhone" class="inp" style="flex:1;min-width:140px" value="" placeholder="2547XXXXXXXX"><input id="depInp" class="inp" style="flex:1" placeholder="50-300"><button class="btn be" id="depBtn" onclick="doDeposit()">DEPOSIT LIVE</button><div id="depMsg" style="width:100%;font-size:11px;color:#00e676;margin-top:6px;text-align:center;line-height:1.4"></div></div>
 <div class="depsec"><input id="withInp" class="inp" style="flex:1" placeholder="Withdraw 100-500"><button class="btn br" onclick="doWithdraw()">WITHDRAW 10% fee</button></div>
 <div class="results"><div class="r-head"><span class="r-title" id="rTitle">RESULTS (0)</span><button class="r-clear" onclick="clearResults()">CLEAR</button></div><div id="resultsList"></div></div>
 <script>
@@ -38,20 +38,34 @@ async function doDeposit(){
   let phone=document.getElementById('mpesaPhone').value.trim();
   let msg=document.getElementById('depMsg');
   let btn=document.getElementById('depBtn');
-  if(a<10)return alert('Min 10 (test) - production min 50');
+  if(a<10)return alert('Min 10 - test, live min 50');
+  if(phone==='254116982197'||phone==='0116982197') return alert('Cannot use Till owner number! Use customer Safaricom like 2547XXXXXXXX');
   if(!phone.startsWith('254')||phone.length!=12)return alert('Phone must be 2547XXXXXXXX (12 digits)');
   btn.textContent='SENDING STK...';btn.disabled=true;msg.textContent='Connecting to Safaricom LIVE...';
   try{
     const res=await fetch('/api/mpesa/stk',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone,amount:a})});
     const data=await res.json();console.log('STK',data);
-    if(data.ResponseCode=='0'){
-      msg.textContent='✅ STK sent to '+phone+' - Enter M-Pesa PIN now! Till 1803135';
-      msg.style.color='#00e676';btn.textContent='STK SENT ✅';
-      // Optimistically credit after 10 sec - real should be from callback
-      setTimeout(()=>{BAL+=a;TRADES=0;renderResults();msg.textContent+=' | Credited KES '+a;},8000);
-      try{await supa.from('deposits').insert([{phone:phone,amount:a,status:'stk_sent'}]);}catch(e){}
+    if(data.ResponseCode=='0' || data.CheckoutRequestID){
+      msg.innerHTML='✅ STK PUSH sent to '+phone+'<br>Check phone - Pay 1803135 HOT DIGITS KSH'+a+'<br>Reply 1 to pay, then enter PIN';
+      msg.style.color='#00e676';btn.textContent='WAITING FOR PIN...';
+      let tries=0;
+      let poll=setInterval(async()=>{
+        tries++;
+        try{
+          let check=await fetch('/api/mpesa/check?CheckoutRequestID='+data.CheckoutRequestID);
+          let j=await check.json();
+          if(j.paid){
+            clearInterval(poll);
+            BAL+=j.amount;TRADES=0;renderResults();
+            msg.innerHTML='✅ PAID! Code: '+j.code+' | Credited KES '+j.amount;
+            btn.textContent='DEPOSIT LIVE';btn.disabled=false;
+            try{await supa.from('deposits').insert([{phone:phone,amount:j.amount,status:'paid',mpesa_code:j.code}]);}catch(e){}
+          }
+        }catch(e){}
+        if(tries>25){clearInterval(poll); msg.innerHTML='⏰ Not paid yet. If you entered PIN, wait 1 min then refresh.'; btn.disabled=false; btn.textContent='DEPOSIT LIVE';}
+      },3000);
     }else{
-      msg.textContent='❌ '+(data.errorMessage||data.error||JSON.stringify(data).slice(0,100));
+      msg.textContent='❌ '+(data.errorMessage||data.error||JSON.stringify(data).slice(0,150));
       msg.style.color='#ff5a4f';btn.textContent='DEPOSIT LIVE';btn.disabled=false;
     }
   }catch(e){msg.textContent='Network error: '+e.message;btn.disabled=false;btn.textContent='DEPOSIT LIVE';}
