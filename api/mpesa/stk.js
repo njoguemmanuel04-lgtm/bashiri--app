@@ -1,36 +1,58 @@
-export default async function handler(req,res){
-  if(req.method !== 'POST') return res.status(405).json({error:'Method not allowed'})
-  const { phone, amount } = req.body
-  try{
-    const auth = Buffer.from(`${process.env.MPESA_CONSUMER_KEY}:${process.env.MPESA_CONSUMER_SECRET}`).toString('base64')
+export default async function handler(req, res) {
+  if (req.method!== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  try {
+    let body = req.body;
+    if (typeof body === 'string') body = JSON.parse(body);
+    let { phone, amount } = body;
+    if (!phone ||!amount) return res.status(400).json({ error: 'phone and amount required' });
+
+    phone = String(phone).replace(/[^0-9]/g,'');
+    if (phone.startsWith('0')) phone = '254' + phone.substring(1);
+    if (phone.startsWith('7') && phone.length==9) phone = '254'+phone;
+
+    const shortcode = "1333254";
+    const till = "1803135";
+    const passkey = process.env.MPESA_PASSKEY;
+    const consumerKey = process.env.MPESA_CONSUMER_KEY;
+    const consumerSecret = process.env.MPESA_CONSUMER_SECRET;
+
+    if (!passkey ||!consumerKey ||!consumerSecret) {
+      return res.status(500).json({ error: 'Missing Vercel ENV vars' });
+    }
+
+    // 1. Get token
+    const auth = Buffer.from(`${consumerKey}:${consumerSecret}`).toString('base64');
     const tokenRes = await fetch('https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials', {
       headers: { Authorization: `Basic ${auth}` }
-    })
-    const tokenData = await tokenRes.json()
-    if(!tokenData.access_token) return res.status(500).json({error: 'Token fail', data: tokenData})
-    const token = tokenData.access_token
+    });
+    const tokenData = await tokenRes.json();
+    if (!tokenData.access_token) return res.status(500).json({ error: 'Token failed', details: tokenData });
 
-    const timestamp = new Date().toISOString().replace(/[^0-9]/g,'').slice(0,14)
-    const password = Buffer.from(`1333254${process.env.MPESA_PASSKEY}${timestamp}`).toString('base64')
+    // 2. STK
+    const timestamp = new Date().toISOString().replace(/[-T:.Z]/g,'').slice(0,14);
+    const password = Buffer.from(shortcode + passkey + timestamp).toString('base64');
 
-    const stkRes = await fetch('https://api.safaricom.co.ke/mpesa/stkpush/v1/processquery',{
+    const stkRes = await fetch('https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest', {
       method: 'POST',
-      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+      headers: { Authorization: `Bearer ${tokenData.access_token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        BusinessShortCode: 1333254,
+        BusinessShortCode: shortcode,
         Password: password,
         Timestamp: timestamp,
-        TransactionType: 'CustomerBuyGoodsOnline',
+        TransactionType: "CustomerBuyGoodsOnline",
         Amount: Number(amount),
-        PartyA: Number(phone),
-        PartyB: 1803135,
-        PhoneNumber: Number(phone),
-        CallBackURL: process.env.MPESA_CALLBACK,
-        AccountReference: '1803135',
-        TransactionDesc: 'HOT DIGITS'
+        PartyA: phone,
+        PartyB: shortcode,
+        PhoneNumber: phone,
+        CallBackURL: `https://${req.headers.host}/api/mpesa/callback`,
+        AccountReference: `HOT DIGITS ${till}`,
+        TransactionDesc: `Deposit Till ${till}`
       })
-    })
-    const data = await stkRes.json()
-    return res.json(data)
-  }catch(e){ return res.status(500).json({error: e.message}) }
+    });
+    const stkData = await stkRes.json();
+    return res.status(200).json(stkData);
+
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
 }
