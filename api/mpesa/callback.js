@@ -1,31 +1,28 @@
-// Simple memory store (Vercel will keep for few mins)
-global.mpesaPayments = global.mpesaPayments || {};
+import { createClient } from '@supabase/supabase-js';
+const supa = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
 export default async function handler(req, res) {
   try {
-    console.log('CALLBACK', JSON.stringify(req.body));
-    const body = req.body;
-    const stkCallback = body?.Body?.stkCallback;
-    if (!stkCallback) return res.json({ ResultCode: 0, ResultDesc: "No callback" });
+    const stk = req.body?.Body?.stkCallback;
+    if (!stk) return res.json({ ResultCode: 0, ResultDesc: "ok" });
+    
+    const checkoutId = stk.CheckoutRequestID;
+    const code = stk.ResultCode;
 
-    const checkoutId = stkCallback.CheckoutRequestID;
-    const resultCode = stkCallback.ResultCode;
-
-    if (resultCode === 0) {
-      const items = stkCallback.CallbackMetadata?.Item || [];
-      const get = (name) => items.find(i=>i.Name===name)?.Value;
-      global.mpesaPayments[checkoutId] = {
-        paid: true,
+    if (code === 0) {
+      const items = stk.CallbackMetadata?.Item || [];
+      const get = (n) => items.find(i=>i.Name===n)?.Value;
+      await supa.from('deposits').insert([{
+        checkout_id: checkoutId,
         amount: get('Amount'),
-        code: get('MpesaReceiptNumber'),
-        phone: get('PhoneNumber'),
-        date: new Date().toISOString()
-      };
-    } else {
-      global.mpesaPayments[checkoutId] = { paid: false, reason: stkCallback.ResultDesc };
+        mpesa_code: get('MpesaReceiptNumber'),
+        phone: String(get('PhoneNumber')),
+        status: 'paid'
+      }]);
     }
     return res.json({ ResultCode: 0, ResultDesc: "Accepted" });
   } catch (e) {
-    return res.json({ ResultCode: 0, ResultDesc: "Error" });
+    console.log(e);
+    return res.json({ ResultCode: 0, ResultDesc: "Accepted" });
   }
 }
