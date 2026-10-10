@@ -1,9 +1,9 @@
-global.mpesaPayments = global.mpesaPayments || {};
+import { createClient } from '@supabase/supabase-js';
+const supa = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
 export default async function handler(req, res) {
   const { CheckoutRequestID } = req.query;
-  if (!CheckoutRequestID) return res.status(400).json({ error: 'Missing ID' });
-  const data = global.mpesaPayments[CheckoutRequestID];
-  if (!data) return res.status(200).json({ paid: false, waiting: true });
-  return res.status(200).json(data);
+  const { data } = await supa.from('deposits').select('*').eq('checkout_id', CheckoutRequestID).maybeSingle();
+  if (!data) return res.json({ paid: false });
+  return res.json({ paid: true, amount: data.amount, code: data.mpesa_code });
 }
