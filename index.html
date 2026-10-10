@@ -33,21 +33,26 @@ function clearResults(){if(!confirm('Clear results?'))return;results=[];localSto
 function toggleBot(n,t){let el=document.getElementById('tog-'+n);let off=el.innerText==='OFF';el.innerText=off?'ON':'OFF';el.className=off?'tog on':'tog';if(off){intervals[n]=setInterval(()=>{let b=parseInt(document.getElementById('base-'+n).value)||5;if(BAL<b){clearInterval(intervals[n]);el.innerText='OFF';el.className='tog';return;}let isEvenBot=t==='even';let tradeType=isEvenBot?(flipState[n]?'ODD':'EVEN'):(flipState[n]?'UNDER8':'OVER1');flipState[n]=!flipState[n];let d=Math.floor(Math.random()*10);let w=false;if(tradeType==='EVEN')w=d%2===0;if(tradeType==='ODD')w=d%2===1;if(tradeType==='OVER1')w=d>1;if(tradeType==='UNDER8')w=d<8;let p=calcPayout(b,isEvenBot).profit;if(w){BAL+=p;session[n]+=p;addResult(tradeType+' '+n,d,p,true,b)}else{BAL-=b;session[n]-=b;addResult(tradeType+' '+n,d,b,false,b)}TRADES++;document.getElementById('sess-'+n).innerText=`Session: ${session[n]>=0?'+':''}${session[n]} / TP +${document.getElementById('tp-'+n).value} / SL -${document.getElementById('sl-'+n).value}`;hist.push(d);if(hist.length>30)hist.shift();draw();renderResults();let tp=parseInt(document.getElementById('tp-'+n).value)||50,sl=parseInt(document.getElementById('sl-'+n).value)||50;if(session[n]>=tp||session[n]<=-sl){clearInterval(intervals[n]);el.innerText='OFF';el.className='tog';}},1000)}else clearInterval(intervals[n])}
 draw();renderResults();
 ['Even','Odd','Over','Under'].forEach(t=>{document.getElementById('btn'+t).onclick=()=>{let s=parseInt(document.getElementById('stakeInp').value)||5;let d=Math.floor(Math.random()*10);let e=t==='Even'||t==='Odd';let w=false;if(t==='Even')w=d%2===0;if(t==='Odd')w=d%2===1;if(t==='Over')w=d>1;if(t==='Under')w=d<8;let p=calcPayout(s,e).profit;if(w){BAL+=p;addResult(t.toUpperCase(),d,p,true,s)}else{BAL-=s;addResult(t.toUpperCase(),d,s,false,s)}TRADES++;renderResults();hist.push(d);if(hist.length>30)hist.shift();draw();}});
+
 async function doDeposit(){
   let a=parseInt(document.getElementById('depInp').value)||0;
-  let phone=document.getElementById('mpesaPhone').value.trim();
+  let phoneRaw=document.getElementById('mpesaPhone').value.trim();
+  let phone=phoneRaw.replace(/[^0-9]/g,'');
   let msg=document.getElementById('depMsg');
   let btn=document.getElementById('depBtn');
-  if(a<10)return alert('Min 10 - test, live min 50');
-  if(phone==='254116982197'||phone==='0116982197') return alert('Cannot use Till owner number! Use customer Safaricom like 2547XXXXXXXX');
-  if(!phone.startsWith('254')||phone.length!=12)return alert('Phone must be 2547XXXXXXXX (12 digits)');
-  btn.textContent='SENDING STK...';btn.disabled=true;msg.textContent='Connecting to Safaricom LIVE...';
+  if(phone.startsWith('0')) phone='254'+phone.substring(1);
+  if(phone.startsWith('7') && phone.length==9) phone='254'+phone;
+  if(a<20) return alert('Min 20 KES');
+  if(phone==='254116982197') return alert('Cannot use Till owner number! Use customer number like 2547XXXX');
+  if(!phone.startsWith('254') || phone.length!=12) return alert('Phone must be 2547XXXXXXXX (12 digits)');
+  btn.textContent='SENDING STK...'; btn.disabled=true; msg.style.color='#00e676';
+  msg.textContent='Connecting to Safaricom LIVE Till 1803135...';
   try{
     const res=await fetch('/api/mpesa/stk',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone,amount:a})});
-    const data=await res.json();console.log('STK',data);
-    if(data.ResponseCode=='0' || data.CheckoutRequestID){
-      msg.innerHTML='✅ STK PUSH sent to '+phone+'<br>Check phone - Pay 1803135 HOT DIGITS KSH'+a+'<br>Reply 1 to pay, then enter PIN';
-      msg.style.color='#00e676';btn.textContent='WAITING FOR PIN...';
+    const data=await res.json(); console.log('STK',data);
+    if(data.ResponseCode=='0' && data.CheckoutRequestID){
+      msg.innerHTML='✅ STK sent to '+phone+'<br>Check phone - Pay TILL 1803135 HOT DIGITS KSH'+a+'<br>Enter PIN. Waiting...';
+      btn.textContent='WAITING FOR PIN...';
       let tries=0;
       let poll=setInterval(async()=>{
         tries++;
@@ -56,19 +61,19 @@ async function doDeposit(){
           let j=await check.json();
           if(j.paid){
             clearInterval(poll);
-            BAL+=j.amount;TRADES=0;renderResults();
-            msg.innerHTML='✅ PAID! Code: '+j.code+' | Credited KES '+j.amount;
-            btn.textContent='DEPOSIT LIVE';btn.disabled=false;
+            BAL+=j.amount; TRADES=0; renderResults(); localStorage.setItem('bal',BAL);
+            msg.innerHTML='✅ PAID! Code: '+j.code+' | KES '+j.amount+' credited | Bal: '+BAL;
+            btn.textContent='DEPOSIT LIVE'; btn.disabled=false;
             try{await supa.from('deposits').insert([{phone:phone,amount:j.amount,status:'paid',mpesa_code:j.code}]);}catch(e){}
           }
         }catch(e){}
-        if(tries>25){clearInterval(poll); msg.innerHTML='⏰ Not paid yet. If you entered PIN, wait 1 min then refresh.'; btn.disabled=false; btn.textContent='DEPOSIT LIVE';}
+        if(tries>40){clearInterval(poll); msg.innerHTML='⏰ If you entered PIN, wait 1 min then refresh.'; btn.disabled=false; btn.textContent='DEPOSIT LIVE';}
       },3000);
     }else{
-      msg.textContent='❌ '+(data.errorMessage||data.error||JSON.stringify(data).slice(0,150));
-      msg.style.color='#ff5a4f';btn.textContent='DEPOSIT LIVE';btn.disabled=false;
+      let err=data.errorMessage||data.error||data.ResultDesc||JSON.stringify(data).slice(0,200);
+      msg.innerHTML='❌ '+err; msg.style.color='#ff5a4f'; btn.textContent='DEPOSIT LIVE'; btn.disabled=false;
     }
-  }catch(e){msg.textContent='Network error: '+e.message;btn.disabled=false;btn.textContent='DEPOSIT LIVE';}
+  }catch(e){msg.textContent='Network error: '+e.message; msg.style.color='#ff5a4f'; btn.disabled=false; btn.textContent='DEPOSIT LIVE';}
 }
 async function doWithdraw(){if(TRADES<10)return alert('Need 10 trades');let a=parseInt(document.getElementById('withInp').value)||0;if(a<100||a>500)return alert('Min 100 Max 500');if(BAL<a)return alert('Low');let f=Math.floor(a*0.1);BAL-=a;renderResults();try{await supa.from('withdrawals').insert([{phone:'0116982197',amount:a,receive:a-f,status:'pending'}]);await supa.from('withdraws').insert([{phone:'0116982197',amount:a,receive:a-f,status:'pending'}]);}catch(e){}alert(`You get ${a-f} (10% fee)`);}
 </script></body></html>
