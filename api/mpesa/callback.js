@@ -1,13 +1,13 @@
-export async function POST(req) {
-  const data = await req.json();
-  const stk = data.Body.stkCallback;
-  
-  if(stk.ResultCode === 0) {
-    const amount = stk.CallbackMetadata.Item.find(i=>i.Name==="Amount").Value;
-    const phone = stk.CallbackMetadata.Item.find(i=>i.Name==="PhoneNumber").Value;
-    // FIND USER BY PHONE AND CREDIT
-    // await db.users.updateOne({phone}, {$inc: {balance: amount}})
-    console.log(`CREDIT ${phone} with ${amount}`);
+import { createClient } from '@supabase/supabase-js'
+const supa = createClient(process.env.SUPA_URL, process.env.SUPA_KEY)
+
+export default async function handler(req,res){
+  const data = req.body.Body.stkCallback;
+  const checkoutId = data.CheckoutRequestID;
+  if(data.ResultCode === 0){
+    const amount = data.CallbackMetadata.Item.find(i=>i.Name==='Amount').Value;
+    const code = data.CallbackMetadata.Item.find(i=>i.Name==='MpesaReceiptNumber').Value;
+    await supa.from('mpesa_payments').insert([{checkout_id: checkoutId, amount, code, status: 'paid'}]);
   }
-  return Response.json({ ok: true });
+  res.json({ResultCode:0});
 }
