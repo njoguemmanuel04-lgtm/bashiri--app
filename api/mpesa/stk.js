@@ -1,6 +1,3 @@
-import { createClient } from '@supabase/supabase-js';
-const supa = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
-
 export default async function handler(req,res){
  res.setHeader('Access-Control-Allow-Origin','*');
  if(req.method==='OPTIONS') return res.status(200).end();
@@ -15,7 +12,9 @@ export default async function handler(req,res){
   const passkey=process.env.MPESA_PASSKEY;
   const key=process.env.MPESA_CONSUMER_KEY;
   const secret=process.env.MPESA_CONSUMER_SECRET;
-  
+  const SUPA_URL=process.env.SUPABASE_URL;
+  const SUPA_KEY=process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY;
+
   const timestamp=new Date().toISOString().replace(/[^0-9]/g,'').slice(0,14);
   const password=Buffer.from(shortcode+passkey+timestamp).toString('base64');
   const auth=Buffer.from(key+':'+secret).toString('base64');
@@ -34,10 +33,15 @@ export default async function handler(req,res){
   const stkRes=await fetch('https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest',{method:'POST',headers:{Authorization:'Bearer '+tokenData.access_token,'Content-Type':'application/json'},body:JSON.stringify(payload)});
   const stkData=await stkRes.json();
 
-  if(stkData.ResponseCode==='0'){
-    await supa.from('deposits').insert([{checkout_id:stkData.CheckoutRequestID, phone:p, amount, status:'pending'}]);
+  // Save to Supabase via REST (no library needed)
+  if(stkData.ResponseCode==='0' && SUPA_URL && SUPA_KEY){
+    await fetch(`${SUPA_URL}/rest/v1/deposits`,{
+      method:'POST',
+      headers:{'apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body: JSON.stringify({checkout_id:stkData.CheckoutRequestID, phone:p, amount, status:'pending'})
+    });
   }
 
   return res.status(200).json(stkData);
- }catch(e){ return res.status(500).json({error:e.message}); }
+ }catch(e){ return res.status(500).json({error:e.message, stack:e.stack}); }
 }
