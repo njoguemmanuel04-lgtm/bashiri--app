@@ -1,19 +1,25 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HOT DIGITS - LIVE M-PESA</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}body{background:#0a0a0a;color:#fff;padding:8px;padding-bottom:90px}
 #splash{position:fixed;inset:0;background:#0a0a0a;z-index:9999;display:flex;align-items:center;justify-content:center;transition:opacity.5s}
 #splash.hide{opacity:0;pointer-events:none}
-.splash-card{background:#fff;border-radius:24px;padding:18px 18px 14px;width:92%;max-width:380px;text-align:center;box-shadow:0 20px 60px #0008}
-.splash-card h1{color:#000;font-weight:900;font-size:32px;letter-spacing:-1px;margin-bottom:10px;font-family:Arial Black,system-ui}
-.splash-card img{width:100%;border-radius:14px;display:block}
+.splash-card{background:#fff;border-radius:24px;padding:18px;width:92%;max-width:380px;text-align:center;box-shadow:0 20px 60px #0008}
 .top{background:#121212;border:1px solid #222;border-radius:12px;padding:10px;display:flex;justify-content:space-between}.bal{font-weight:700}.inp{width:70px;background:#1a1a1a;border:1px solid #333;color:#fff;border-radius:8px;padding:7px;text-align:center}.botsec{background:#121212;border-radius:18px;padding:10px;margin:12px 0}.bottitle{color:#00e6ff;font-weight:800;font-size:12px;margin-bottom:8px}.botcard{background:#1e1e1e;border-radius:12px;padding:10px;margin-bottom:8px;border:1px solid #2a2a2a}.tog{border:1px solid #333;background:#2a2a2a;color:#fff;padding:6px 14px;border-radius:20px;min-width:55px;cursor:pointer}.tog.on{background:#00e676;color:#000}.row{display:flex;gap:6px;margin-top:8px;align-items:center;flex-wrap:wrap}.sess{font-size:11px;color:#00e676;margin-top:6px;font-weight:700}.card{background:#112a24;border-radius:18px;padding:12px;margin:10px 0;border:1px solid #1a3a2f}.digits{display:flex;justify-content:space-between;gap:2px}.d{flex:1;text-align:center}.dc{width:38px;height:38px;border-radius:50%;background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-weight:700;margin:auto}.dc.active{background:#00e676;color:#000}.dp{font-size:9px;color:#888;margin-top:2px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.btn{padding:14px;border:none;border-radius:12px;font-weight:800;cursor:pointer}.be{background:#c8fff0;color:#003d2f}.bo{background:#fff0c8;color:#3d2f00}.bu{background:#d0d0ff;color:#00002f}.br{background:#ffd0d0;color:#3d0000}.results{background:#1a1a1a;border-radius:18px;padding:12px;margin-top:12px;border:1px solid #2a2a2a}.r-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.r-clear{background:#ff5a4f;color:#fff;border:none;border-radius:20px;padding:8px 16px;font-weight:800;cursor:pointer}.r-item{display:flex;justify-content:space-between;padding:8px 10px;background:#111;border-radius:8px;margin-bottom:4px;border-left:3px solid}.r-item.win{border-color:#00e676}.r-item.loss{border-color:#ff4d4d}.depsec{background:#121212;border-radius:18px;padding:12px;display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}</style></head><body>
-<div id="splash"><div class="splash-card">
-<h1>HOT DIGITS</h1>
-<img src="logo.webp" alt="0 ice 1 fire">
-<div style="display:flex;justify-content:space-between;margin-top:14px;font-weight:900;font-size:15px;">
-<span style="color:#0a84ff">0 FREEZING ❄️</span>
-<span style="color:#ff3b00">1 ON FIRE 🔥</span>
+
+<!-- BIG 0 and 1 SPLASH - NO IMAGE FILE NEEDED -->
+<div id="splash"><div class="splash-card" style="padding:24px 16px; background:#fff; border-radius:26px;">
+<h1 style="color:#000; font-weight:900; font-size:34px; letter-spacing:-1px; margin-bottom:16px; font-family:Arial Black;">HOT DIGITS</h1>
+<div style="display:flex; gap:12px; justify-content:center;">
+<div style="flex:1; background:#e6f2ff; border-radius:20px; padding:20px 0 14px; border:2px solid #b3d4ff;">
+<div style="font-size:110px; font-weight:900; line-height:0.9; color:#0a84ff; text-shadow:0 4px 0 #cce4ff, 0 8px 20px #0a84ff44;">0</div>
+<div style="color:#0a84ff; font-weight:900; font-size:14px; margin-top:8px;">FREEZING ❄️</div>
+</div>
+<div style="flex:1; background:#fff0e6; border-radius:20px; padding:20px 0 14px; border:2px solid #ffcc99;">
+<div style="font-size:110px; font-weight:900; line-height:0.9; color:#ff3b00; text-shadow:0 4px 0 #ffcc99, 0 8px 20px #ff3b0044;">1</div>
+<div style="color:#ff3b00; font-weight:900; font-size:14px; margin-top:8px;">ON FIRE 🔥</div>
+</div>
 </div>
 </div></div>
-<div class="top"><div class="bal">💰 KES <span id="bal">0</span><div style="font-size:11px;color:#888">Enter phone to load balance</div><div style="font-size:11px;color:#00e676" id="cloudStat">Cloud: CONNECTING...</div><div style="font-size:11px;color:#888" id="tradeInfo">Trades: 0/10</div></div><div style="display:flex;gap:6px;align-items:center"><input id="stakeInp" class="inp" value="5"></div></div>
+
+<div class="top"><div class="bal">💰 KES <span id="bal">0</span><div style="font-size:11px;color:#888">Enter phone to load</div><div style="font-size:11px;color:#00e676" id="cloudStat">Cloud: CONNECTING...</div><div style="font-size:11px;color:#888" id="tradeInfo">Trades: 0/10</div></div><div style="display:flex;gap:6px;align-items:center"><input id="stakeInp" class="inp" value="5"></div></div>
 <div class="card"><div class="digits" id="digitBar"></div><canvas id="graph" height="60" style="width:100%;margin:10px 0;background:#0a1a15;border-radius:8px"></canvas><div class="grid"><button class="btn be" id="btnEven">EVEN +3</button><button class="btn bo" id="btnOdd">ODD +3</button><button class="btn bu" id="btnOver">OVER 1 +1</button><button class="btn br" id="btnUnder">UNDER 8 +1</button></div></div>
 <div class="botsec"><div class="bottitle">EVEN/ODD BOTS</div>
 <div class="botcard"><div style="display:flex;justify-content:space-between"><span>🛡️ <b>Safe</b> Base 5→+3</span><button class="tog" id="tog-safe" onclick="toggleBot('safe','even')">OFF</button></div><div class="row"><span>Base</span><input id="base-safe" class="inp" value="5"><span>TP</span><input id="tp-safe" class="inp" value="50"><span>SL</span><input id="sl-safe" class="inp" value="50"></div><div class="sess" id="sess-safe">Session: +0</div></div>
