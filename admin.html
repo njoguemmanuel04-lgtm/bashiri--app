@@ -1,7 +1,15 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HOUSE ANALYTICS</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}body{background:#06140f;color:#fff;padding:10px;padding-bottom:40px}.card{background:#1a1a1a;border-radius:18px;padding:14px;margin-bottom:12px;border:1px solid #222}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}.green{color:#00e676}.red{color:#ff5a5a}.yellow{color:#ffca28}.cyan{color:#00e6ff}table{width:100%;font-size:12px;border-collapse:collapse}th{color:#777;text-align:left;padding:8px 4px;font-size:10px;text-transform:uppercase}td{padding:9px 4px;border-top:1px solid #222}button{border:none;border-radius:12px;padding:10px 18px;font-weight:800;cursor:pointer}.refresh{background:#00e676;color:#000}.csv{background:#ff7a7a;color:#fff;margin-left:6px}.hrow{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}input{background:#222;border:1px solid #333;color:#fff;padding:8px 12px;border-radius:10px}</style></head><body>
-<div class="card"><div class="hrow"><div><h2>🏦 HOUSE ANALYTICS - FIXED</h2><div style="font-size:11px;color:#00e676;margin-top:4px" id="cloudStatus">Cloud CONNECTING...</div></div><div style="display:flex"><button class="refresh" onclick="loadAll()">🔄 REFRESH</button><button class="csv" onclick="exportCSV()">CSV</button></div></div></div>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HOUSE ANALYTICS - MARK X</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}body{background:#06140f;color:#fff;padding:10px;padding-bottom:40px}.card{background:#1a1a1a;border-radius:18px;padding:14px;margin-bottom:12px;border:1px solid #222}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}.green{color:#00e676}.red{color:#ff5a5a}.yellow{color:#ffca28}.cyan{color:#00e6ff}.progress{height:14px;background:#222;border-radius:10px;overflow:hidden;margin:8px 0}.bar{height:100%;background:linear-gradient(90deg,#00e676,#00e6ff);width:0%}table{width:100%;font-size:12px;border-collapse:collapse}th{color:#777;text-align:left;padding:8px 4px;font-size:10px;text-transform:uppercase}td{padding:9px 4px;border-top:1px solid #222}button{border:none;border-radius:12px;padding:10px 18px;font-weight:800;cursor:pointer}.refresh{background:#00e676;color:#000}.csv{background:#ff7a7a;color:#fff;margin-left:6px}.hrow{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}input{background:#222;border:1px solid #333;color:#fff;padding:8px 12px;border-radius:10px}</style></head><body>
+<div class="card"><div class="hrow"><div><h2>🏦 HOUSE ANALYTICS - MARK X</h2><div style="font-size:11px;color:#00e676;margin-top:4px" id="cloudStatus">Cloud CONNECTING...</div></div><div style="display:flex"><button class="refresh" onclick="loadAll()">🔄 REFRESH</button><button class="csv" onclick="exportCSV()">CSV</button></div></div></div>
 
-<!-- FLOAT HEALTH CARD ADDED HERE -->
+<!-- MARK X GOAL TRACKER -->
+<div class="card" style="border:1px solid #00e676"><h3>🚗 MARK X KDD 847M GOAL</h3>
+<div class="hrow" style="margin-top:10px"><div><div style="font-size:10px;color:#888">TARGET PRICE</div><div style="font-size:14px">KES <input id="targetInput" type="number" value="1350000" oninput="saveTarget()" style="width:110px;font-size:14px;font-weight:800"> <span style="font-size:10px;color:#888">KDD 2014 Pearl</span></div></div><div><div style="font-size:10px;color:#888">CURRENT PROFIT</div><div style="font-size:22px;font-weight:900" class="green" id="markxProfit">KES 0</div></div></div>
+<div class="progress"><div class="bar" id="markxBar"></div></div>
+<div class="grid3"><div><div style="font-size:10px;color:#888">PROGRESS</div><div style="font-size:16px;font-weight:800" id="markxPercent">0%</div></div><div><div style="font-size:10px;color:#888">LEFT</div><div style="font-size:16px;font-weight:800" class="yellow" id="markxLeft">0</div></div><div><div style="font-size:10px;color:#888">USERS NEEDED @17</div><div style="font-size:16px;font-weight:800" id="markxUsers">0</div><div style="font-size:9px;color:#666">or @50 avg = <span id="markxUsers50">0</span></div></div></div>
+<div style="font-size:10px;color:#666;margin-top:6px">Formula: (Target - House Profit) / 17 = users needed. Every bet updates live.</div>
+</div>
+
+<!-- FLOAT HEALTH -->
 <div class="card" style="border:1px solid #ffca28"><h3>💼 FLOAT HEALTH</h3>
 <div class="grid3" style="margin-top:10px">
 <div><div style="font-size:10px;color:#888">TOTAL OWED</div><div style="font-size:22px;font-weight:900" id="totalBal">0</div><div style="font-size:10px;color:#666">All balances</div></div>
@@ -26,9 +34,25 @@
 const SUPA_URL="https://hkhqbtyyqgvaktamilxs.supabase.co";
 const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg";
 const supa=window.supabase.createClient(SUPA_URL,SUPA_KEY);
-let cacheBets=[],cacheDeps=[],cacheWiths=[],cacheUsers=[], byPhoneCache={};
+let cacheBets=[],cacheDeps=[],cacheWiths=[],cacheUsers=[], byPhoneCache={}, lastHouse=0;
 function saveB2C(){ localStorage.setItem('b2cTill', document.getElementById('b2cInput').value); renderFloat(); }
 function loadB2C(){ let v=localStorage.getItem('b2cTill'); if(v) document.getElementById('b2cInput').value=v; }
+function saveTarget(){ localStorage.setItem('markxTarget', document.getElementById('targetInput').value); renderMarkX(); }
+function loadTarget(){ let v=localStorage.getItem('markxTarget'); if(v) document.getElementById('targetInput').value=v; }
+function renderMarkX(){
+  let target = parseFloat(document.getElementById('targetInput').value||'1350000')||1350000;
+  let profit = lastHouse;
+  let percent = Math.max(0,Math.min(100,(profit/target)*100));
+  let left = Math.max(0,target-profit);
+  let users17 = Math.ceil(left/17);
+  let users50 = Math.ceil(left/50);
+  document.getElementById('markxProfit').innerText='KES '+profit;
+  document.getElementById('markxPercent').innerText=percent.toFixed(4)+'%';
+  document.getElementById('markxLeft').innerText='KES '+left;
+  document.getElementById('markxUsers').innerText=users17.toLocaleString();
+  document.getElementById('markxUsers50').innerText=users50.toLocaleString();
+  document.getElementById('markxBar').style.width=percent+'%';
+}
 async function loadAll(){
   try{
     const [betsRes, depsRes, withRes, with2Res, balRes] = await Promise.all([
@@ -71,13 +95,14 @@ function renderAll(){
   const ADMIN_NUMS=['254116982197','0116982197','2540116982197','116982197'];
   cacheBets.forEach(b=>{ if(ADMIN_NUMS.includes(b.phone)) return; totalStaked+=b.stake||0; totalPaid+=b.payout||0; if((b.created_at||'').slice(0,10)===today){todayBets++; todayHouse+=b.house||0} byType[b.type]=byType[b.type]||{bets:0,staked:0,payout:0,house:0}; byType[b.type].bets++; byType[b.type].staked+=b.stake||0; byType[b.type].payout+=b.payout||0; byType[b.type].house+=b.house||0; byPhone[b.phone]=byPhone[b.phone]||{bets:0,staked:0,payout:0,house:0}; byPhone[b.phone].bets++; byPhone[b.phone].staked+=b.stake||0; byPhone[b.phone].payout+=b.payout||0; byPhone[b.phone].house+=b.house||0; });
   byPhoneCache=byPhone;
-  document.getElementById('houseTotal').innerText='KES '+(totalStaked-totalPaid);
-  document.getElementById('houseTotal').className=(totalStaked-totalPaid)>=0?'green':'red';
+  lastHouse = totalStaked-totalPaid;
+  document.getElementById('houseTotal').innerText='KES '+lastHouse;
+  document.getElementById('houseTotal').className=lastHouse>=0?'green':'red';
   document.getElementById('houseToday').innerText='KES '+todayHouse; document.getElementById('betsToday').innerText=todayBets+' bets today'; document.getElementById('totalStaked').innerText=totalStaked; document.getElementById('betsCount').innerText=cacheBets.length+' bets'; document.getElementById('totalPaid').innerText=totalPaid;
   let typeHtml=''; Object.entries(byType).forEach(([k,v])=>{let edge=v.staked?((v.house/v.staked)*100).toFixed(1):'0.0'; typeHtml+=`<tr><td>${k}</td><td>${v.bets}</td><td>${v.staked}</td><td>${v.payout}</td><td class="${v.house>=0?'green':'red'}">${v.house>=0?'+':''}${v.house}</td><td>${edge}%</td></tr>`}); document.getElementById('byType').innerHTML=typeHtml||'<tr><td colspan=6 style="color:#555;text-align:center;padding:20px">No bets yet</td></tr>';
   let depSum=cacheDeps.filter(d=>d.status==='paid').reduce((a,b)=>a+(b.amount||0),0), withSum=cacheWiths.reduce((a,b)=>a+(b.amount||0),0);
   document.getElementById('depTotal').innerText=depSum; document.getElementById('withTotal').innerText=withSum; document.getElementById('netCash').innerText=depSum-withSum; document.getElementById('depCount').innerText=cacheDeps.filter(d=>d.status==='paid').length+' paid / '+cacheDeps.length+' total'; document.getElementById('withCount').innerText=cacheWiths.length+' with';
-  renderFloat(); renderDeps(); renderUsers(); renderBets();
+  renderFloat(); renderMarkX(); renderDeps(); renderUsers(); renderBets();
 }
 function renderDeps(){ let html=''; cacheDeps.slice(0,20).forEach(d=>{let t=new Date(d.created_at).toLocaleTimeString('en-GB',{hour12:false}); let st=(d.status||'unknown'); let col=st==='paid'?'green':st==='pending'?'yellow':'red'; html+=`<tr><td>${t}</td><td>${(d.phone||'').slice(-9)}</td><td>${d.amount}</td><td class="${col}">${st}</td><td>${(d.mpesa_code||'').slice(0,10)}</td></tr>`}); document.getElementById('lastDeps').innerHTML=html||'<tr><td colspan=5 style="color:#555;text-align:center;padding:20px">No deposits</td></tr>';}
 function renderUsers(){ let search=(document.getElementById('searchPhone').value||'').toLowerCase(); let html='';
@@ -88,5 +113,5 @@ function renderUsers(){ let search=(document.getElementById('searchPhone').value
   document.getElementById('topUsers').innerHTML=html||'<tr><td colspan=6 style="color:#555;text-align:center;padding:20px">No users - deposit first</td></tr>';}
 function renderBets(){let html=''; cacheBets.slice(0,50).forEach(b=>{let t=new Date(b.created_at).toLocaleTimeString('en-GB',{hour12:false}); html+=`<tr><td>${t}</td><td>${(b.phone||'').slice(-4)}</td><td>${b.type}</td><td>${b.d}</td><td>${b.stake}</td><td>${b.payout}</td><td class="${b.house>=0?'green':'red'}">${b.house>=0?'+':''}${b.house}</td></tr>`}); document.getElementById('lastBets').innerHTML=html||'<tr><td colspan=7 style="color:#555;text-align:center;padding:20px">No bets</td></tr>';}
 function exportCSV(){let csv='Time,Phone,Type,D,Stake,Payout,House\n'; cacheBets.forEach(b=>{csv+=`${b.created_at},${b.phone},${b.type},${b.d},${b.stake},${b.payout},${b.house}\n`}); let blob=new Blob([csv],{type:'text/csv'}); let a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='bets.csv'; a.click();}
-loadB2C(); loadAll(); setInterval(loadAll,3000);
+loadB2C(); loadTarget(); loadAll(); setInterval(loadAll,3000);
 </script></body></html>
