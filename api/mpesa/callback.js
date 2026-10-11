@@ -1,45 +1,32 @@
-import { createClient } from '@supabase/supabase-js';
-const supa = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY);
-
 export default async function handler(req,res){
- if(req.method!=='POST') return res.status(200).json({ok:true});
+ res.setHeader('Access-Control-Allow-Origin','*');
+ if(req.method==='OPTIONS') return res.status(200).end();
  try{
-  const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-  const stk = body?.Body?.stkCallback;
-  if(!stk) return res.status(200).json({ok:true});
-  
-  const CheckoutRequestID = stk.CheckoutRequestID;
-  const ResultCode = stk.ResultCode;
-  console.log('CALLBACK', CheckoutRequestID, ResultCode);
-
-  if(ResultCode===0){
-    const meta = stk.CallbackMetadata?.Item || [];
-    const get = (n)=> meta.find(i=>i.Name===n)?.Value;
-    const amount = parseInt(get('Amount'))||0;
-    const mpesaCode = get('MpesaReceiptNumber');
-    const phoneRaw = get('PhoneNumber');
-    const phone = String(phoneRaw);
-
-    // 1. Mark deposit PAID
-    await supa.from('deposits').update({status:'paid', mpesa_code: mpesaCode, amount: amount}).eq('checkout_id', CheckoutRequestID);
-
-    // 2. Credit user_balances
+  const body = req.body?.Body?.stkCallback || req.body;
+  const CheckoutID = body.CheckoutRequestID;
+  const ResultCode = body.ResultCode;
+  const items = body.CallbackMetadata?.Item || [];
+  const get = (n) => items.find(i=>i.Name===n)?.Value || null;
+  const amount = get('Amount');
+  const mpesaCode = get('MpesaReceiptNumber');
+  const phone = get('PhoneNumber');
+  const SUPA_URL=process.env.SUPABASE_URL;
+  const SUPA_KEY=process.env.SUPABASE_SERVICE_KEY;
+  if(ResultCode===0 && CheckoutID){
+    await fetch(`${SUPA_URL}/rest/v1/deposits?checkout_id=eq.${CheckoutID}`,{method:'PATCH',headers:{'apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({status:'paid', mpesa_code:mpesaCode, phone: phone?.toString()})});
     if(phone && amount){
-      const {data:balRow} = await supa.from('user_balances').select('balance').eq('phone', phone).maybeSingle();
-      if(balRow){ 
-        await supa.from('user_balances').update({balance: balRow.balance + amount}).eq('phone', phone); 
-      } else { 
-        await supa.from('user_balances').insert([{phone: phone, balance: amount}]); 
+      const p = phone.toString();
+      const balRes = await fetch(`${SUPA_URL}/rest/v1/user_balances?phone=eq.${p}`,{headers:{'apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`}});
+      const balData = await balRes.json();
+      if(!balData || balData.length===0){
+        await fetch(`${SUPA_URL}/rest/v1/user_balances`,{method:'POST',headers:{'apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({phone:p, balance:amount})});
+      } else {
+        await fetch(`${SUPA_URL}/rest/v1/user_balances?phone=eq.${p}`,{method:'PATCH',headers:{'apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({balance:(balData[0].balance||0)+amount})});
       }
-      console.log('CREDITED', phone, amount);
     }
-  } else {
-    await supa.from('deposits').update({status:'failed'}).eq('checkout_id', CheckoutRequestID);
-    console.log('FAILED', stk.ResultDesc);
+  } else if(CheckoutID){
+    await fetch(`${SUPA_URL}/rest/v1/deposits?checkout_id=eq.${CheckoutID}`,{method:'PATCH',headers:{'apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({status:'failed'})});
   }
   return res.status(200).json({ok:true});
- }catch(e){ 
-  console.log('callback error', e.message);
-  return res.status(200).json({ok:true}); 
- }
+ }catch(e){ return res.status(200).json({ok:true}); }
 }
