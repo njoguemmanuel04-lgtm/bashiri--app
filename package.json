@@ -1,3 +1,6 @@
-"dependencies": {
-  "@supabase/supabase-js": "^2.39.0"
+{
+  "name": "bashiri-app",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {}
 }
