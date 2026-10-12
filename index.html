@@ -55,7 +55,7 @@ function renderResults(){let l=document.getElementById('resultsList');l.innerHTM
 function clearResults(){if(!confirm('Clear results?'))return;results=[];localStorage.removeItem('results');renderResults()}
 function toggleBot(n,t){let el=document.getElementById('tog-'+n);let off=el.innerText==='OFF';el.innerText=off?'ON':'OFF';el.className=off?'tog on':'tog';if(off){intervals[n]=setInterval(()=>{let b=parseInt(document.getElementById('base-'+n).value)||5;if(BAL<b){clearInterval(intervals[n]);el.innerText='OFF';el.className='tog';return;}let isEvenBot=t==='even';let tradeType=isEvenBot?(flipState[n]?'ODD':'EVEN'):(flipState[n]?'UNDER8':'OVER1');flipState[n]=!flipState[n];let d=Math.floor(Math.random()*10);let w=false;if(tradeType==='EVEN')w=d%2===0;if(tradeType==='ODD')w=d%2===1;if(tradeType==='OVER1')w=d>1;if(tradeType==='UNDER8')w=d<8;let p=calcPayout(b,isEvenBot).profit;if(w){BAL+=p;session[n]+=p;addResult(tradeType+' '+n,d,p,true,b)}else{BAL-=b;session[n]-=b;addResult(tradeType+' '+n,d,b,false,b)}TRADES++;document.getElementById('sess-'+n).innerText=`Session: ${session[n]>=0?'+':''}${session[n]} / TP +${document.getElementById('tp-'+n).value} / SL -${document.getElementById('sl-'+n).value}`;hist.push(d);if(hist.length>30)hist.shift();draw();renderResults();let tp=parseInt(document.getElementById('tp-'+n).value)||50,sl=parseInt(document.getElementById('sl-'+n).value)||50;if(session[n]>=tp||session[n]<=-sl){clearInterval(intervals[n]);el.innerText='OFF';el.className='tog';}},1000)}else clearInterval(intervals[n])}
 
-// ACCUMULATOR BOT LOGIC ADDED BELOW
+// ACCUMULATOR BOT LOGIC
 let accuInterval = null;
 let accuState = {
     running: false,
@@ -138,7 +138,6 @@ function toggleAccuGame() {
         renderResults();
     }
 }
-// END OF ACCUMULATOR LOGIC
 
 draw();renderResults();
 ['Even','Odd','Over','Under'].forEach(t=>{document.getElementById('btn'+t).onclick=()=>{let s=parseInt(document.getElementById('stakeInp').value)||5;let d=Math.floor(Math.random()*10);let e=t==='Even'||t==='Odd';let w=false;if(t==='Even')w=d%2===0;if(t==='Odd')w=d%2===1;if(t==='Over')w=d>1;if(t==='Under')w=d<8;let p=calcPayout(s,e).profit;if(w){BAL+=p;addResult(t.toUpperCase(),d,p,true,s)}else{BAL-=s;addResult(t.toUpperCase(),d,s,false,s)}TRADES++;renderResults();hist.push(d);if(hist.length>30)hist.shift();draw();}});
@@ -193,5 +192,33 @@ async function doDeposit(){
     }
   }catch(e){msg.textContent='Network error: '+e.message; msg.style.color='#ff5a4f'; btn.disabled=false; btn.textContent='DEPOSIT LIVE';}
 }
-async function doWithdraw(){if(TRADES<10)return alert('Need 10 trades');let a=parseInt(document.getElementById('withInp').value)||0;if(a<100||a>500)return alert('Min 100 Max 500');if(BAL<a)return alert('Low');let f=Math.floor(a*0.1);BAL-=a;renderResults();try{await supa.from('withdrawals').insert([{phone:document.getElementById('mpesaPhone').value||'guest',amount:a,receive:a-f,status:'pending'}]);}catch(e){}alert(`You get ${a-f} (10% fee)`);}
+
+// UPDATED WITHDRAW FUNCTION WITH ERROR HANDLING
+async function doWithdraw(){
+  if(TRADES < 10) return alert('Need 10 trades');
+  let a = parseInt(document.getElementById('withInp').value) || 0;
+  if(a < 100 || a > 500) return alert('Min 100 Max 500');
+  if(BAL < a) return alert('Low balance');
+  let f = Math.floor(a * 0.1);
+  let phone = document.getElementById('mpesaPhone').value.trim() || 'guest';
+  
+  try{
+    let { error } = await supa.from('withdrawals').insert([{
+      phone: phone,
+      amount: a,
+      receive: a - f,
+      status: 'pending'
+    }]);
+
+    if(error){
+      alert('Withdrawal Error: ' + error.message);
+    } else {
+      BAL -= a;
+      renderResults();
+      alert(`Withdrawal submitted! You get ${a - f} (10% fee)`);
+    }
+  } catch(e){
+    alert('Network error: ' + e.message);
+  }
+}
 </script></body></html>
