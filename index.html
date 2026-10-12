@@ -55,7 +55,7 @@ function renderResults(){let l=document.getElementById('resultsList');l.innerHTM
 function clearResults(){if(!confirm('Clear results?'))return;results=[];localStorage.removeItem('results');renderResults()}
 function toggleBot(n,t){let el=document.getElementById('tog-'+n);let off=el.innerText==='OFF';el.innerText=off?'ON':'OFF';el.className=off?'tog on':'tog';if(off){intervals[n]=setInterval(()=>{let b=parseInt(document.getElementById('base-'+n).value)||5;if(BAL<b){clearInterval(intervals[n]);el.innerText='OFF';el.className='tog';return;}let isEvenBot=t==='even';let tradeType=isEvenBot?(flipState[n]?'ODD':'EVEN'):(flipState[n]?'UNDER8':'OVER1');flipState[n]=!flipState[n];let d=Math.floor(Math.random()*10);let w=false;if(tradeType==='EVEN')w=d%2===0;if(tradeType==='ODD')w=d%2===1;if(tradeType==='OVER1')w=d>1;if(tradeType==='UNDER8')w=d<8;let p=calcPayout(b,isEvenBot).profit;if(w){BAL+=p;session[n]+=p;addResult(tradeType+' '+n,d,p,true,b)}else{BAL-=b;session[n]-=b;addResult(tradeType+' '+n,d,b,false,b)}TRADES++;document.getElementById('sess-'+n).innerText=`Session: ${session[n]>=0?'+':''}${session[n]} / TP +${document.getElementById('tp-'+n).value} / SL -${document.getElementById('sl-'+n).value}`;hist.push(d);if(hist.length>30)hist.shift();draw();renderResults();let tp=parseInt(document.getElementById('tp-'+n).value)||50,sl=parseInt(document.getElementById('sl-'+n).value)||50;if(session[n]>=tp||session[n]<=-sl){clearInterval(intervals[n]);el.innerText='OFF';el.className='tog';}},1000)}else clearInterval(intervals[n])}
 
-// ACCUMULATOR BOT LOGIC
+// OPTIMIZED ACCUMULATOR BOT LOGIC
 let accuInterval = null;
 let accuState = {
     running: false,
@@ -65,7 +65,7 @@ let accuState = {
     entryPrice: 0,
     upperBarrier: 0,
     lowerBarrier: 0,
-    barrierRange: 1.5,
+    barrierRange: 1.2,
     currentPrice: 100.0,
     ticksSurvived: 0
 };
@@ -98,7 +98,7 @@ function toggleAccuGame() {
         accuInterval = setInterval(() => {
             if (!accuState.running) return;
 
-            let movement = (Math.random() - 0.49) * 1.2;
+            let movement = (Math.random() - 0.49) * 1.6;
             accuState.currentPrice += movement;
 
             if (accuState.currentPrice >= accuState.upperBarrier || accuState.currentPrice <= accuState.lowerBarrier) {
