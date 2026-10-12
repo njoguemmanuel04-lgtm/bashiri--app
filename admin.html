@@ -2,6 +2,19 @@
 <div class="card"><div class="hrow"><div><h2>🏦 HOUSE ANALYTICS - MARK X</h2><div style="font-size:11px;color:#00e676;margin-top:4px" id="cloudStatus">Cloud CONNECTING...</div></div><div style="display:flex"><button class="refresh" onclick="loadAll()">🔄 REFRESH</button><button class="csv" onclick="exportCSV()">CSV</button></div></div>
 <div class="grid4" style="margin-top:12px"><div><div style="font-size:10px;color:#888">TOTAL USERS</div><div style="font-size:22px;font-weight:900" class="cyan" id="totalUsers">0</div></div><div><div style="font-size:10px;color:#888">ACTIVE TODAY</div><div style="font-size:22px;font-weight:900" class="green" id="activeToday">0</div></div><div><div style="font-size:10px;color:#888">WITH BAL >0</div><div style="font-size:22px;font-weight:900" class="yellow" id="usersWithBal">0</div></div><div><div style="font-size:10px;color:#888">PENDING WD</div><div style="font-size:22px;font-weight:900" class="red" id="pendingCount">0</div></div></div></div>
 <div class="card" style="border:1px solid #00e676"><h3>🚗 MARK X KDD 847M GOAL</h3><div class="hrow" style="margin-top:10px"><div><div style="font-size:10px;color:#888">TARGET PRICE</div><div style="font-size:14px">KES <input id="targetInput" type="number" value="1350000" oninput="saveTarget()" style="width:110px;font-size:14px;font-weight:800"></div></div><div><div style="font-size:10px;color:#888">CURRENT PROFIT</div><div style="font-size:22px;font-weight:900" class="green" id="markxProfit">KES 0</div></div></div><div class="progress"><div class="bar" id="markxBar"></div></div><div class="grid3"><div><div style="font-size:10px;color:#888">PROGRESS</div><div style="font-size:16px;font-weight:800" id="markxPercent">0%</div></div><div><div style="font-size:10px;color:#888">LEFT</div><div style="font-size:16px;font-weight:800" class="yellow" id="markxLeft">0</div></div><div><div style="font-size:10px;color:#888">USERS @17</div><div style="font-size:16px;font-weight:800" id="markxUsers">0</div></div></div></div>
+
+<!-- ADMIN BALANCE INJECTOR ADDED BELOW -->
+<div class="card" style="border:1px solid #00e676">
+  <h3 style="color:#00e676">⚡ ADMIN BALANCE INJECTOR</h3>
+  <div class="row" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+    <input id="adminPhone" class="inp" style="flex:1;min-width:140px" placeholder="2547XXXXXXXX">
+    <input id="adminAddAmt" class="inp" style="flex:1" type="number" placeholder="Amount (KES)">
+    <button class="btn refresh" onclick="adminAddBalance()" style="background:#00e676;color:#000">ADD BALANCE</button>
+  </div>
+  <div id="adminMsg" style="font-size:11px;color:#00e676;margin-top:6px"></div>
+</div>
+<!-- END OF ADMIN BALANCE INJECTOR -->
+
 <div class="card" style="border:1px solid #ffca28"><h3>💼 FLOAT HEALTH - MIN 100 MAX 500</h3><div class="grid3" style="margin-top:10px"><div><div style="font-size:10px;color:#888">TOTAL OWED</div><div style="font-size:22px;font-weight:900" id="totalBal">0</div></div><div><div style="font-size:10px;color:#888">NET CASH</div><div style="font-size:22px;font-weight:900" id="netCash2" class="cyan">0</div></div><div><div style="font-size:10px;color:#888">FLOAT NEEDED</div><div style="font-size:22px;font-weight:900" id="floatNeeded">0</div><div style="font-size:11px" id="floatStatus">-</div></div></div><div class="hrow" style="margin-top:12px"><div><div style="font-size:10px;color:#888">Your B2C Till (5000)</div><input id="b2cInput" type="number" value="5000" oninput="saveB2C()" style="width:120px"></div><div><div style="font-size:10px;color:#888">COVER</div><div style="font-size:20px;font-weight:900" id="floatCover">0</div><div style="font-size:10px" id="coverStatus">-</div></div></div></div>
 <div class="card" style="border:1px solid #ff5a5a"><h3>💸 WITHDRAW QUEUE - MIN 100 MAX 500</h3><div style="font-size:10px;color:#888">100-500 only. APPROVE deducts balance → pay via M-Pesa app.</div><table><thead><tr><th>TIME</th><th>PHONE</th><th>AMT → RECV</th><th>BAL</th><th>ACTION</th></tr></thead><tbody id="withQueue"></tbody></table></div>
 <div class="grid2"><div class="card"><div style="font-size:10px;color:#888">HOUSE PROFIT</div><div style="font-size:28px;font-weight:900" id="houseTotal">KES 0</div></div><div class="card"><div style="font-size:10px;color:#888">TODAY HOUSE</div><div style="font-size:28px;font-weight:900" id="houseToday">KES 0</div><div style="font-size:11px;color:#888" id="betsToday">0 bets</div></div><div class="card"><div style="font-size:10px;color:#888">TOTAL STAKED</div><div style="font-size:28px;font-weight:900" id="totalStaked" class="cyan">0</div><div style="font-size:11px;color:#888" id="betsCount">0 bets</div></div><div class="card"><div style="font-size:10px;color:#888">TOTAL PAID OUT</div><div style="font-size:28px;font-weight:900" id="totalPaid" class="red">0</div></div></div>
@@ -28,5 +41,47 @@ function renderDeps(){let h='';cacheDeps.slice(0,20).forEach(d=>{let t=new Date(
 function renderUsers(){let s=(document.getElementById('searchPhone')?.value||'').toLowerCase();let h='';let c={};cacheUsers.forEach(u=>{if(['254116982197','0116982197'].includes(u.phone))return;c[u.phone]=c[u.phone]||{bets:0,staked:0,payout:0,house:0,balance:0};c[u.phone].balance=u.balance||0;});Object.entries(byPhoneCache).forEach(([ph,st])=>{if(['254116982197','0116982197'].includes(ph))return;c[ph]=c[ph]||{bets:0,staked:0,payout:0,house:0,balance:0};c[ph].bets=st.bets;c[ph].staked=st.staked;c[ph].payout=st.payout;c[ph].house=st.house;});Object.entries(c).sort((a,b)=>b[1].house-a[1].house).forEach(([ph,st])=>{if(s&&!ph.toLowerCase().includes(s))return;h+=`<tr><td>${ph}</td><td>${st.bets||0}</td><td>${st.staked||0}</td><td>${st.payout||0}</td><td class="${(st.house||0)>=0?'green':'red'}">${st.house||0}</td><td class="yellow">${st.balance||0}</td></tr>`});document.getElementById('topUsers').innerHTML=h||'<tr><td colspan=6 style="text-align:center;color:#555">No users</td></tr>';}
 function renderBets(){let h='';cacheBets.slice(0,50).forEach(b=>{let t=new Date(b.created_at).toLocaleTimeString('en-GB',{hour12:false});h+=`<tr><td>${t}</td><td>${(b.phone||'').slice(-4)}</td><td>${b.type}</td><td>${b.d}</td><td>${b.stake}</td><td>${b.payout}</td><td class="${b.house>=0?'green':'red'}">${b.house}</td></tr>`});document.getElementById('lastBets').innerHTML=h||'<tr><td colspan=7 style="text-align:center;color:#555">No bets</td></tr>';}
 function exportCSV(){let csv='Time,Phone,Type,D,Stake,Payout,House\n';cacheBets.forEach(b=>{csv+=`${b.created_at},${b.phone},${b.type},${b.d},${b.stake},${b.payout},${b.house}\n`});let blob=new Blob([csv],{type:'text/csv'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='bets.csv';a.click();}
+
+// ADMIN BALANCE INJECTOR LOGIC ADDED BELOW
+async function adminAddBalance() {
+    let phoneRaw = document.getElementById('adminPhone').value.trim();
+    let amount = parseInt(document.getElementById('adminAddAmt').value) || 0;
+    let msg = document.getElementById('adminMsg');
+
+    if (!phoneRaw || amount <= 0) {
+        alert('Please enter a valid phone number and amount.');
+        return;
+    }
+
+    let phone = phoneRaw.replace(/[^0-9]/g, '');
+    if (phone.startsWith('0')) phone = '254' + phone.substring(1);
+    if (phone.startsWith('7' ) && phone.length == 9) phone = '254' + phone;
+
+    msg.style.color = '#00e676';
+    msg.textContent = `Injecting KES ${amount} to ${phone}...`;
+
+    try {
+        let { data, error: fetchError } = await supa.from('user_balances').select('balance').eq('phone', phone).maybeSingle();
+        let currentBal = data ? data.balance : 0;
+        let newBalance = currentBal + amount;
+
+        let { error: upsertError } = await supa.from('user_balances').upsert([{ phone: phone, balance: newBalance }]);
+
+        if (upsertError) {
+            msg.style.color = '#ff5a5a';
+            msg.textContent = '❌ Error: ' + upsertError.message;
+        } else {
+            msg.style.color = '#00e676';
+            msg.textContent = `✅ Successfully added KES ${amount}! New Balance for ${phone}: KES ${newBalance}`;
+            document.getElementById('adminAddAmt').value = '';
+            loadAll();
+        }
+    } catch (e) {
+        msg.style.color = '#ff5a5a';
+        msg.textContent = '❌ Network error: ' + e.message;
+    }
+}
+// END OF ADMIN BALANCE INJECTOR LOGIC
+
 loadB2C();loadTarget();loadAll();setInterval(loadAll,3000);
 </script></body></html>
