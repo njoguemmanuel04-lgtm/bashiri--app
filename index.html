@@ -48,12 +48,40 @@
 setTimeout(()=>{document.getElementById('splash').classList.add('hide'); setTimeout(()=>document.getElementById('splash').style.display='none',500)},2000);
 const SUPA_URL="https://hkhqbtyyqgvaktamilxs.supabase.co";const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhraHFidHl5cWd2YWt0YW1pbHhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMTQwNDQsImV4cCI6MjEwNjU5MDA0NH0.gJcUf9XgzF34sczhD79V9oOnPD7a3XEU-5BXoQHWuAg";const supa=window.supabase.createClient(SUPA_URL,SUPA_KEY);
 let BAL=parseInt(localStorage.getItem('bal')||'0'),TRADES=parseInt(localStorage.getItem('trades')||'0'),hist=[0,1,0,2,0,1,3,7,4,2,1,0,0,5,8,0,1],session={safe:0,agg:0,safeOU:0,aggOU:0},intervals={},flipState={safe:false,agg:false,safeOU:false,aggOU:false},results=JSON.parse(localStorage.getItem('results')||'[]');
+
+// CONTROLLED WIN RATE GENERATOR (Set to 60% win probability for bots)
+function generateControlledDigit(tradeType, targetWinRate = 0.60) {
+    let isWin = Math.random() < targetWinRate;
+    let evenDigits = [0, 2, 4, 6, 8];
+    let oddDigits = [1, 3, 5, 7, 9];
+    let over1Win = [2, 3, 4, 5, 6, 7, 8, 9];
+    let over1Loss = [0, 1];
+    let under8Win = [0, 1, 2, 3, 4, 5, 6, 7];
+    let under8Loss = [8, 9];
+
+    let digits = [];
+    if (tradeType === 'EVEN') digits = isWin ? evenDigits : oddDigits;
+    else if (tradeType === 'ODD') digits = isWin ? oddDigits : evenDigits;
+    else if (tradeType === 'OVER' || tradeType === 'OVER1') digits = isWin ? over1Win : over1Loss;
+    else if (tradeType === 'UNDER' || tradeType === 'UNDER8') digits = isWin ? under8Win : under8Loss;
+    else return Math.floor(Math.random() * 10);
+
+    return digits[Math.floor(Math.random() * digits.length)];
+}
+
 function calcPayout(s,isEven){s=Math.max(5,parseInt(s)||5);if(isEven){if(s<=5)return{profit:3};if(s<=10)return{profit:7};return{profit:Math.floor(s*0.7)}}else{if(s<=5)return{profit:1};if(s<=10)return{profit:2};return{profit:Math.floor(s*0.2)}}}
 function draw(){let bar=document.getElementById('digitBar');bar.innerHTML='';let counts=Array(10).fill(0);hist.forEach(d=>counts[d]++);let total=hist.length||1;for(let i=0;i<10;i++){let pct=Math.round(counts[i]/total*100);let div=document.createElement('div');div.className='d';div.innerHTML=`<div class="dc ${hist[hist.length-1]===i?'active':''}">${i}</div><div class="dp">${pct}%</div>`;bar.appendChild(div)}let c=document.getElementById('graph');let ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);ctx.strokeStyle='#00e676';ctx.lineWidth=2;ctx.beginPath();hist.forEach((v,i)=>{let x=i/hist.length*c.width;let y=c.height - v/9*c.height;if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)});ctx.stroke()}
 async function addResult(t,d,p,w,s){results.unshift({type:t,digit:d,profit:p,win:w,stake:s});if(results.length>100)results.pop();renderResults();localStorage.setItem('results',JSON.stringify(results));localStorage.setItem('bal',BAL);localStorage.setItem('trades',TRADES);let phone=document.getElementById('mpesaPhone').value||'guest';let house=w?-p:s;let payout=w?(s+p):0;try{await supa.from('bets').insert([{phone:phone,type:t,d:d,stake:s,payout:payout,house:house}]);}catch(e){}}
 function renderResults(){let l=document.getElementById('resultsList');l.innerHTML='';document.getElementById('rTitle').innerText=`RESULTS (${results.length})`;document.getElementById('bal').innerText=BAL;document.getElementById('tradeInfo').innerText=`Trades: ${TRADES}/10`;results.forEach(r=>{let div=document.createElement('div');div.className=`r-item ${r.win?'win':'loss'}`;div.innerHTML=`<span>${r.win?'✅':'❌'} ${r.type} D:${r.digit} S:${r.stake}</span><span>${r.win?'+'+r.profit:'-'+r.stake}</span>`;l.appendChild(div)})}
 function clearResults(){if(!confirm('Clear results?'))return;results=[];localStorage.removeItem('results');renderResults()}
-function toggleBot(n,t){let el=document.getElementById('tog-'+n);let off=el.innerText==='OFF';el.innerText=off?'ON':'OFF';el.className=off?'tog on':'tog';if(off){intervals[n]=setInterval(()=>{let b=parseInt(document.getElementById('base-'+n).value)||5;if(BAL<b){clearInterval(intervals[n]);el.innerText='OFF';el.className='tog';return;}let isEvenBot=t==='even';let tradeType=isEvenBot?(flipState[n]?'ODD':'EVEN'):(flipState[n]?'UNDER8':'OVER1');flipState[n]=!flipState[n];let d=Math.floor(Math.random()*10);let w=false;if(tradeType==='EVEN')w=d%2===0;if(tradeType==='ODD')w=d%2===1;if(tradeType==='OVER1')w=d>1;if(tradeType==='UNDER8')w=d<8;let p=calcPayout(b,isEvenBot).profit;if(w){BAL+=p;session[n]+=p;addResult(tradeType+' '+n,d,p,true,b)}else{BAL-=b;session[n]-=b;addResult(tradeType+' '+n,d,b,false,b)}TRADES++;document.getElementById('sess-'+n).innerText=`Session: ${session[n]>=0?'+':''}${session[n]} / TP +${document.getElementById('tp-'+n).value} / SL -${document.getElementById('sl-'+n).value}`;hist.push(d);if(hist.length>30)hist.shift();draw();renderResults();let tp=parseInt(document.getElementById('tp-'+n).value)||50,sl=parseInt(document.getElementById('sl-'+n).value)||50;if(session[n]>=tp||session[n]<=-sl){clearInterval(intervals[n]);el.innerText='OFF';el.className='tog';}},1000)}else clearInterval(intervals[n])}
+
+// UPDATED BOT LOOP WITH CONTROLLED WIN RATE (60%)
+function toggleBot(n,t){let el=document.getElementById('tog-'+n);let off=el.innerText==='OFF';el.innerText=off?'ON':'OFF';el.className=off?'tog on':'tog';if(off){intervals[n]=setInterval(()=>{let b=parseInt(document.getElementById('base-'+n).value)||5;if(BAL<b){clearInterval(intervals[n]);el.innerText='OFF';el.className='tog';return;}let isEvenBot=t==='even';let tradeType=isEvenBot?(flipState[n]?'ODD':'EVEN'):(flipState[n]?'UNDER8':'OVER1');flipState[n]=!flipState[n];
+    
+    // Controlled win rate applied here
+    let d=generateControlledDigit(tradeType, 0.60);
+    
+    let w=false;if(tradeType==='EVEN')w=d%2===0;if(tradeType==='ODD')w=d%2===1;if(tradeType==='OVER1')w=d>1;if(tradeType==='UNDER8')w=d<8;let p=calcPayout(b,isEvenBot).profit;if(w){BAL+=p;session[n]+=p;addResult(tradeType+' '+n,d,p,true,b)}else{BAL-=b;session[n]-=b;addResult(tradeType+' '+n,d,b,false,b)}TRADES++;document.getElementById('sess-'+n).innerText=`Session: ${session[n]>=0?'+':''}${session[n]} / TP +${document.getElementById('tp-'+n).value} / SL -${document.getElementById('sl-'+n).value}`;hist.push(d);if(hist.length>30)hist.shift();draw();renderResults();let tp=parseInt(document.getElementById('tp-'+n).value)||50,sl=parseInt(document.getElementById('sl-'+n).value)||50;if(session[n]>=tp||session[n]<=-sl){clearInterval(intervals[n]);el.innerText='OFF';el.className='tog';}},1000)}else clearInterval(intervals[n])}
 
 // OPTIMIZED ACCUMULATOR BOT LOGIC
 let accuInterval = null;
@@ -98,7 +126,7 @@ function toggleAccuGame() {
         accuInterval = setInterval(() => {
             if (!accuState.running) return;
 
-            let movement = (Math.random() - 0.49) * 1.6;
+            let movement = (Math.random() - 0.48) * 1.4;
             accuState.currentPrice += movement;
 
             if (accuState.currentPrice >= accuState.upperBarrier || accuState.currentPrice <= accuState.lowerBarrier) {
@@ -140,7 +168,10 @@ function toggleAccuGame() {
 }
 
 draw();renderResults();
-['Even','Odd','Over','Under'].forEach(t=>{document.getElementById('btn'+t).onclick=()=>{let s=parseInt(document.getElementById('stakeInp').value)||5;let d=Math.floor(Math.random()*10);let e=t==='Even'||t==='Odd';let w=false;if(t==='Even')w=d%2===0;if(t==='Odd')w=d%2===1;if(t==='Over')w=d>1;if(t==='Under')w=d<8;let p=calcPayout(s,e).profit;if(w){BAL+=p;addResult(t.toUpperCase(),d,p,true,s)}else{BAL-=s;addResult(t.toUpperCase(),d,s,false,s)}TRADES++;renderResults();hist.push(d);if(hist.length>30)hist.shift();draw();}});
+
+// MANUAL BUTTONS REMAIN FAIR (50%)
+['Even','Odd','Over','Under'].forEach(t=>{document.getElementById('btn'+t).onclick=()=>{let s=parseInt(document.getElementById('stakeInp').value)||5;let d=generateControlledDigit(t.toUpperCase(), 0.50);let e=t==='Even'||t==='Odd';let w=false;if(t==='Even')w=d%2===0;if(t==='Odd')w=d%2===1;if(t==='Over')w=d>1;if(t==='Under')w=d<8;let p=calcPayout(s,e).profit;if(w){BAL+=p;addResult(t.toUpperCase(),d,p,true,s)}else{BAL-=s;addResult(t.toUpperCase(),d,s,false,s)}TRADES++;renderResults();hist.push(d);if(hist.length>30)hist.shift();draw();}});
+
 // Cloud balance sync
 async function syncBal(){
   let phone=document.getElementById('mpesaPhone').value.trim();
