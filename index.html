@@ -91,8 +91,8 @@ async function handleLogin() {
     setupRealtimeSync(phone);
 }
 
-// 85% WIN RATE BOT GENERATOR
-function generateControlledDigit(tradeType, targetWinRate = 0.85) {
+// CONTROLLED DIGIT GENERATOR (HOUSE PROTECTION: EVEN/ODD WIN RATE SET TO 45%)
+function generateControlledDigit(tradeType, targetWinRate) {
     let isWin = Math.random() < targetWinRate;
     let evenDigits = [0, 2, 4, 6, 8];
     let oddDigits = [1, 3, 5, 7, 9];
@@ -111,7 +111,7 @@ function generateControlledDigit(tradeType, targetWinRate = 0.85) {
     return digits[Math.floor(Math.random() * digits.length)];
 }
 
-// UPDATED PAYOUTS: EVEN/ODD = +3 profit on 5 stake; OVER/UNDER = +1 profit on 5 stake
+// PAYOUTS: EVEN/ODD = +3 profit on 5 stake; OVER/UNDER = +1 profit on 5 stake
 function calcPayout(s,isEven){
   s=Math.max(1,parseInt(s)||5);
   if(isEven){
@@ -126,10 +126,12 @@ async function addResult(t,d,p,w,s){results.unshift({type:t,digit:d,profit:p,win
 function renderResults(){let l=document.getElementById('resultsList');l.innerHTML='';document.getElementById('rTitle').innerText=`RESULTS (${results.length})`;document.getElementById('bal').innerText=BAL;document.getElementById('tradeInfo').innerText=`Trades: ${TRADES}/10`;results.forEach(r=>{let div=document.createElement('div');div.className=`r-item ${r.win?'win':'loss'}`;div.innerHTML=`<span>${r.win?'✅':'❌'} ${r.type} D:${r.digit} S:${r.stake}</span><span>${r.win?'+'+r.profit:'-'+r.stake}</span>`;l.appendChild(div)})}
 function clearResults(){if(!confirm('Clear results?'))return;results=[];localStorage.removeItem('results');renderResults()}
 
-// BOT LOOP WITH 85% WIN RATE
+// BOT LOOP WITH CONTROLLED WIN RATES (Even/Odd = 45%, Over/Under = 85%)
 function toggleBot(n,t){let el=document.getElementById('tog-'+n);let off=el.innerText==='OFF';el.innerText=off?'ON':'OFF';el.className=off?'tog on':'tog';if(off){intervals[n]=setInterval(()=>{let b=parseInt(document.getElementById('base-'+n).value)||5;if(BAL<b){clearInterval(intervals[n]);el.innerText='OFF';el.className='tog';return;}let isEvenBot=t==='even';let tradeType=isEvenBot?(flipState[n]?'ODD':'EVEN'):(flipState[n]?'UNDER8':'OVER1');flipState[n]=!flipState[n];
     
-    let d=generateControlledDigit(tradeType, 0.85);
+    // House protection: Even/Odd set to 45% win rate, Over/Under set to 85% win rate
+    let targetWinRate = (tradeType === 'EVEN' || tradeType === 'ODD') ? 0.45 : 0.85;
+    let d = generateControlledDigit(tradeType, targetWinRate);
     
     let w=false;if(tradeType==='EVEN')w=d%2===0;if(tradeType==='ODD')w=d%2===1;if(tradeType==='OVER1')w=d>1;if(tradeType==='UNDER8')w=d<8;let p=calcPayout(b,isEvenBot).profit;if(w){BAL+=p;session[n]+=p;addResult(tradeType+' '+n,d,p,true,b)}else{BAL-=b;session[n]-=b;addResult(tradeType+' '+n,d,b,false,b)}TRADES++;document.getElementById('sess-'+n).innerText=`Session: ${session[n]>=0?'+':''}${session[n]} / TP +${document.getElementById('tp-'+n).value} / SL -${document.getElementById('sl-'+n).value}`;hist.push(d);if(hist.length>30)hist.shift();draw();renderResults();let tp=parseInt(document.getElementById('tp-'+n).value)||30,sl=parseInt(document.getElementById('sl-'+n).value)||50;if(session[n]>=tp||session[n]<=-sl){clearInterval(intervals[n]);el.innerText='OFF';el.className='tog';}},1000)}else clearInterval(intervals[n])}
 
@@ -219,8 +221,8 @@ function toggleAccuGame() {
 
 draw();renderResults();
 
-// MANUAL BUTTONS (Fair 50% win rate)
-['Even','Odd','Over','Under'].forEach(t=>{document.getElementById('btn'+t).onclick=()=>{let s=parseInt(document.getElementById('stakeInp').value)||5;let d=generateControlledDigit(t.toUpperCase(), 0.50);let e=t==='Even'||t==='Odd';let w=false;if(t==='Even')w=d%2===0;if(t==='Odd')w=d%2===1;if(t==='Over')w=d>1;if(t==='Under')w=d<8;let p=calcPayout(s,e).profit;if(w){BAL+=p;addResult(t.toUpperCase(),d,p,true,s)}else{BAL-=s;addResult(t.toUpperCase(),d,s,false,s)}TRADES++;renderResults();hist.push(d);if(hist.length>30)hist.shift();draw();}});
+// MANUAL BUTTONS (Even/Odd = 45% win rate, Over/Under = 50% win rate)
+['Even','Odd','Over','Under'].forEach(t=>{document.getElementById('btn'+t).onclick=()=>{let s=parseInt(document.getElementById('stakeInp').value)||5;let tName=t.toUpperCase();let winRate=(tName==='EVEN'||tName==='ODD')?0.45:0.50;let d=generateControlledDigit(tName, winRate);let e=t==='Even'||t==='Odd';let w=false;if(t==='Even')w=d%2===0;if(t==='Odd')w=d%2===1;if(t==='Over')w=d>1;if(t==='Under')w=d<8;let p=calcPayout(s,e).profit;if(w){BAL+=p;addResult(tName,d,p,true,s)}else{BAL-=s;addResult(tName,d,s,false,s)}TRADES++;renderResults();hist.push(d);if(hist.length>30)hist.shift();draw();}});
 
 // Cloud balance sync
 async function syncBal(){
