@@ -3,6 +3,8 @@ module.exports = async function handler(req, res) {
  if (req.method === 'OPTIONS') return res.status(200).end();
  
  try {
+  console.log("RAW CALLBACK BODY:", JSON.stringify(req.body));
+
   const body = req.body?.Body?.stkCallback || req.body;
   const CheckoutID = body.CheckoutRequestID;
   const ResultCode = Number(body.ResultCode);
@@ -16,9 +18,11 @@ module.exports = async function handler(req, res) {
   const SUPA_URL = process.env.SUPABASE_URL;
   const SUPA_KEY = process.env.SUPABASE_SERVICE_KEY;
 
+  console.log("Parsed Data -> CheckoutID:", CheckoutID, "ResultCode:", ResultCode, "Phone:", phone, "Amount:", amount);
+
   if (!phone && CheckoutID) {
     const depRes = await fetch(`${SUPA_URL}/rest/v1/deposits?checkout_id=eq.${CheckoutID}&select=phone,amount`, {
-      headers: {'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}`}
+      headers: { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}` }
     });
     const depData = await depRes.json();
     if (depData && depData.length > 0) {
@@ -30,8 +34,16 @@ module.exports = async function handler(req, res) {
   if (ResultCode === 0 && CheckoutID) {
     await fetch(`${SUPA_URL}/rest/v1/deposits?checkout_id=eq.${CheckoutID}`, {
       method: 'PATCH',
-      headers: {'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}`, 'Content-Type': 'application/json'},
-      body: JSON.stringify({status: 'paid', mpesa_code: mpesaCode, phone: phone?.toString()})
+      headers: {
+        'apikey': SUPA_KEY,
+        'Authorization': `Bearer ${SUPA_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        status: 'paid',
+        mpesa_code: mpesaCode,
+        phone: phone?.toString()
+      })
     });
 
     if (phone && amount) {
@@ -39,35 +51,47 @@ module.exports = async function handler(req, res) {
       const amt = Number(amount);
 
       const balRes = await fetch(`${SUPA_URL}/rest/v1/user_balances?phone=eq.${p}`, {
-        headers: {'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}`}
+        headers: { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}` }
       });
       const balData = await balRes.json();
 
       if (!balData || balData.length === 0) {
         await fetch(`${SUPA_URL}/rest/v1/user_balances`, {
           method: 'POST',
-          headers: {'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}`, 'Content-Type': 'application/json'},
-          body: JSON.stringify({phone: p, balance: amt})
+          headers: {
+            'apikey': SUPA_KEY,
+            'Authorization': `Bearer ${SUPA_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ phone: p, balance: amt })
         });
       } else {
         const currentBal = Number(balData[0].balance || 0);
         await fetch(`${SUPA_URL}/rest/v1/user_balances?phone=eq.${p}`, {
           method: 'PATCH',
-          headers: {'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}`, 'Content-Type': 'application/json'},
-          body: JSON.stringify({balance: currentBal + amt})
+          headers: {
+            'apikey': SUPA_KEY,
+            'Authorization': `Bearer ${SUPA_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ balance: currentBal + amt })
         });
       }
     }
   } else if (CheckoutID) {
     await fetch(`${SUPA_URL}/rest/v1/deposits?checkout_id=eq.${CheckoutID}`, {
       method: 'PATCH',
-      headers: {'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}`, 'Content-Type': 'application/json'},
-      body: JSON.stringify({status: 'failed'})
+      headers: {
+        'apikey': SUPA_KEY,
+        'Authorization': `Bearer ${SUPA_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ status: 'failed' })
     });
   }
-  return res.status(200).json({ok: true});
+  return res.status(200).json({ ok: true });
  } catch (e) { 
    console.error("Callback Error:", e.message);
-   return res.status(200).json({ok: true}); 
+   return res.status(200).json({ ok: true }); 
  }
 };
